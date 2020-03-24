@@ -1,0 +1,6 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/Inicio/bin/Debug/netcoreapp3.1
+/.vs/PortalRequisiciones/v16

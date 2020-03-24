@@ -1,0 +1,10 @@
+﻿  .login{
+            background-color: whitesmoke;
+    border: thin solid #e0e0e0;
+    padding: 0 20px 8px 20px;
+    -webkit-border-radius: 4px 4px 4px 4px;
+    border-radius: 4px 4px 4px 4px;
+    }
+  body{
+background: #e9ecef;
+  }

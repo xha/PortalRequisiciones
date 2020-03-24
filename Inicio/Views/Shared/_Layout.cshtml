@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = ".:Portal de Requerimientos:.";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/site.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/adminlte.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/sweetalert2/sweetalert.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/loading/jquery.loadingModal.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .modal {
+            padding: 0 !important;
+        }
+
+        .modal-dialog {
+            max-width: 100% !important;
+            min-height: 100%;
+            padding: 0;
+        }
+
+        .modal-content {
+            border-radius: 0 !important;
+            height: 100%;
+        }
+
+        .modal-header {
+            padding: 0 !important;
+        }
+
+        .ACTIVE {
+            background-color: #bd0b0b63 !important;
+        }
+
+        .activo {
+            background-color: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="layout-top-nav sidebar-collapse" style="height: auto; line-height: 1;">
+    <header>
+        <nav class="main-header navbar navbar-expand-lg navbar-light navbar-primary  navbar-dark" style="">
+            <div class="container-fluid">
+                <label href="#" class="brand-link bg-primary">
+                    <img src="~/LogoMenu.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                    <span class="brand-text font-weight-bold">Portal de Requisiciones</span>
+                </label>
+                <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse order-3 order-lg-2" id="navbarCollapse">
+                    <ul class="nav nav-pills nav-sidebar ">
+                        <li class="nav-item  ">
+                            <a href="@Url.Action("Index", "Compras")" class="nav-link activo ml-2" style="color:white;">
+                                <i class="nav-icon fas fa-balance-scale"></i>
+                                <p class="text">Compras</p>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a href="@Url.Action("Index", "Servicios")" class="nav-link ml-2" style="color:white;">
+                                <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                                <p class="text">Servicios</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+                <ul class="order-1 order-md-2 navbar-nav navbar-no-expand ml-auto">
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="main-footer text-center">
+        <strong>
+            Tecnologia desarrollada por  &nbsp;<br />
+            <a class="text-danger" href="http://www.starsoft.com.pe" target="_blank">
+                <img src="~/logo.png" style="width: 150px;height: 15px;">
+            </a>
+        </strong> <br />
+        <strong><a class="text-danger" href="http://www.starsoft.com.pe" target="_blank">www.starsoft.com.pe</a> </strong>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/adminlte.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
