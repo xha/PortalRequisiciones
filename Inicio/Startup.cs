@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Datos.Models;
 
 namespace Inicio
 {
@@ -23,6 +25,8 @@ namespace Inicio
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BDWENCO>(options => options.UseSqlServer(Configuration.GetConnectionString("BDWENCOConnectionString")));
+            services.AddDbContext<BDCOMUN>(options => options.UseSqlServer(Configuration.GetConnectionString("BDCOMUNConnectionString")));
             services.AddControllersWithViews();
         }
 
@@ -50,7 +54,7 @@ namespace Inicio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Compras}/{action=Index}/{id?}");
             });
         }
     }
