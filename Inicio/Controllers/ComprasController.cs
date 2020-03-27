@@ -20,10 +20,27 @@ namespace Inicio.Controllers
             Comun = context;
         }
 
-        // GET: Compras
-        public ActionResult Index()
+        /********************************************************************************************************************************************/
+        //LLAMADOS JSON
+        public JsonResult Areas()
         {
-            return View();
+            List<SP_PORTAL_LISTADO_AREA> area = Comun?.AREA.FromSqlRaw("SP_PORTAL_LISTADO_AREA '003'").ToList();
+
+            return Json(area);
+        }
+
+        public JsonResult Articulos()
+        {
+            List<SP_PORTAL_LISTADO_ARTICULO_RQ> articulo = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '003BDCOMUN'").ToList();
+
+            return Json(articulo);
+        }
+
+        public JsonResult Solicitantes()
+        {
+            List<SP_PORTAL_LISTADO_SOLICITANTE> articulo = Comun?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '003'").ToList();
+
+            return Json(articulo);
         }
 
         [HttpPost]
@@ -31,14 +48,29 @@ namespace Inicio.Controllers
         {
             List<REQUISC_PORTALModel> compras = Comun.REQUISC_PORTAL.ToList();
 
-            var Resultado = (from N in compras 
-                             select N   );
-            return Json(Resultado);
+            return Json(compras);
+        }
+        /********************************************************************************************************************************************/
+
+        // GET: Compras
+        public ActionResult Index()
+        {
+            JsonResult compras = ListadoCompras();
+            ViewBag.ListadoCompras = compras;
+
+            return View();
         }
 
         // GET: Servicios/Create
         public ActionResult Create()
         {
+            JsonResult areas = Areas();
+            JsonResult articulos = Articulos();
+            JsonResult solicitantes = Solicitantes();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Articulos = articulos;
+
             return View();
         }
 

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Requisiciones de Compras";
+    var datos_json = Json.Serialize(ViewBag.ListadoCompras);
 }
 
 <div class="container-fluid">
@@ -61,27 +62,27 @@
     </div>
 </div>
 <script>
-    var datos_json = "";
-    var bandera = false;
-
     $(function () {
-        $.ajax({
+        /*$.ajax({
             type: 'POST',
-            url: '@Url.Action("ListadoCompras", "Compras")',
+            url: 'Url.Action("ListadoCompras", "Compras")',
             data: '',
             cache: false,
             success: function (result) {
                 datos_json = result;
-                activar_datos();
+                console.log(result);
+                //activar_datos();
             },
-        });
+        });*/
+        var datos = JSON.parse('@Html.Raw(datos_json)');
+        activar_datos(datos.value);
     });
 
-    function activar_datos() {
+    function activar_datos(datos) {
         $("#GridComprasIndex").DataTable({
             destroy: true,
             bInfo: false,
-            data: datos_json,
+            data: datos,
             columns: [
                 { data: "nrorequi" },
                 { data: "codsolic" },

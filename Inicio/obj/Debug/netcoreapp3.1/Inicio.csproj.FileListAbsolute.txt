@@ -23,7 +23,6 @@ X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.Data.Sqlite.
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.DotNet.PlatformAbstractions.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Abstractions.dll
-X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Sqlite.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
@@ -142,7 +141,6 @@ X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\es\EntityFramework.res
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.csprojAssemblyReference.cache
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\staticwebassets\Inicio.StaticWebAssets.Manifest.cache
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\staticwebassets\Inicio.StaticWebAssets.xml
-X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.MvcApplicationPartsAssemblyInfo.cache
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.RazorAssemblyInfo.cache
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.RazorAssemblyInfo.cs
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.AssemblyInfoInputs.cache
@@ -167,3 +165,7 @@ X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.csproj.CopyComp
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.dll
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.pdb
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Datos.cshtml.g.cs
+X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.Design.dll
+X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.Design.dll
+X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.MvcApplicationPartsAssemblyInfo.cache
