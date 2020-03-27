@@ -1,4 +1,12 @@
-﻿function solo_enteros(e) {
+﻿$(document).on('ajaxStart', function () {
+    loading_show();
+})
+
+$(document).on('ajaxStop', function (start) {
+    loading_hide();
+})
+
+function solo_enteros(e) {
     var tipo = e.keyCode;
     //if ((tipo == 8) || (tipo == 9) || (tipo == 116) || (tipo == 46)) return true; // BACKSPACE, TAB, F5, DELETE
     var regex = new RegExp("^[0-9]+$");
@@ -79,4 +87,44 @@ function convertir_float(valor) {
     temp = parseFloat(temp.replace(",", "."));
 
     return temp;
+}
+
+function MostrarMensaje(Tipo, Mensaje) {
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        showMethod: 'slideDown',
+        timeOut: 4000,
+        positionClass: "toast-bottom-center",
+    };
+
+    switch (Tipo) {
+        case "Verde":
+            toastr.success(Mensaje, "Procesado");
+            break;
+
+        case "Amarillo":
+            toastr.warning(Mensaje, "Alerta");
+            break;
+
+        case "Rojo":
+            toastr.error(Mensaje, "Error");
+            break;
+
+        case "Azul":
+            toastr.info(Mensaje, "Información");
+            break;
+    }
+}
+
+function loading_show() {
+    $('body').loadingModal({
+        text: 'Por favor espere',
+        animation: 'circle',
+    });
+    $('body').loadingModal('show');
+}
+
+function loading_hide() {
+    $('body').loadingModal('hide');
 }

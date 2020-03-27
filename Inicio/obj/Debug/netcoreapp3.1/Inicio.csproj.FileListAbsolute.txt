@@ -151,8 +151,6 @@ X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.TagHelpers.inpu
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.TagHelpers.output.cache
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.RazorCoreGenerate.cache
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Create.cshtml.g.cs
-X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Delete.cshtml.g.cs
-X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Details.cshtml.g.cs
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Edit.cshtml.g.cs
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Index.cshtml.g.cs
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
@@ -168,3 +166,4 @@ X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.Views.pdb
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.csproj.CopyComplete
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.dll
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.pdb
+X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Datos.cshtml.g.cs

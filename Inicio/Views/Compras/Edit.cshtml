@@ -1,57 +1,54 @@
 ﻿@model Datos.Models.REQUISC_PORTALModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Ediar Requisición de Compras No.";
 }
 
-<h1>Edit</h1>
-
-<h4>REQUISC_PORTALModel</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="card card-danger">
+    <div class="card-header">
+        <h5 class="float-left">
+            @ViewData["Title"] <b>@Model.NROREQUI</b>
+        </h5>
+    </div>
+    <div class="card-body p-2">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="NROREQUI" />
-            <div class="form-group">
-                <label asp-for="CODSOLIC" class="control-label"></label>
-                <input asp-for="CODSOLIC" class="form-control" />
-                <span asp-validation-for="CODSOLIC" class="text-danger"></span>
+            <div class="row">
+                <input asp-for="TipoDocumento" class="form-control" value="RQ" type="hidden" />
+                <input asp-for="TIPOREQUI" class="form-control" value="RQ" type="hidden" />
+                @Html.Partial(nameof(Datos))
             </div>
-            <div class="form-group">
-                <label asp-for="FECREQUI" class="control-label"></label>
-                <input asp-for="FECREQUI" class="form-control" />
-                <span asp-validation-for="FECREQUI" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GLOSA" class="control-label"></label>
-                <input asp-for="GLOSA" class="form-control" />
-                <span asp-validation-for="GLOSA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AREA" class="control-label"></label>
-                <input asp-for="AREA" class="form-control" />
-                <span asp-validation-for="AREA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TIPOREQUI" class="control-label"></label>
-                <input asp-for="TIPOREQUI" class="form-control" />
-                <span asp-validation-for="TIPOREQUI" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TipoDocumento" class="control-label"></label>
-                <input asp-for="TipoDocumento" class="form-control" />
-                <span asp-validation-for="TipoDocumento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="row my-1">
+                <div class="col-sm-8 text-left">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i>
+                            Grabar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <div class="form-group">
+                        <button type="reset" class="btn btn-danger">
+                            <i class="fa fa-times"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i>
+                            Grabar
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="my-2">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+        Regresar
+    </a>
 </div>
 
 @section Scripts {

@@ -1,0 +1,71 @@
+﻿@model Datos.Models.REQUISC_PORTALModel
+@{
+    if (Model?.FECREQUI != null)
+    {
+        ViewBag.Fecha= Convert.ToDateTime(Model.FECREQUI).ToString("dd/MM/yyyy");
+    } else
+    {
+        DateTime hoy = DateTime.Now;
+
+        string miVariable = hoy.ToString("dd/MM/yyyy");
+        ViewBag.Fecha= miVariable;
+    }
+}
+
+<div class="col-sm-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="NROREQUI" class="control-label"></label>
+        @if (Model?.NROREQUI == null)
+        {
+            <input asp-for="NROREQUI" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="NROREQUI" class="form-control" readonly />
+        }
+        <span asp-validation-for="NROREQUI" class="text-danger"></span>
+    </div>
+</div>
+<div class="col-sm-3">
+    <div class="form-group">
+        <label asp-for="FECREQUI" class="control-label"></label>
+        <input asp-for="FECREQUI" class="form-control" value="@ViewBag.Fecha" />
+        <span asp-validation-for="FECREQUI" class="text-danger"></span>
+    </div>
+</div>
+<div class="col-sm-3">
+    <div class="form-group">
+        <label asp-for="CODSOLIC" class="control-label"></label>
+        <input asp-for="CODSOLIC" class="form-control modales" onkeypress="solo_enteros(event)" />
+        <span asp-validation-for="CODSOLIC" class="text-danger"></span>
+    </div>
+</div>
+<div class="col-sm-3">
+    <div class="form-group">
+        <label asp-for="AREA" class="control-label"></label>
+        <input asp-for="AREA" class="form-control modales" onkeypress="solo_enteros(event)" />
+        <span asp-validation-for="AREA" class="text-danger"></span>
+    </div>
+</div>
+<div class="col-sm-12 my-1">
+    <div class="form-group">
+        <label asp-for="GLOSA" class="control-label"></label>
+        <input asp-for="GLOSA" class="form-control" />
+        <span asp-validation-for="GLOSA" class="text-danger"></span>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#FECREQUI").datepicker({
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            startDate: '-1Y',
+            endDate: '+1Y',
+            orientation: 'bottom'
+        });
+
+        $("#FECREQUI").inputmask('99/99/9999', { numericInput: true });
+    });
+</script>

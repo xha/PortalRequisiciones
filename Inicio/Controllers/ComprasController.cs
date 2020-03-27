@@ -13,6 +13,7 @@ namespace Inicio.Controllers
     {
         //private readonly BDWENCO Wenco;
         private readonly BDCOMUN Comun;
+        public REQUISC_PORTALModel Modelo = new REQUISC_PORTALModel();
 
         public ComprasController(BDCOMUN context)
         {
@@ -33,6 +34,29 @@ namespace Inicio.Controllers
             var Resultado = (from N in compras 
                              select N   );
             return Json(Resultado);
+        }
+
+        // GET: Servicios/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // GET: Test/Edit/5
+        public async Task<IActionResult> Edit(string codigo)
+    {
+            if (codigo == null)
+            {
+                return NotFound();
+            }
+
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo);
+            if (modelo == null)
+            {
+                return NotFound();
+            }
+
+            return View(modelo);
         }
     }
 }

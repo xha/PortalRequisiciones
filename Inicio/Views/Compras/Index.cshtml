@@ -102,14 +102,56 @@
                 { data: "tipoDocumento" },
                 {
                     render: function (data, type, row)
-                    { return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Action("Edit", "Compras")"><i class="fa fa-edit"></i></a>'; }
+                    {
+                        return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")'+row.nrorequi+'"><i class="fa fa-edit"></i></a>';
+                    }
                 },
                 {
                     data: null, render: function (data, type, row) {
-                        return '<a class="btn btn-danger grid_opt" title="Anular" href="#"><i class="fa fa-trash"></i></a>';
+                        return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rcompra(\'' + row.nrorequi + '\')"><i class="fa fa-trash"></i></a>';
                     }
                 },
             ]
+        });
+    }
+
+    function anular_rcompra(nrorequi) {
+        swal({
+            title: "¿Estás seguro?",
+            text: "Confirmar Anulado del registro: " + nrorequi,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                console.log(nrorequi);
+                /*$.ajax(
+                {
+                    type: "POST",
+                    dataType: "json",
+                    url: "Url.Content("~/Compras/Edit?codigo=")"+row.nrorequi,
+                    data: parametros,
+                    cache: false,
+                    success: function (Resultado) {
+                        loading_hide();
+                        window.parent.MostrarMensaje(Resultado.color, Resultado.data);
+                        if (Resultado.respuesta) {
+                            $('#ProveedorIndexGrid').DataTable().ajax.reload();
+                        }
+
+                    },
+                    error: function (xhr) { // if error occured
+                        loading_hide();
+                        console.log(xhr);
+                        window.parent.MostrarMensaje("Rojo", xhr.responseText);
+                        //$(placeholder).append(xhr.statusText + xhr.responseText);
+                    },
+                });*/
+            }
         });
     }
 </script>

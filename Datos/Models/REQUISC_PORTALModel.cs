@@ -9,14 +9,18 @@ namespace Datos.Models
     {
         //SELECT GRID
         [Key]
-        [Display(Name = "Nro. Requerimiento")]
+        [Required]
+        [Display(Name = "No. Requerimiento")]
         public string NROREQUI { get; set; }
-        [Display(Name = "Cod. de Solicitud")]
+        [Required]
+        [Display(Name = "Solicitante")]
         public string CODSOLIC { get; set; }
-        [Display(Name = "Fecha Requerimiento")]
+        [Required]
+        [Display(Name = "Fecha")]
         public DateTime FECREQUI { get; set; }
         [Display(Name = "Glosa")]
         public string GLOSA { get; set; }
+        [Required]
         [Display(Name = "Área")]
         public string AREA { get; set; }
         [Required]
