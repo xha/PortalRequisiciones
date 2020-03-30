@@ -69,7 +69,7 @@ function solo_decimal(e, valor) {
         if (filter(tempValue)) return true;
     }
     e.preventDefault();
-    return false
+    return false;
 }
 
 function filter(__val__) {

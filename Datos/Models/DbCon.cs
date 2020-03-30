@@ -14,7 +14,7 @@ namespace Datos.Models
 
         }
 
-        //public DbSet<UsuarioModel> Usuario { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> CENTRO_COSTO { get; set; }
 
         public string ConexDinamica(string datasour, string catalog, string user, string password)
         {
@@ -48,6 +48,7 @@ namespace Datos.Models
         public DbSet<SP_PORTAL_LISTADO_AREA> AREA { get; set; }
         public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ> ARTICULO { get; set; }
         public DbSet<SP_PORTAL_LISTADO_SOLICITANTE> SOLICITANTE { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_ORDEN_FABRICACION> ORDEN_FABRICACION { get; set; }
     }
 
         /*public bool ConsultaPost(string ruta, string ruc, string modulo)

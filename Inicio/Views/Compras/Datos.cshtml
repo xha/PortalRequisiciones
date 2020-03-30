@@ -14,15 +14,93 @@
 
     var solicitantes = Json.Serialize(ViewBag.Solicitantes);
     var areas = Json.Serialize(ViewBag.Areas);
-    
+    var articulos = Json.Serialize(ViewBag.Articulos);
+    var centro = Json.Serialize(ViewBag.CentroCosto);
+    var orden = Json.Serialize(ViewBag.OrdenFabricacion);
+
 }
 
-<!-- INICIO MODAL SOLICITANTE -->
-<div class="modal fade" id="m_solicitante" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<!-- INICIO MODAL ARTICULOS -->
+<div class="modal fade" id="m_articulos" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+    <div class="modal-dialog modal-pe" role="document">
+        <div class="modal-content p-2">
+            <div class="modal-header col-sm-12">
+                <h4 class="modal-title">Listado de Art&iacute;culos</h4>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body h500">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>* C&oacute;digo</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_garticulo').modal('show')">
+                                <span class="input-group-text">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                            <input class="form-control" id="m_codigo" onblur="validar_id()" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>* Descripci&oacute;n</label>
+                        <input class="form-control" id="m_descripcion" />
+                    </div>
+                    <div class="col-sm-2">
+                        <label>* Unidad</label>
+                        <input class="form-control" id="m_unidad" readonly />
+                    </div>
+                    <div class="col-sm-2">
+                        <label>* Cantidad</label>
+                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" />
+                    </div>
+                    <div class="col-sm-3 mt-1">
+                        <label class="w-100">Stock</label>
+                        <input id="m_stock" readonly class="form-control" />
+                    </div>
+                    <div class="col-sm-3 mt-1">
+                        <label>* Fecha Requerim.</label>
+                        <input id="fecha_req" class="form-control fecha" value="@ViewBag.Fecha" />
+                    </div>
+                    <div class="col-sm-3 mt-1">
+                        <label>* Centro de Costo</label>
+                        <select class="form-control" id="centro_costo"></select>
+                    </div>
+                    <div class="col-sm-3 mt-1">
+                        <label>Nro. Maquina</label>
+                        <input id="nro_maquina" class="form-control" />
+                    </div>
+                    <div class="col-sm-3 mt-1">
+                        <label>Ord. Fab.</label>
+                        <select class="form-control" id="orden_fabricacion"></select>
+                    </div>
+                    <div class="col-sm-9 mt-1">
+                        <label>Glosa Art&iacute;culo</label>
+                        <input id="glosa_articulo" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-success" onclick="agregar_articulo()">
+                    <i class='fa fa-check'></i>
+                    Aceptar
+                </a>
+                <a href="#" class="btn btn-danger" onclick="$('#m_articulos').modal('hide')">
+                    <i class='fa fa-times'></i>
+                    Salir
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN MODAL ARTICULOS -->
+<!-- INICIO MODAL GRID ARTICULOS -->
+<div class="modal fade" id="m_garticulo" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-xp" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
-                <h4 class="modal-title">Listado de solicitantes</h4>
+                <h4 class="modal-title">Listado de Art&iacute;culos</h4>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -30,11 +108,14 @@
             <div class="modal-body h500">
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-striped pre-scrollable2 dataTables" id="gridSolicitantes" style="width: 100%">
+                        <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulos" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
                                     <th>C&oacute;digo</th>
                                     <th>Descripci&oacute;n</th>
+                                    <th>Unidad</th>
+                                    <th>Cod. Familia</th>
+                                    <th>Stock</th>
                                     <th style="width: 5px"></th>
                                 </tr>
                             </thead>
@@ -44,7 +125,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-danger" onclick="$('#m_solicitante').modal('hide')">
+                <a href="#" class="btn btn-danger" onclick="$('#m_garticulo').modal('hide')">
                     <i class='fa fa-times'></i>
                     Salir
                 </a>
@@ -52,53 +133,15 @@
         </div>
     </div>
 </div>
-<!-- FIN MODAL SOLICITANTE -->
-<!-- INICIO MODAL AREA -->
-<div class="modal fade" id="m_area" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
-    <div class="modal-dialog modal-xp" role="document">
-        <div class="modal-content p-2">
-            <div class="modal-header col-sm-12">
-                <h4 class="modal-title">Listado de &aacute;rea de trabajo</h4>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body h500">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <table class="table table-striped pre-scrollable2 dataTables" id="gridAreas" style="width: 100%">
-                            <thead class="bg-info">
-                                <tr>
-                                    <th>C&oacute;digo</th>
-                                    <th>Descripci&oacute;n</th>
-                                    <th style="width: 5px"></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="btn btn-danger" onclick="$('#m_area').modal('hide')">
-                    <i class='fa fa-times'></i>
-                    Salir
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- FIN MODAL AREA -->
-<div class="col-sm-12 mb-1">
-    <h5 class="text-danger">Datos</h5>
-</div>
-<div class="col-sm-3">
+<!-- FIN MODAL GRID ARTICULOS -->
+
+<div class="col-sm-3 col-lg-2">
     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
     <div class="form-group">
         <label asp-for="NROREQUI" class="control-label"></label>
         @if (Model?.NROREQUI == null)
         {
-            <input asp-for="NROREQUI" class="form-control" />
+            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" />
         }
         else
         {
@@ -107,118 +150,41 @@
         <span asp-validation-for="NROREQUI" class="text-danger w-100"></span>
     </div>
 </div>
-<div class="col-sm-3">
+<div class="col-sm-3 col-lg-2">
     <div class="form-group">
         <label asp-for="FECREQUI" class="control-label"></label>
         <input asp-for="FECREQUI" class="form-control fecha" value="@ViewBag.Fecha" />
         <span asp-validation-for="FECREQUI" class="text-danger w-100"></span>
     </div>
 </div>
-<div class="col-sm-3">
+<div class="col-sm-3 col-lg-2">
     <div class="form-group">
         <label asp-for="CODSOLIC" class="control-label"></label>
-        <div class="input-group">
-            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_solicitante').modal('show')">
-                <span class="input-group-text">
-                    <i class="fa fa-search"></i>
-                </span>
-            </div>
-            <input asp-for="CODSOLIC" class="form-control" onkeypress="solo_enteros(event)" onblur="validar_id(0)" />
-            <span asp-validation-for="CODSOLIC" class="text-danger w-100"></span>
-        </div>
+        <select class="form-control" asp-for="CODSOLIC"></select>
+        <span asp-validation-for="CODSOLIC" class="text-danger w-100"></span>
     </div>
 </div>
-<div class="col-sm-3">
+<div class="col-sm-3 col-lg-2">
     <div class="form-group">
         <label asp-for="AREA" class="control-label"></label>
-        <div class="input-group">
-            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_area').modal('show')">
-                <span class="input-group-text">
-                    <i class="fa fa-search"></i>
-                </span>
-            </div>
-            <input asp-for="AREA" class="form-control" onkeypress="solo_enteros(event)" onblur="validar_id(1)" />
-            <span asp-validation-for="AREA" class="text-danger w-100"></span>
-        </div>
+        <select class="form-control" asp-for="AREA"></select>
+        <span asp-validation-for="AREA" class="text-danger w-100"></span>
     </div>
 </div>
-<div class="col-sm-12 my-1">
+<div class="col-sm-12 mt-1 col-lg-4">
     <div class="form-group">
         <label asp-for="GLOSA" class="control-label"></label>
         <input asp-for="GLOSA" class="form-control" />
         <span asp-validation-for="GLOSA" class="text-danger w-100"></span>
     </div>
 </div>
-<div class="col-sm-12 border p-2">
-    <div class="row">
-        <div class="col-sm-12 my-1">
-            <h5 class="text-danger">Art&iacute;culos</h5>
-        </div>
-        <div class="col-sm-2">
-            <label>C&oacute;digo</label>
-            <input class="form-control" />
-        </div>
-        <div class="col-sm-6">
-            <label>Descripci&oacute;n</label>
-            <input class="form-control" />
-        </div>
-        <div class="col-sm-2">
-            <label>Unidad</label>
-            <input class="form-control" />
-        </div>
-        <div class="col-sm-2">
-            <label>Cantidad</label>
-            <input class="form-control" />
-        </div>
-        <div class="col-sm-3 mt-1">
-            <div class="form-group">
-                <label class="w-100">Stock</label>
-                <div class="input-group">
-                    <div class="input-group-prepend" style="cursor: pointer" onclick="">
-                        <span class="input-group-text">
-                            <i class="fa fa-search"></i>
-                        </span>
-                    </div>
-                    <input class="form-control modales" readonly placeholder="<- Detalle" />
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3 mt-1">
-            <label>Fecha Requerim.</label>
-            <input id="fecha_req" class="form-control fecha" value="@ViewBag.Fecha" />
-        </div>
-        <div class="col-sm-3 mt-1">
-            <label>Centro de Costo</label>
-            <div class="input-group">
-                <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_centro').modal('show')">
-                    <span class="input-group-text">
-                        <i class="fa fa-search"></i>
-                    </span>
-                </div>
-                <input class="form-control" onkeypress="solo_enteros(event)" onblur="validar_id(2)" id="centro_costo" />
-            </div>
-        </div>
-        <div class="col-sm-3 mt-1">
-            <label>Nro. Maquina</label>
-            <input id="nro_maquina" class="form-control" />
-        </div>
-        <div class="col-sm-3 mt-1">
-            <label>Ord. Fab.</label>
-            <input id="orden_fabricacion" class="form-control" />
-        </div>
-        <div class="col-sm-7 mt-1">
-            <label>Glosa Art&iacute;culo</label>
-            <input id="glosa_articulo" class="form-control" />
-        </div>
-        <div class="col-sm-2 mt-1">
-            <label class="w-100">&nbsp;</label>
-            <label class="btn btn-primary">
-                <i class="fa fa-plus"></i>
-                Agregar Art&iacute;culo
-            </label>
-        </div>
-    </div>
+<div class="col-sm-2">
+    <label class="btn btn-primary" onclick="$('#m_articulos').modal('show')">
+        <i class="fa fa-plus"></i>
+        Agregar Art&iacute;culo
+    </label>
 </div>
+
 <div class="col-sm-12 mt-1 table-responsive">
     <table class="table table-striped">
         <thead>
@@ -228,16 +194,26 @@
                 <th>Unidad</th>
                 <th>Cantidad</th>
                 <th>Fecha Req.</th>
+                <th>Centro Costo</th>
+                <th>No. Maquina</th>
+                <th>Ord. Fab.</th>
+                <th>Glosa</th>
+                <th style="width: 5px">Edit.</th>
+                <th style="width: 5px">Del.</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="tabla_articulo"></tbody>
     </table>
 </div>
 
 <script type="text/javascript">
-    var datos_solicitantes = JSON.parse('@Html.Raw(solicitantes)').value;
-    var datos_areas = JSON.parse('@Html.Raw(areas)').value;
-
+    var global = 0;
+    var datos_solicitantes  = JSON.parse('@Html.Raw(solicitantes)').value;
+    var datos_areas         = JSON.parse('@Html.Raw(areas)').value;
+    var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
+    var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
+    var datos_orden = JSON.parse('@Html.Raw(orden)').value;
+    
     $(function () {
         $(".fecha").datepicker({
             language: 'es',
@@ -249,96 +225,201 @@
         });
 
         $(".fecha").inputmask('99/99/9999', { numericInput: true });
-        llenar_grid_solicitantes(datos_solicitantes);
-        llenar_grid_areas(datos_areas);        
+
+        CODSOLIC = $("#CODSOLIC")[0];
+        CODSOLIC.length = 0;
+        for (var i = 0; i < datos_solicitantes.length; i++) {
+            CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante,datos_solicitantes[i].codigo,"","");
+        }
+
+        AREA = $("#AREA")[0];
+        AREA.length = 0;
+        for (i = 0; i < datos_areas.length; i++) {
+            AREA[i] = new Option(datos_areas[i].area,datos_areas[i].codigo,"","");
+        }
+
+        CENTRO = $("#centro_costo")[0];
+        CENTRO.length = 0;
+        for (i = 0; i < datos_centro.length; i++) {
+            CENTRO[i] = new Option(datos_centro[i].centrO_COSTO,datos_centro[i].codigo,"","");
+        }
+
+        ORDEN = $("#orden_fabricacion")[0];
+        ORDEN.length = 0;
+        ORDEN[0] = new Option("Seleccione","","","");
+        for (i = 1; i <= datos_orden.length; i++) {
+            ORDEN[i] = new Option(datos_orden[i-1].orden_fabricacion,datos_orden[i-1].codigo,"","");
+        }
+
+        llenar_grid_articulo(datos_articulo);
     });
 
-    function llenar_grid_solicitantes(datos) {
-        $("#gridSolicitantes").DataTable({
+    function llenar_grid_articulo(datos) {
+        $("#gridArticulos").DataTable({
             destroy: true,
             bInfo: false,
             data: datos,
             columns: [
                 { data: "codigo" },
-                { data: "solicitante" },
+                { data: "descripcion" },
+                { data: "unidad" },
+                { data: "coD_FAMILIA" },
+                { data: "stock" },
                 {
                     render: function (data, type, row)
                     {
-                        return '<a class="btn btn-info" title="Seleccionar" href="#" onclick="cargar_id(0,\''+row.codigo+'\')"><i class="fa fa-check"></i></a>';
+                        return "<a class='btn btn-info' onclick='cargar_id("+JSON.stringify(row)+")' title='Seleccionar' href='#'><i class='fa fa-check'></i></a>";
                     }
                 },
             ]
         });
     }
 
-    function llenar_grid_areas(datos) {
-        $("#gridAreas").DataTable({
-            destroy: true,
-            bInfo: false,
-            data: datos,
-            columns: [
-                { data: "codigo" },
-                { data: "area" },
-                {
-                    render: function (data, type, row)
-                    {
-                        return '<a class="btn btn-info" title="Seleccionar" href="#" onclick="cargar_id(1,\''+row.codigo+'\')"><i class="fa fa-check"></i></a>';
-                    }
-                },
-            ]
-        });
+    function cargar_id(row) {
+        $("#m_codigo").val(row.codigo);
+        $("#m_descripcion").val(row.descripcion);
+        $("#m_unidad").val(row.unidad);
+        $("#m_stock").val(row.stock);
+        $('#m_garticulo').modal('hide');
     }
 
-    function cargar_id(opt, codigo) {
-        switch (opt) {
-            case 0:
-                $("#CODSOLIC").val(codigo);
-                $('#m_solicitante').modal('hide')
-            break;
-            case 1:
-                $("#AREA").val(codigo);
-                $('#m_area').modal('hide');
-            break;
-        }
-    }
-
-    function validar_id(opt) {
+    function validar_id() {
         var bandera = true;
-        switch (opt) {
-            case 0:
-                var sol = $("#CODSOLIC").val().trim();
-                if (sol != "") {
-                    for (var i = 0; i < datos_solicitantes.length; i++) {
-                        if (datos_solicitantes[i].codigo == sol) {
-                            bandera = false;
-                            break;
-                        }
-                    }
-                
-                    if (bandera) {
-                        $("#CODSOLIC").val("");
-                        MostrarMensaje("Rojo", "Error en el Código del Solicitante");
-                        $("#CODSOLIC").focus();
-                    }
+        var articulo = $("#m_codigo").val().trim();
+        if (articulo != "") {
+            for (var i = 0; i < datos_articulo.length; i++) {
+                if (datos_articulo[i].codigo == articulo) {
+                    bandera = false;
+                    break;
                 }
-            break;
-            case 1:
-                var area = $("#AREA").val().trim();
-                    if (area != "") {
-                    for (var i = 0; i < datos_areas.length; i++) {
-                        if (datos_areas[i].codigo == area) {
-                            bandera = false;
-                            break;
-                        }
-                    }
+            }
 
-                    if (bandera) {
-                        $("#AREA").val("");
-                        MostrarMensaje("Rojo", "Error en el Código del Área");
-                        $("#AREA").focus();
-                    }
-                }
-            break;
+            if (bandera) {
+                $("#m_codigo").val("");
+                $("#m_unidad").val("");
+                $("#m_stock").val("");
+                $("#m_descripcion").val("");
+                MostrarMensaje("Rojo", "Error en el Código del Artículo");
+                $("#m_codigo").focus();
+            } else {
+                $("#m_codigo").val(datos_articulo[i].codigo);
+                $("#m_unidad").val(datos_articulo[i].unidad);
+                $("#m_stock").val(datos_articulo[i].stock);
+                $("#m_descripcion").val(datos_articulo[i].descripcion);
+            }
         }
+    }
+
+    function agregar_articulo() {
+        var codigo = $("#m_codigo").val();
+        var glosa = $("#glosa_articulo").val();
+        var unidad = $("#m_unidad").val();
+        var stock = $("#m_stock").val();
+        var descripcion = $("#m_descripcion").val();
+        var cantidad = $("#m_cantidad").val();
+        var centro_costo = $("#centro_costo").val();
+        var nro_maquina = $("#nro_maquina").val();
+        var orden_fabricacion = $("#orden_fabricacion").val();
+        var fecha_req = $("#fecha_req").val();
+        var tabla = $("#tabla_articulo")[0];
+
+        if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
+            tr = document.createElement("tr");
+            tr.id = "r_" + global;
+            td0 = document.createElement("td");
+            node0 = document.createTextNode(codigo);
+            td0.appendChild(node0);
+            tr.appendChild(td0);
+
+            td1 = document.createElement("td");
+            node1 = document.createTextNode(descripcion);
+            td1.appendChild(node1);
+            tr.appendChild(td1);
+
+            td2 = document.createElement("td");
+            node2 = document.createTextNode(unidad);
+            td2.appendChild(node2);
+            tr.appendChild(td2);
+
+            td3 = document.createElement("td");
+            node3 = document.createTextNode(cantidad);
+            td3.appendChild(node3);
+            tr.appendChild(td3);
+
+            td4 = document.createElement("td");
+            node4 = document.createTextNode(fecha_req);
+            td4.appendChild(node4);
+            tr.appendChild(td4);
+
+            td5 = document.createElement("td");
+            node5 = document.createTextNode(centro_costo);
+            td5.appendChild(node5);
+            tr.appendChild(td5);
+
+            td6 = document.createElement("td");
+            node6 = document.createTextNode(nro_maquina);
+            td6.appendChild(node6);
+            tr.appendChild(td6);
+
+            td7 = document.createElement("td");
+            node7 = document.createTextNode(orden_fabricacion);
+            td7.appendChild(node7);
+            tr.appendChild(td7);
+
+            td8 = document.createElement("td");
+            node8 = document.createTextNode(glosa);
+            td8.appendChild(node8);
+            tr.appendChild(td8);
+
+            td9 = document.createElement("td");
+            node9 = document.createTextNode(nro_maquina);
+            td9.appendChild(node9);
+            tr.appendChild(td9);
+
+            td10 = document.createElement("td");
+            a0 = document.createElement("a");
+            i0 = document.createElement("i");
+            i0.className = "fa fa-edit";
+            a0.className = "btn btn-info";
+            a0.href = "#";
+            eval("a0.onclick = function(){editar_articulo("+global+");}");
+            a0.appendChild(i0);
+            td10.appendChild(a0);
+            tr.appendChild(td10);
+
+            td11 = document.createElement("td");
+            a1 = document.createElement("a");
+            i1 = document.createElement("i");
+            i1.className = "fa fa-times";
+            a1.className = "btn btn-danger";
+            a1.href = "#";
+            eval("a1.onclick = function(){eliminar_articulo("+global+");}");
+            a1.appendChild(i1);
+            td11.appendChild(a1);
+            tr.appendChild(td11);
+
+            tabla.appendChild(tr);
+            global++;
+        } else {
+            MostrarMensaje("Rojo", "Faltan datos obligatorios");
+        }
+    }
+
+    function eliminar_articulo(linea) {
+        swal({
+            title: "¿Estás seguro?",
+            text: "Confirmar anulado de la línea: " + linea,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                
+            }
+        });
     }
 </script>

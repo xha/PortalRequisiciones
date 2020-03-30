@@ -11,13 +11,14 @@ namespace Inicio.Controllers
 {
     public class ComprasController : Controller
     {
-        //private readonly BDWENCO Wenco;
+        private readonly BDWENCO Wenco;
         private readonly BDCOMUN Comun;
         public REQUISC_PORTALModel Modelo = new REQUISC_PORTALModel();
 
-        public ComprasController(BDCOMUN context)
+        public ComprasController(BDCOMUN context, BDWENCO context2)
         {
             Comun = context;
+            Wenco = context2;
         }
 
         /********************************************************************************************************************************************/
@@ -26,21 +27,55 @@ namespace Inicio.Controllers
         {
             List<SP_PORTAL_LISTADO_AREA> area = Comun?.AREA.FromSqlRaw("SP_PORTAL_LISTADO_AREA '003'").ToList();
 
-            return Json(area);
+            var Resultado = (from N in area
+                             orderby N.AREA
+                             select N);
+
+            return Json(Resultado);
         }
 
         public JsonResult Articulos()
         {
             List<SP_PORTAL_LISTADO_ARTICULO_RQ> articulo = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '003BDCOMUN'").ToList();
 
-            return Json(articulo);
+            var Resultado = (from N in articulo
+                             orderby N.ARTICULO
+                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.UNIDAD });
+
+            return Json(Resultado);
         }
 
         public JsonResult Solicitantes()
         {
-            List<SP_PORTAL_LISTADO_SOLICITANTE> articulo = Comun?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '003'").ToList();
+            List<SP_PORTAL_LISTADO_SOLICITANTE> solicitante = Comun?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '003'").ToList();
 
-            return Json(articulo);
+            var Resultado = (from N in solicitante
+                             orderby N.SOLICITANTE
+                             select N);
+
+            return Json(Resultado);
+        }
+
+        public JsonResult CentroCosto()
+        {
+            List<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> centro_costo = Wenco?.CENTRO_COSTO.FromSqlRaw("SP_PORTAL_LISTADO_CENTROCOSTO_COMP '003'").ToList();
+
+            var Resultado = (from N in centro_costo
+                             orderby N.CENTRO_COSTO
+                             select N);
+
+            return Json(Resultado);
+        }
+
+        public JsonResult OrdenFabricacion()
+        {
+            List<SP_PORTAL_LISTADO_ORDEN_FABRICACION> orden = Comun?.ORDEN_FABRICACION.FromSqlRaw("SP_PORTAL_LISTADO_ORDEN_FABRICACION '003'").ToList();
+
+            var Resultado = (from N in orden
+                             orderby N.ORDEN_FABRICACION
+                             select N);
+
+            return Json(Resultado);
         }
 
         [HttpPost]
@@ -48,7 +83,11 @@ namespace Inicio.Controllers
         {
             List<REQUISC_PORTALModel> compras = Comun.REQUISC_PORTAL.ToList();
 
-            return Json(compras);
+            var Resultado = (from N in compras
+                             orderby N.FECREQUI
+                             select N);
+
+            return Json(Resultado);
         }
         /********************************************************************************************************************************************/
 
@@ -67,16 +106,21 @@ namespace Inicio.Controllers
             JsonResult areas = Areas();
             JsonResult articulos = Articulos();
             JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
             ViewBag.Solicitantes = solicitantes;
             ViewBag.Areas = areas;
             ViewBag.Articulos = articulos;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
 
             return View();
         }
 
         // GET: Test/Edit/5
         public async Task<IActionResult> Edit(string codigo)
-    {
+        {
+
             if (codigo == null)
             {
                 return NotFound();
@@ -87,6 +131,17 @@ namespace Inicio.Controllers
             {
                 return NotFound();
             }
+
+            JsonResult areas = Areas();
+            JsonResult articulos = Articulos();
+            JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Articulos = articulos;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
 
             return View(modelo);
         }
