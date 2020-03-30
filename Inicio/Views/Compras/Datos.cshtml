@@ -32,6 +32,7 @@
             </div>
             <div class="modal-body h500">
                 <div class="row">
+                    <input type="hidden" id="m_linea" />
                     <div class="col-sm-2">
                         <label>* C&oacute;digo</label>
                         <div class="input-group">
@@ -53,7 +54,7 @@
                     </div>
                     <div class="col-sm-2">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" />
+                        <input class="form-control" id="m_cantidad" onkeypress="solo_enteros(event)" />
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label class="w-100">Stock</label>
@@ -189,6 +190,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>No.</th>
                 <th>C&oacute;digo</th>
                 <th>Descripci&oacute;n</th>
                 <th>Unidad</th>
@@ -207,7 +209,7 @@
 </div>
 
 <script type="text/javascript">
-    var global = 0;
+    var global = 1;
     var datos_solicitantes  = JSON.parse('@Html.Raw(solicitantes)').value;
     var datos_areas         = JSON.parse('@Html.Raw(areas)').value;
     var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
@@ -311,6 +313,7 @@
     }
 
     function agregar_articulo() {
+        var linea = $("#m_linea").val();
         var codigo = $("#m_codigo").val();
         var glosa = $("#glosa_articulo").val();
         var unidad = $("#m_unidad").val();
@@ -324,85 +327,132 @@
         var tabla = $("#tabla_articulo")[0];
 
         if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
-            tr = document.createElement("tr");
-            tr.id = "r_" + global;
-            td0 = document.createElement("td");
-            node0 = document.createTextNode(codigo);
-            td0.appendChild(node0);
-            tr.appendChild(td0);
+            if (linea == "") {
+                tr = document.createElement("tr");
+                tr.id = "r_" + global;
+                td0 = document.createElement("td");
+                node0 = document.createTextNode(global);
+                td0.appendChild(node0);
+                tr.appendChild(td0);
 
-            td1 = document.createElement("td");
-            node1 = document.createTextNode(descripcion);
-            td1.appendChild(node1);
-            tr.appendChild(td1);
+                td9 = document.createElement("td");
+                node9 = document.createTextNode(codigo);
+                td9.appendChild(node9);
+                tr.appendChild(td9);
 
-            td2 = document.createElement("td");
-            node2 = document.createTextNode(unidad);
-            td2.appendChild(node2);
-            tr.appendChild(td2);
+                td1 = document.createElement("td");
+                node1 = document.createTextNode(descripcion);
+                td1.appendChild(node1);
+                tr.appendChild(td1);
 
-            td3 = document.createElement("td");
-            node3 = document.createTextNode(cantidad);
-            td3.appendChild(node3);
-            tr.appendChild(td3);
+                td2 = document.createElement("td");
+                node2 = document.createTextNode(unidad);
+                td2.appendChild(node2);
+                tr.appendChild(td2);
 
-            td4 = document.createElement("td");
-            node4 = document.createTextNode(fecha_req);
-            td4.appendChild(node4);
-            tr.appendChild(td4);
+                td3 = document.createElement("td");
+                node3 = document.createTextNode(cantidad);
+                td3.appendChild(node3);
+                tr.appendChild(td3);
 
-            td5 = document.createElement("td");
-            node5 = document.createTextNode(centro_costo);
-            td5.appendChild(node5);
-            tr.appendChild(td5);
+                td4 = document.createElement("td");
+                node4 = document.createTextNode(fecha_req);
+                td4.appendChild(node4);
+                tr.appendChild(td4);
 
-            td6 = document.createElement("td");
-            node6 = document.createTextNode(nro_maquina);
-            td6.appendChild(node6);
-            tr.appendChild(td6);
+                td5 = document.createElement("td");
+                node5 = document.createTextNode(centro_costo);
+                td5.appendChild(node5);
+                tr.appendChild(td5);
 
-            td7 = document.createElement("td");
-            node7 = document.createTextNode(orden_fabricacion);
-            td7.appendChild(node7);
-            tr.appendChild(td7);
+                td6 = document.createElement("td");
+                node6 = document.createTextNode(nro_maquina);
+                td6.appendChild(node6);
+                tr.appendChild(td6);
 
-            td8 = document.createElement("td");
-            node8 = document.createTextNode(glosa);
-            td8.appendChild(node8);
-            tr.appendChild(td8);
+                td7 = document.createElement("td");
+                node7 = document.createTextNode(orden_fabricacion);
+                td7.appendChild(node7);
+                tr.appendChild(td7);
 
-            td9 = document.createElement("td");
-            node9 = document.createTextNode(nro_maquina);
-            td9.appendChild(node9);
-            tr.appendChild(td9);
+                td8 = document.createElement("td");
+                node8 = document.createTextNode(glosa);
+                td8.appendChild(node8);
+                tr.appendChild(td8);
 
-            td10 = document.createElement("td");
-            a0 = document.createElement("a");
-            i0 = document.createElement("i");
-            i0.className = "fa fa-edit";
-            a0.className = "btn btn-info";
-            a0.href = "#";
-            eval("a0.onclick = function(){editar_articulo("+global+");}");
-            a0.appendChild(i0);
-            td10.appendChild(a0);
-            tr.appendChild(td10);
+                td10 = document.createElement("td");
+                a0 = document.createElement("a");
+                i0 = document.createElement("i");
+                i0.className = "fa fa-edit";
+                a0.className = "btn btn-info";
+                a0.href = "#";
+                eval("a0.onclick = function(){editar_articulo(" + global + ");}");
+                a0.appendChild(i0);
+                td10.appendChild(a0);
+                tr.appendChild(td10);
 
-            td11 = document.createElement("td");
-            a1 = document.createElement("a");
-            i1 = document.createElement("i");
-            i1.className = "fa fa-times";
-            a1.className = "btn btn-danger";
-            a1.href = "#";
-            eval("a1.onclick = function(){eliminar_articulo("+global+");}");
-            a1.appendChild(i1);
-            td11.appendChild(a1);
-            tr.appendChild(td11);
+                td11 = document.createElement("td");
+                a1 = document.createElement("a");
+                i1 = document.createElement("i");
+                i1.className = "fa fa-times";
+                a1.className = "btn btn-danger";
+                a1.href = "#";
+                eval("a1.onclick = function(){eliminar_articulo(" + global + ");}");
+                a1.appendChild(i1);
+                td11.appendChild(a1);
+                tr.appendChild(td11);
 
-            tabla.appendChild(tr);
-            global++;
+                tabla.appendChild(tr);
+                global++;
+            } else {
+                $("#r_" + linea).each(function (index) {
+                    var td = $(this).children("td");
+                    td.eq(1).text($("#m_codigo").val());
+                    td.eq(2).text($("#m_descripcion").val());
+                    td.eq(3).text($("#m_unidad").val());
+                    td.eq(4).text($("#m_cantidad").val());
+                    td.eq(5).text($("#fecha_req").val());
+                    td.eq(6).text($("#centro_costo").val());
+                    td.eq(7).text($("#nro_maquina").val());
+                    td.eq(8).text($("#orden_fabricacion").val());
+                    td.eq(9).text($("#glosa_articulo").val());            
+                });
+            }
+            limpiar_campos();
         } else {
             MostrarMensaje("Rojo", "Faltan datos obligatorios");
         }
+    }
+
+    function limpiar_campos() {
+        $("#m_linea").val("");
+        $("#m_codigo").val("");
+        $("#glosa_articulo").val("");
+        $("#m_unidad").val("");
+        $("#m_stock").val("");
+        $("#m_descripcion").val("");
+        $("#m_cantidad").val("");
+        $("#centro_costo").val("");
+        $("#nro_maquina").val("");
+        $("#orden_fabricacion").val("");
+        $("#fecha_req").val("");
+    }
+
+    function editar_articulo(linea) {
+        $("#r_" + linea).each(function (index) {
+            var td = $(this).children("td");
+            $("#m_linea").val(td.eq(0).text());
+            $("#m_codigo").val(td.eq(1).text());
+            $("#m_descripcion").val(td.eq(2).text());
+            $("#m_unidad").val(td.eq(3).text());
+            $("#m_cantidad").val(td.eq(4).text());
+            $("#fecha_req").val(td.eq(5).text());
+            $("#centro_costo").val(td.eq(6).text());
+            $("#nro_maquina").val(td.eq(7).text());
+            $("#orden_fabricacion").val(td.eq(8).text());
+            $("#glosa_articulo").val(td.eq(9).text());            
+            $('#m_articulos').modal('show')
+        });
     }
 
     function eliminar_articulo(linea) {
@@ -418,7 +468,7 @@
         },
         function (isConfirm) {
             if (isConfirm) {
-                
+                $("#r_"+linea).remove();
             }
         });
     }
