@@ -45,6 +45,7 @@ namespace Datos.Models
         }
 
         public DbSet<REQUISC_PORTALModel> REQUISC_PORTAL { get; set; }
+        public DbSet<REQUISD_PORTAL> REQUISD_PORTAL { get; set; }
         public DbSet<SP_PORTAL_LISTADO_AREA> AREA { get; set; }
         public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ> ARTICULO { get; set; }
         public DbSet<SP_PORTAL_LISTADO_SOLICITANTE> SOLICITANTE { get; set; }

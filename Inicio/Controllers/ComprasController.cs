@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Datos.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Inicio.Controllers
 {
@@ -14,6 +15,7 @@ namespace Inicio.Controllers
         private readonly BDWENCO Wenco;
         private readonly BDCOMUN Comun;
         public REQUISC_PORTALModel Modelo = new REQUISC_PORTALModel();
+        public REQUISD_PORTAL ModeloDetalle = new REQUISD_PORTAL();
 
         public ComprasController(BDCOMUN context, BDWENCO context2)
         {
@@ -119,6 +121,86 @@ namespace Inicio.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTALModel modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string hora = DateTime.Now.ToString("hh:mm:ss");
+                    modelo.NROREQUI = modelo.NROREQUI.Trim();
+                    //modelo.FECREQUI = Convert.ToDateTime(modelo.FECREQUI + " " + hora);
+                    JArray ArrayDetalle = JArray.Parse(detalle);
+                    int i = 0;
+                    foreach (JObject item in ArrayDetalle)
+                    {
+                        i++;
+                        ModeloDetalle.CODPRO = item.GetValue("codigo").ToString();
+                        ModeloDetalle.DESCPRO = item.GetValue("descripcion").ToString();
+                        ModeloDetalle.UNIPRO = item.GetValue("unidad").ToString();
+                        ModeloDetalle.CANTID = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.FECREQUE = Convert.ToDateTime(item.GetValue("fecha_req") + " " + hora);
+                        ModeloDetalle.CENCOST = item.GetValue("centro_costo").ToString();
+                        ModeloDetalle.NROREQUI = modelo.NROREQUI;
+                        ModeloDetalle.ORDFAB_REQUI = item.GetValue("orden_fabricacion").ToString();
+                        ModeloDetalle.GLOSA = item.GetValue("glosa_articulo").ToString();
+                        ModeloDetalle.REQITEM = i;
+                        ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
+                        ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
+                        ModeloDetalle.LISTO_CARGAR = true;
+                        ModeloDetalle.ESTADO = false;
+
+                        Comun.Add(ModeloDetalle);
+                        //await Comun.SaveChangesAsync();
+                        Comun.SaveChanges();
+                    }
+
+                    Comun.Add(modelo);
+                    Comun.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    ViewBag.Error = "Error al grabar";
+                    return View();
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.ACompras = "activo";
+            JsonResult areas = Areas();
+            JsonResult articulos = Articulos();
+            JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Articulos = articulos;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
+
+            return View();
+        }
+
+        /*// GET: Test/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var rEQUISC_PORTALModel = await _context.REQUISC_PORTAL.FindAsync(id);
+            if (rEQUISC_PORTALModel == null)
+            {
+                return NotFound();
+            }
+            return View(rEQUISC_PORTALModel);
+        }*/
 
         // GET: Test/Edit/5
         public async Task<IActionResult> Edit(string codigo)

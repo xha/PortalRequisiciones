@@ -12,9 +12,10 @@
         </h5>
     </div>
     <div class="card-body p-2">
+        <input type="hidden" value="@ViewBag.Error" id="error" />
         <form asp-action="Create" asp-controller="Compras" method="post">
             <div class="row">
-                <input asp-for="TipoDocumento" class="form-control" value="RQ" type="hidden" />
+                <input asp-for="TipoDocumento" class="form-control" value="" type="hidden" />
                 <input asp-for="TIPOREQUI" class="form-control" value="RQ" type="hidden" />
                 <input type="hidden" name="detalle" id="detalle" />
                 @Html.Partial(nameof(Datos))
@@ -43,11 +44,20 @@
         Regresar
     </a>
 </div>
-<script>
-    $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
+<script>//:not(:submit)
+    $(document).on("keydown", ":input:not(textarea)", function(event) {
         if (event.key == "Enter") {
             event.preventDefault();
             return false;
+        }
+
+        if ($("#error").val() != "") {
+            swal({
+                title: "Error",
+                text: $("#error").val(),
+                type: "danger",
+                confirmButtonText: "Aceptar",
+            })
         }
     });
 
@@ -73,6 +83,7 @@
         });
 
         if (($("#detalle").val() != "") && ($("#NROREQUI").val() != "")) {
+            $("#TipoDocumento").val("RQ");
             document.forms[0].submit();
         } else {
             MostrarMensaje("Rojo", "Los campos con * son obligatorios");
