@@ -168,4 +168,10 @@ X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Compras\Da
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.Design.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.Design.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Servicios\Create.cshtml.g.cs
+X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Servicios\Datos.cshtml.g.cs
+X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Servicios\Edit.cshtml.g.cs
+X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Razor\Views\Servicios\Index.cshtml.g.cs
+X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\System.Security.Cryptography.Pkcs.dll
+X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Security.Cryptography.Pkcs.dll
 X:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.MvcApplicationPartsAssemblyInfo.cache

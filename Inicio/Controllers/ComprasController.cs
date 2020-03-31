@@ -84,6 +84,7 @@ namespace Inicio.Controllers
             List<REQUISC_PORTALModel> compras = Comun.REQUISC_PORTAL.ToList();
 
             var Resultado = (from N in compras
+                             where N.TIPOREQUI.Contains("RQ".ToString())
                              orderby N.FECREQUI
                              select N);
 
@@ -96,6 +97,7 @@ namespace Inicio.Controllers
         {
             JsonResult compras = ListadoCompras();
             ViewBag.ListadoCompras = compras;
+            ViewBag.ACompras = "activo";
 
             return View();
         }
@@ -103,6 +105,7 @@ namespace Inicio.Controllers
         // GET: Servicios/Create
         public ActionResult Create()
         {
+            ViewBag.ACompras = "activo";
             JsonResult areas = Areas();
             JsonResult articulos = Articulos();
             JsonResult solicitantes = Solicitantes();
@@ -120,7 +123,7 @@ namespace Inicio.Controllers
         // GET: Test/Edit/5
         public async Task<IActionResult> Edit(string codigo)
         {
-
+            ViewBag.ACompras = "activo";
             if (codigo == null)
             {
                 return NotFound();

@@ -14,14 +14,14 @@
 
     var solicitantes = Json.Serialize(ViewBag.Solicitantes);
     var areas = Json.Serialize(ViewBag.Areas);
-    var articulos = Json.Serialize(ViewBag.Articulos);
+    var servicios = Json.Serialize(ViewBag.servicios);
     var centro = Json.Serialize(ViewBag.CentroCosto);
     var orden = Json.Serialize(ViewBag.OrdenFabricacion);
 
 }
 
-<!-- INICIO MODAL ARTICULOS -->
-<div class="modal fade" id="m_articulos" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<!-- INICIO MODAL servicioS -->
+<div class="modal fade" id="m_servicios" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-pe" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -36,7 +36,7 @@
                     <div class="col-sm-2">
                         <label>* C&oacute;digo</label>
                         <div class="input-group">
-                            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_garticulo').modal('show')">
+                            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_gservicio').modal('show')">
                                 <span class="input-group-text">
                                     <i class="fa fa-search"></i>
                                 </span>
@@ -49,20 +49,8 @@
                         <input class="form-control" id="m_descripcion" />
                     </div>
                     <div class="col-sm-2">
-                        <label>* Unidad</label>
-                        <input class="form-control" id="m_unidad" readonly />
-                    </div>
-                    <div class="col-sm-2">
                         <label>* Cantidad</label>
                         <input class="form-control" id="m_cantidad" onkeypress="solo_enteros(event)" />
-                    </div>
-                    <div class="col-sm-3 mt-1">
-                        <label class="w-100">Stock</label>
-                        <input id="m_stock" readonly class="form-control" />
-                    </div>
-                    <div class="col-sm-3 mt-1">
-                        <label>* Fecha Requerim.</label>
-                        <input id="fecha_req" class="form-control fecha" value="@ViewBag.Fecha" />
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label>* Centro de Costo</label>
@@ -78,16 +66,16 @@
                     </div>
                     <div class="col-sm-9 mt-1">
                         <label>Glosa Art&iacute;culo</label>
-                        <input id="glosa_articulo" class="form-control" />
+                        <input id="glosa_servicio" class="form-control" />
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-success" onclick="agregar_articulo()">
+                <a href="#" class="btn btn-success" onclick="agregar_servicio()">
                     <i class='fa fa-check'></i>
                     Aceptar
                 </a>
-                <a href="#" class="btn btn-danger" onclick="$('#m_articulos').modal('hide')">
+                <a href="#" class="btn btn-danger" onclick="$('#m_servicios').modal('hide')">
                     <i class='fa fa-times'></i>
                     Salir
                 </a>
@@ -95,9 +83,9 @@
         </div>
     </div>
 </div>
-<!-- FIN MODAL ARTICULOS -->
-<!-- INICIO MODAL GRID ARTICULOS -->
-<div class="modal fade" id="m_garticulo" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<!-- FIN MODAL servicioS -->
+<!-- INICIO MODAL GRID servicioS -->
+<div class="modal fade" id="m_gservicio" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-xp" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -109,14 +97,11 @@
             <div class="modal-body h500">
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulos" style="width: 100%">
+                        <table class="table table-striped pre-scrollable2 dataTables" id="gridservicios" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
                                     <th>C&oacute;digo</th>
                                     <th>Descripci&oacute;n</th>
-                                    <th>Unidad</th>
-                                    <th>Cod. Familia</th>
-                                    <th>Stock</th>
                                     <th style="width: 5px"></th>
                                 </tr>
                             </thead>
@@ -126,7 +111,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-danger" onclick="$('#m_garticulo').modal('hide')">
+                <a href="#" class="btn btn-danger" onclick="$('#m_gservicio').modal('hide')">
                     <i class='fa fa-times'></i>
                     Salir
                 </a>
@@ -134,7 +119,7 @@
         </div>
     </div>
 </div>
-<!-- FIN MODAL GRID ARTICULOS -->
+<!-- FIN MODAL GRID servicioS -->
 
 <div class="col-sm-3 col-lg-2">
     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
@@ -174,15 +159,15 @@
 </div>
 <div class="col-sm-12 mt-1 col-lg-4">
     <div class="form-group">
-        <label asp-for="GLOSA" class="control-label"></label>
+        <label class="control-label">Observaci&oacute;n</label>
         <input asp-for="GLOSA" class="form-control" />
         <span asp-validation-for="GLOSA" class="text-danger w-100"></span>
     </div>
 </div>
 <div class="col-sm-2">
-    <label class="btn btn-primary" onclick="$('#m_articulos').modal('show')">
+    <label class="btn btn-primary" onclick="$('#m_servicios').modal('show')">
         <i class="fa fa-plus"></i>
-        Agregar Art&iacute;culo
+        Agregar Servicio
     </label>
 </div>
 
@@ -193,18 +178,15 @@
                 <th>No.</th>
                 <th>C&oacute;digo</th>
                 <th>Descripci&oacute;n</th>
-                <th>Unidad</th>
                 <th>Cantidad</th>
-                <th>Fecha Req.</th>
                 <th>Centro Costo</th>
-                <th>No. Maquina</th>
                 <th>Ord. Fab.</th>
                 <th>Glosa</th>
                 <th style="width: 5px">Edit.</th>
                 <th style="width: 5px">Del.</th>
             </tr>
         </thead>
-        <tbody id="tabla_articulo"></tbody>
+        <tbody id="tabla_servicio"></tbody>
     </table>
 </div>
 
@@ -212,7 +194,7 @@
     var global = 1;
     var datos_solicitantes  = JSON.parse('@Html.Raw(solicitantes)').value;
     var datos_areas         = JSON.parse('@Html.Raw(areas)').value;
-    var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
+    var datos_servicio      = JSON.parse('@Html.Raw(servicios)').value;
     var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
     var datos_orden = JSON.parse('@Html.Raw(orden)').value;
     
@@ -253,20 +235,17 @@
             ORDEN[i] = new Option(datos_orden[i-1].orden_fabricacion,datos_orden[i-1].codigo,"","");
         }
 
-        llenar_grid_articulo(datos_articulo);
+        llenar_grid_servicio(datos_servicio);
     });
 
-    function llenar_grid_articulo(datos) {
-        $("#gridArticulos").DataTable({
+    function llenar_grid_servicio(datos) {
+        $("#gridservicios").DataTable({
             destroy: true,
             bInfo: false,
             data: datos,
             columns: [
                 { data: "codigo" },
                 { data: "descripcion" },
-                { data: "unidad" },
-                { data: "coD_FAMILIA" },
-                { data: "stock" },
                 {
                     render: function (data, type, row)
                     {
@@ -282,15 +261,15 @@
         $("#m_descripcion").val(row.descripcion);
         $("#m_unidad").val(row.unidad);
         $("#m_stock").val(row.stock);
-        $('#m_garticulo').modal('hide');
+        $('#m_gservicio').modal('hide');
     }
 
     function validar_id() {
         var bandera = true;
-        var articulo = $("#m_codigo").val().trim();
-        if (articulo != "") {
-            for (var i = 0; i < datos_articulo.length; i++) {
-                if (datos_articulo[i].codigo == articulo) {
+        var servicio = $("#m_codigo").val().trim();
+        if (servicio != "") {
+            for (var i = 0; i < datos_servicio.length; i++) {
+                if (datos_servicio[i].codigo == servicio) {
                     bandera = false;
                     break;
                 }
@@ -304,18 +283,18 @@
                 MostrarMensaje("Rojo", "Error en el Código del Artículo");
                 $("#m_codigo").focus();
             } else {
-                $("#m_codigo").val(datos_articulo[i].codigo);
-                $("#m_unidad").val(datos_articulo[i].unidad);
-                $("#m_stock").val(datos_articulo[i].stock);
-                $("#m_descripcion").val(datos_articulo[i].descripcion);
+                $("#m_codigo").val(datos_servicio[i].codigo);
+                $("#m_unidad").val(datos_servicio[i].unidad);
+                $("#m_stock").val(datos_servicio[i].stock);
+                $("#m_descripcion").val(datos_servicio[i].descripcion);
             }
         }
     }
 
-    function agregar_articulo() {
+    function agregar_servicio() {
         var linea = $("#m_linea").val();
         var codigo = $("#m_codigo").val();
-        var glosa = $("#glosa_articulo").val();
+        var glosa = $("#glosa_servicio").val();
         var unidad = $("#m_unidad").val();
         var stock = $("#m_stock").val();
         var descripcion = $("#m_descripcion").val();
@@ -324,7 +303,7 @@
         var nro_maquina = $("#nro_maquina").val();
         var orden_fabricacion = $("#orden_fabricacion").val();
         var fecha_req = $("#fecha_req").val();
-        var tabla = $("#tabla_articulo")[0];
+        var tabla = $("#tabla_servicio")[0];
 
         if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
             if (linea == "") {
@@ -386,7 +365,7 @@
                 i0.className = "fa fa-edit";
                 a0.className = "btn btn-info";
                 a0.href = "#";
-                eval("a0.onclick = function(){editar_articulo(" + global + ");}");
+                eval("a0.onclick = function(){editar_servicio(" + global + ");}");
                 a0.appendChild(i0);
                 td10.appendChild(a0);
                 tr.appendChild(td10);
@@ -397,7 +376,7 @@
                 i1.className = "fa fa-times";
                 a1.className = "btn btn-danger";
                 a1.href = "#";
-                eval("a1.onclick = function(){eliminar_articulo(" + global + ");}");
+                eval("a1.onclick = function(){eliminar_servicio(" + global + ");}");
                 a1.appendChild(i1);
                 td11.appendChild(a1);
                 tr.appendChild(td11);
@@ -415,7 +394,7 @@
                     td.eq(6).text($("#centro_costo").val());
                     td.eq(7).text($("#nro_maquina").val());
                     td.eq(8).text($("#orden_fabricacion").val());
-                    td.eq(9).text($("#glosa_articulo").val());            
+                    td.eq(9).text($("#glosa_servicio").val());            
                 });
             }
             limpiar_campos();
@@ -427,7 +406,7 @@
     function limpiar_campos() {
         $("#m_linea").val("");
         $("#m_codigo").val("");
-        $("#glosa_articulo").val("");
+        $("#glosa_servicio").val("");
         $("#m_unidad").val("");
         $("#m_stock").val("");
         $("#m_descripcion").val("");
@@ -438,7 +417,7 @@
         $("#fecha_req").val("");
     }
 
-    function editar_articulo(linea) {
+    function editar_servicio(linea) {
         $("#r_" + linea).each(function (index) {
             var td = $(this).children("td");
             $("#m_linea").val(td.eq(0).text());
@@ -450,12 +429,12 @@
             $("#centro_costo").val(td.eq(6).text());
             $("#nro_maquina").val(td.eq(7).text());
             $("#orden_fabricacion").val(td.eq(8).text());
-            $("#glosa_articulo").val(td.eq(9).text());            
-            $('#m_articulos').modal('show')
+            $("#glosa_servicio").val(td.eq(9).text());            
+            $('#m_servicios').modal('show')
         });
     }
 
-    function eliminar_articulo(linea) {
+    function eliminar_servicio(linea) {
         swal({
             title: "¿Estás seguro?",
             text: "Confirmar anulado de la línea: " + linea,

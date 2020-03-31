@@ -81,13 +81,13 @@
                 <div class="collapse navbar-collapse order-3 order-lg-2" id="navbarCollapse">
                     <ul class="nav nav-pills nav-sidebar ">
                         <li class="nav-item  ">
-                            <a href="@Url.Action("Index", "Compras")" class="nav-link activo ml-2" style="color:white;">
+                            <a href="@Url.Action("Index", "Compras")" class="nav-link @ViewBag.ACompras ml-2" style="color:white;">
                                 <i class="nav-icon fas fa-balance-scale"></i>
                                 <p class="text">Compras</p>
                             </a>
                         </li>
                         <li class="nav-item  ">
-                            <a href="@Url.Action("Index", "Servicios")" class="nav-link ml-2" style="color:white;">
+                            <a href="@Url.Action("Index", "Servicios")" class="nav-link @ViewBag.AServicios ml-2" style="color:white;">
                                 <i class="nav-icon fas fa-file-invoice-dollar"></i>
                                 <p class="text">Servicios</p>
                             </a>

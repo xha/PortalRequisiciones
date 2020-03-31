@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Datos.Models.REQUISC_PORTALModel>
 
 @{
-    ViewData["Title"] = "Requisiciones de Compras";
-    var datos_json = Json.Serialize(ViewBag.ListadoCompras);
+    ViewData["Title"] = "Requisiciones de Servicios";
+    var datos_json = Json.Serialize(ViewBag.ListadoServicios);
 }
 
 <div class="container-fluid">
     <div class="row mt-1">
         <div class="col-sm-12">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">@Html.ActionLink(ViewData["Title"].ToString(), "Index", "Compras")</li>
+                <li class="breadcrumb-item">@Html.ActionLink(ViewData["Title"].ToString(), "Index", "Servicios")</li>
             </ol>
         </div>
     </div>
@@ -18,15 +18,15 @@
             <div class="card card-danger card-outline">
                 <div class="card-header mb-1">
                     <h5 class="float-left">
-                        Listado de Requisiciones de Compras
+                        Listado de Requisiciones de Servicios
                     </h5>
-                    <a href="@Url.Action("Create", "Compras")" class="btn btn-primary float-right">
+                    <a href="@Url.Action("Create", "Servicios")" class="btn btn-primary float-right">
                         <i class="fa fa-plus"></i>
                         Nuevo
                     </a>
                 </div>
                 <div class="card-body p-2"> 
-                    <table id="GridComprasIndex" class="table table-hover table-striped pre-scrollable2 dataTables">
+                    <table id="GridServiciosIndex" class="table table-hover table-striped pre-scrollable2 dataTables">
                         <thead class="bg-info">
                             <tr>
                                 <th>
@@ -65,7 +65,7 @@
     $(function () {
         /*$.ajax({
             type: 'POST',
-            url: 'Url.Action("ListadoCompras", "Compras")',
+            url: 'Url.Action("ListadoServicios", "Servicios")',
             data: '',
             cache: false,
             success: function (result) {
@@ -79,7 +79,7 @@
     });
 
     function activar_datos(datos) {
-        $("#GridComprasIndex").DataTable({
+        $("#GridServiciosIndex").DataTable({
             destroy: true,
             bInfo: false,
             data: datos,
@@ -104,7 +104,7 @@
                 {
                     render: function (data, type, row)
                     {
-                        return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")'+row.nrorequi+'"><i class="fa fa-edit"></i></a>';
+                        return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Servicios/Edit?codigo=")'+row.nrorequi+'"><i class="fa fa-edit"></i></a>';
                     }
                 },
                 {
@@ -134,7 +134,7 @@
                 {
                     type: "POST",
                     dataType: "json",
-                    url: "Url.Content("~/Compras/Edit?codigo=")"+row.nrorequi,
+                    url: "Url.Content("~/Servicios/Edit?codigo=")"+row.nrorequi,
                     data: parametros,
                     cache: false,
                     success: function (Resultado) {
