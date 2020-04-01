@@ -14,7 +14,7 @@ namespace Datos.Models
 		public string UNIPRO { get; set; }
 		public decimal CANTID { get; set; }
 		public DateTime FECREQUE { get; set; }
-		public int REQITEM { get; set; }
+		public decimal REQITEM { get; set; }
 		public decimal SALDO { get; set; }
 		public string CENCOST { get; set; }
 		public string GLOSA { get; set; }

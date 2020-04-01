@@ -120,7 +120,7 @@
         swal({
             title: "¿Estás seguro?",
             text: "Confirmar Anulado del registro: " + nrorequi,
-            type: "warning",
+            type: "info",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
             cancelButtonClass: "btn-secondary",
@@ -129,29 +129,44 @@
         },
         function (isConfirm) {
             if (isConfirm) {
-                console.log(nrorequi);
-                /*$.ajax(
+                var parametros = "id=" + nrorequi;
+                $.ajax(
                 {
                     type: "POST",
                     dataType: "json",
-                    url: "Url.Content("~/Compras/Edit?codigo=")"+row.nrorequi,
+                    url: "@Url.Content("~/Compras/Delete")",
                     data: parametros,
                     cache: false,
-                    success: function (Resultado) {
-                        loading_hide();
-                        window.parent.MostrarMensaje(Resultado.color, Resultado.data);
-                        if (Resultado.respuesta) {
-                            $('#ProveedorIndexGrid').DataTable().ajax.reload();
+                    success: function (datos) {
+                        if (datos.resultado) {
+                            swal({
+                                title: "Hecho",
+                                text: "Documento Eliminado",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                            },
+                            function (isConfirm) {
+                                if (isConfirm) {
+                                    window.location = '@Url.Content("~/Compras/")';
+                                }
+                            });
+                        } else {
+                            swal({
+                                title: "Error",
+                                text: datos.error,
+                                type: "error",
+                                confirmButtonClass: "btn-danger",
+                            });
                         }
-
                     },
-                    error: function (xhr) { // if error occured
-                        loading_hide();
-                        console.log(xhr);
-                        window.parent.MostrarMensaje("Rojo", xhr.responseText);
-                        //$(placeholder).append(xhr.statusText + xhr.responseText);
+                    error: function (xhr) { 
+                        swal({
+                            title: "Error",
+                            text: xhr.responseText,
+                            confirmButtonClass: "btn-danger",
+                        });
                     },
-                });*/
+                });
             }
         });
     }

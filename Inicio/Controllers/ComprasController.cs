@@ -92,6 +92,18 @@ namespace Inicio.Controllers
 
             return Json(Resultado);
         }
+
+        [HttpPost]
+        public JsonResult ListadoDetalle(string codigo)
+        {
+            List<REQUISD_PORTAL> detalle = Comun.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo).ToList();
+
+            var Resultado = (from N in detalle
+                             orderby N.REQITEM
+                             select N);
+
+            return Json(Resultado);
+        }
         /********************************************************************************************************************************************/
 
         // GET: Compras
@@ -104,7 +116,7 @@ namespace Inicio.Controllers
             return View();
         }
 
-        // GET: Servicios/Create
+        // GET: Compras/Create
         public ActionResult Create()
         {
             ViewBag.ACompras = "activo";
@@ -186,22 +198,6 @@ namespace Inicio.Controllers
             return View();
         }
 
-        /*// GET: Test/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rEQUISC_PORTALModel = await _context.REQUISC_PORTAL.FindAsync(id);
-            if (rEQUISC_PORTALModel == null)
-            {
-                return NotFound();
-            }
-            return View(rEQUISC_PORTALModel);
-        }*/
-
         // GET: Test/Edit/5
         public async Task<IActionResult> Edit(string codigo)
         {
@@ -229,6 +225,100 @@ namespace Inicio.Controllers
             ViewBag.OrdenFabricacion = orden;
 
             return View(modelo);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTALModel modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI);
+                    string hora = DateTime.Now.ToString("hh:mm:ss");
+                    JArray ArrayDetalle = JArray.Parse(detalle);
+                    int i = 0;
+                    foreach (JObject item in ArrayDetalle)
+                    {
+                        i++;
+                        ModeloDetalle.CODPRO = item.GetValue("codigo").ToString();
+                        ModeloDetalle.DESCPRO = item.GetValue("descripcion").ToString();
+                        ModeloDetalle.UNIPRO = item.GetValue("unidad").ToString();
+                        ModeloDetalle.CANTID = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.FECREQUE = Convert.ToDateTime(item.GetValue("fecha_req") + " " + hora);
+                        ModeloDetalle.CENCOST = item.GetValue("centro_costo").ToString();
+                        ModeloDetalle.NROREQUI = modelo.NROREQUI;
+                        ModeloDetalle.ORDFAB_REQUI = item.GetValue("orden_fabricacion").ToString();
+                        ModeloDetalle.GLOSA = item.GetValue("glosa_articulo").ToString();
+                        ModeloDetalle.REQITEM = i;
+                        ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
+                        ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
+                        ModeloDetalle.LISTO_CARGAR = true;
+                        ModeloDetalle.ESTADO = false;
+
+                        Comun.Add(ModeloDetalle);
+                        Comun.SaveChanges();
+                    }
+
+                    Comun.Update(modelo);
+                    Comun.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    return View(modelo);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(modelo);
+        }
+
+        [HttpPost]
+        public JsonResult Delete(string id)
+        {
+            var jsonData = new
+            {
+                resultado = false,
+                error = "",
+            };
+
+            try
+            {
+                //ESTA ES LA FORMA FACIL
+                Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI="+id);
+
+                //ESTA FORMA DA ERROR A MULTIPLES DELETE
+                //Comun.REQUISD_PORTAL.RemoveRange(Comun.REQUISD_PORTAL.Where(s => s.NROREQUI == id));
+                //Comun.REQUISD_PORTAL.Remove(Comun.REQUISD_PORTAL.Find(id));
+                //Comun.REQUISD_PORTAL.Where(p => p.NROREQUI == id).ToList().ForEach(p => Comun.REQUISD_PORTAL.Remove(p));
+                //Comun.SaveChanges();
+                //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
+
+                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id));
+                Comun.SaveChanges();
+
+                jsonData = new
+                {
+                    resultado = true,
+                    error = "",
+                };
+
+            }  catch (Exception ex) {
+                jsonData = new
+                {
+                    resultado = false,
+                    error = "Error en la ejecución de comando"
+                };
+            }
+
+            return Json(jsonData);
+        }
+
+        private bool REQUISC_PORTALModelExists(string id)
+        {
+            return Comun.REQUISC_PORTAL.Any(e => e.NROREQUI == id);
         }
     }
 }

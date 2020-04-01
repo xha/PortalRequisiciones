@@ -14,8 +14,9 @@
     <div class="card-body p-2">
         <form asp-action="Edit">
             <div class="row">
-                <input asp-for="TipoDocumento" class="form-control" value="RQ" type="hidden" />
+                <input asp-for="TipoDocumento" class="form-control" value="" type="hidden" />
                 <input asp-for="TIPOREQUI" class="form-control" value="RQ" type="hidden" />
+                <input type="hidden" name="detalle" id="detalle" />
                 @Html.Partial(nameof(Datos))
             </div>
             <div class="row my-1">
@@ -25,7 +26,7 @@
                             <i class="fa fa-times"></i>
                             Cancelar
                         </button>
-                        <button type="submit" class="btn btn-success">
+                        <button type="submit" class="btn btn-success" onclick="enviar_datos()">
                             <i class="fa fa-save"></i>
                             Grabar
                         </button>
@@ -43,12 +44,51 @@
     </a>
 </div>
 <script>
-    $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
+    $(document).on("keydown", ":input:not(textarea)", function(event) {
         if (event.key == "Enter") {
             event.preventDefault();
             return false;
         }
+
+        if ($("#error").val() != "") {
+            swal({
+                title: "Error",
+                text: $("#error").val(),
+                type: "danger",
+                confirmButtonText: "Aceptar",
+            })
+        }
     });
+
+    function enviar_datos() {
+        var details = [];
+
+        $("#tabla_articulo tr").each(function (index) {
+            var td = $(this).children("td");
+            if (td.eq(0).text()!="") {
+                details.push({   
+	                codigo          : td.eq(1).text(),
+			        descripcion     : td.eq(2).text(),
+                    unidad          : td.eq(3).text(),
+                    cantidad        : td.eq(4).text(),
+                    fecha_req       : td.eq(5).text(),
+                    centro_costo    : td.eq(6).text(),
+                    nro_maquina     : td.eq(7).text(),
+                    orden_fabricacion: td.eq(8).text(),
+                    glosa_articulo  : td.eq(9).text(),
+                });
+            }
+            $("#detalle").val(JSON.stringify(details));
+        });
+
+        if (($("#detalle").val() != "") && ($("#NROREQUI").val() != "")) {
+            $("#TipoDocumento").val("RQ");
+            document.forms[0].submit();
+        } else {
+            MostrarMensaje("Rojo", "Los campos con * son obligatorios");
+        }
+
+    }
 </script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
