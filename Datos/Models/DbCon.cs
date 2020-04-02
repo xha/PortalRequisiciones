@@ -44,7 +44,23 @@ namespace Datos.Models
 
         }
 
-        public DbSet<REQUISC_PORTALModel> REQUISC_PORTAL { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<REQUISC_PORTAL>()
+                .HasKey(t => new {
+                    t.NROREQUI,
+                    t.TIPOREQUI,
+                });
+
+            modelBuilder.Entity<REQUISD_PORTAL>()
+                .HasKey(t => new {
+                    t.NROREQUI,
+                    t.REQITEM,
+                    t.TIPOREQUI,
+                });
+        }
+
+        public DbSet<REQUISC_PORTAL> REQUISC_PORTAL { get; set; }
         public DbSet<REQUISD_PORTAL> REQUISD_PORTAL { get; set; }
         public DbSet<SP_PORTAL_LISTADO_AREA> AREA { get; set; }
         public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ> ARTICULO { get; set; }

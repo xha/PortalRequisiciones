@@ -14,7 +14,7 @@ namespace Inicio.Controllers
     {
         private readonly BDWENCO Wenco;
         private readonly BDCOMUN Comun;
-        public REQUISC_PORTALModel Modelo = new REQUISC_PORTALModel();
+        public REQUISC_PORTAL Modelo = new REQUISC_PORTAL();
 
         public ServiciosController(BDCOMUN context, BDWENCO context2)
         {
@@ -82,7 +82,7 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoServicios()
         {
-            List<REQUISC_PORTALModel> compras = Comun.REQUISC_PORTAL.ToList();
+            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.ToList();
 
             var Resultado = (from N in compras
                              where N.TIPOREQUI.Contains("RS".ToString())

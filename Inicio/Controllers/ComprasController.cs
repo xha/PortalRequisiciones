@@ -14,7 +14,7 @@ namespace Inicio.Controllers
     {
         private readonly BDWENCO Wenco;
         private readonly BDCOMUN Comun;
-        public REQUISC_PORTALModel Modelo = new REQUISC_PORTALModel();
+        public REQUISC_PORTAL Modelo = new REQUISC_PORTAL();
         public REQUISD_PORTAL ModeloDetalle = new REQUISD_PORTAL();
 
         public ComprasController(BDCOMUN context, BDWENCO context2)
@@ -83,7 +83,7 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoCompras()
         {
-            List<REQUISC_PORTALModel> compras = Comun.REQUISC_PORTAL.ToList();
+            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.ToList();
 
             var Resultado = (from N in compras
                              where N.TIPOREQUI.Contains("RQ".ToString())
@@ -96,7 +96,7 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoDetalle(string codigo)
         {
-            List<REQUISD_PORTAL> detalle = Comun.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo).ToList();
+            List<REQUISD_PORTAL> detalle = Comun?.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo).ToList();
 
             var Resultado = (from N in detalle
                              orderby N.REQITEM
@@ -136,7 +136,7 @@ namespace Inicio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTALModel modelo)
+        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL modelo)
         {
             if (ModelState.IsValid)
             {
@@ -145,6 +145,9 @@ namespace Inicio.Controllers
                     string hora = DateTime.Now.ToString("hh:mm:ss");
                     modelo.NROREQUI = modelo.NROREQUI.Trim();
                     //modelo.FECREQUI = Convert.ToDateTime(modelo.FECREQUI + " " + hora);
+                    Comun.REQUISC_PORTAL.Add(modelo);
+                    Comun.SaveChanges();
+
                     JArray ArrayDetalle = JArray.Parse(detalle);
                     int i = 0;
                     foreach (JObject item in ArrayDetalle)
@@ -166,13 +169,10 @@ namespace Inicio.Controllers
                         ModeloDetalle.LISTO_CARGAR = true;
                         ModeloDetalle.ESTADO = false;
 
-                        Comun.Add(ModeloDetalle);
+                        Comun.REQUISD_PORTAL.Add(ModeloDetalle);
                         //await Comun.SaveChangesAsync();
                         Comun.SaveChanges();
-                    }
-
-                    Comun.Add(modelo);
-                    Comun.SaveChanges();
+                    }                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -207,7 +207,7 @@ namespace Inicio.Controllers
                 return NotFound();
             }
 
-            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo);
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, "RQ");
             if (modelo == null)
             {
                 return NotFound();
@@ -229,7 +229,7 @@ namespace Inicio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTALModel modelo)
+        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL modelo)
         {
             if (ModelState.IsValid)
             {
@@ -237,6 +237,9 @@ namespace Inicio.Controllers
                 {
                     Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI);
                     string hora = DateTime.Now.ToString("hh:mm:ss");
+                    Comun.REQUISC_PORTAL.Update(modelo);
+                    Comun.SaveChanges();
+
                     JArray ArrayDetalle = JArray.Parse(detalle);
                     int i = 0;
                     foreach (JObject item in ArrayDetalle)
@@ -258,12 +261,9 @@ namespace Inicio.Controllers
                         ModeloDetalle.LISTO_CARGAR = true;
                         ModeloDetalle.ESTADO = false;
 
-                        Comun.Add(ModeloDetalle);
+                        Comun.REQUISD_PORTAL.Add(ModeloDetalle);
                         Comun.SaveChanges();
-                    }
-
-                    Comun.Update(modelo);
-                    Comun.SaveChanges();
+                    }                    
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -296,7 +296,7 @@ namespace Inicio.Controllers
                 //Comun.SaveChanges();
                 //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
 
-                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id));
+                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id,"RQ"));
                 Comun.SaveChanges();
 
                 jsonData = new
@@ -316,7 +316,7 @@ namespace Inicio.Controllers
             return Json(jsonData);
         }
 
-        private bool REQUISC_PORTALModelExists(string id)
+        private bool REQUISC_PORTALExists(string id)
         {
             return Comun.REQUISC_PORTAL.Any(e => e.NROREQUI == id);
         }

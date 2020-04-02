@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Datos.Models
 {
-    public class REQUISC_PORTALModel
+    public class REQUISC_PORTAL
     {
         //SELECT GRID
         [Key]
@@ -23,6 +23,7 @@ namespace Datos.Models
         [Required]
         [Display(Name = "Área")]
         public string AREA { get; set; }
+        [Key]
         [Required]
         [Display(Name = "Tipo de Req.")]
         public string TIPOREQUI { get; set; }

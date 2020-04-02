@@ -32,14 +32,14 @@ namespace Inicio.Controllers
                 return NotFound();
             }
 
-            var rEQUISC_PORTALModel = await _context.REQUISC_PORTAL
+            var REQUISC_PORTAL = await _context.REQUISC_PORTAL
                 .FirstOrDefaultAsync(m => m.NROREQUI == id);
-            if (rEQUISC_PORTALModel == null)
+            if (REQUISC_PORTAL == null)
             {
                 return NotFound();
             }
 
-            return View(rEQUISC_PORTALModel);
+            return View(REQUISC_PORTAL);
         }
 
         // GET: Test/Create
@@ -53,15 +53,15 @@ namespace Inicio.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTALModel rEQUISC_PORTALModel)
+        public async Task<IActionResult> Create([Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL REQUISC_PORTAL)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(rEQUISC_PORTALModel);
+                _context.Add(REQUISC_PORTAL);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(rEQUISC_PORTALModel);
+            return View(REQUISC_PORTAL);
         }
 
         // GET: Test/Edit/5
@@ -72,12 +72,12 @@ namespace Inicio.Controllers
                 return NotFound();
             }
 
-            var rEQUISC_PORTALModel = await _context.REQUISC_PORTAL.FindAsync(id);
-            if (rEQUISC_PORTALModel == null)
+            var REQUISC_PORTAL = await _context.REQUISC_PORTAL.FindAsync(id);
+            if (REQUISC_PORTAL == null)
             {
                 return NotFound();
             }
-            return View(rEQUISC_PORTALModel);
+            return View(REQUISC_PORTAL);
         }
 
         // POST: Test/Edit/5
@@ -85,9 +85,9 @@ namespace Inicio.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTALModel rEQUISC_PORTALModel)
+        public async Task<IActionResult> Edit(string id, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL REQUISC_PORTAL)
         {
-            if (id != rEQUISC_PORTALModel.NROREQUI)
+            if (id != REQUISC_PORTAL.NROREQUI)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace Inicio.Controllers
             {
                 try
                 {
-                    _context.Update(rEQUISC_PORTALModel);
+                    _context.Update(REQUISC_PORTAL);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!REQUISC_PORTALModelExists(rEQUISC_PORTALModel.NROREQUI))
+                    if (!REQUISC_PORTALExists(REQUISC_PORTAL.NROREQUI))
                     {
                         return NotFound();
                     }
@@ -112,7 +112,7 @@ namespace Inicio.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(rEQUISC_PORTALModel);
+            return View(REQUISC_PORTAL);
         }
 
         // GET: Test/Delete/5
@@ -123,14 +123,14 @@ namespace Inicio.Controllers
                 return NotFound();
             }
 
-            var rEQUISC_PORTALModel = await _context.REQUISC_PORTAL
+            var REQUISC_PORTAL = await _context.REQUISC_PORTAL
                 .FirstOrDefaultAsync(m => m.NROREQUI == id);
-            if (rEQUISC_PORTALModel == null)
+            if (REQUISC_PORTAL == null)
             {
                 return NotFound();
             }
 
-            return View(rEQUISC_PORTALModel);
+            return View(REQUISC_PORTAL);
         }
 
         // POST: Test/Delete/5
@@ -138,13 +138,13 @@ namespace Inicio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var rEQUISC_PORTALModel = await _context.REQUISC_PORTAL.FindAsync(id);
-            _context.REQUISC_PORTAL.Remove(rEQUISC_PORTALModel);
+            var REQUISC_PORTAL = await _context.REQUISC_PORTAL.FindAsync(id);
+            _context.REQUISC_PORTAL.Remove(REQUISC_PORTAL);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool REQUISC_PORTALModelExists(string id)
+        private bool REQUISC_PORTALExists(string id)
         {
             return _context.REQUISC_PORTAL.Any(e => e.NROREQUI == id);
         }
