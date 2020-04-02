@@ -25,7 +25,7 @@
                         Nuevo
                     </a>
                 </div>
-                <div class="card-body p-2"> 
+                <div class="card-body p-2">
                     <table id="GridServiciosIndex" class="table table-hover table-striped pre-scrollable2 dataTables">
                         <thead class="bg-info">
                             <tr>
@@ -109,18 +109,18 @@
                 },
                 {
                     data: null, render: function (data, type, row) {
-                        return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rcompra(\'' + row.nrorequi + '\')"><i class="fa fa-trash"></i></a>';
+                        return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rServicio(\'' + row.nrorequi + '\')"><i class="fa fa-trash"></i></a>';
                     }
                 },
             ]
         });
     }
 
-    function anular_rcompra(nrorequi) {
+    function anular_rServicio(nrorequi) {
         swal({
             title: "¿Estás seguro?",
             text: "Confirmar Anulado del registro: " + nrorequi,
-            type: "warning",
+            type: "info",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
             cancelButtonClass: "btn-secondary",
@@ -129,29 +129,44 @@
         },
         function (isConfirm) {
             if (isConfirm) {
-                console.log(nrorequi);
-                /*$.ajax(
+                var parametros = "id=" + nrorequi;
+                $.ajax(
                 {
                     type: "POST",
                     dataType: "json",
-                    url: "Url.Content("~/Servicios/Edit?codigo=")"+row.nrorequi,
+                    url: "@Url.Content("~/Servicios/Delete")",
                     data: parametros,
                     cache: false,
-                    success: function (Resultado) {
-                        loading_hide();
-                        window.parent.MostrarMensaje(Resultado.color, Resultado.data);
-                        if (Resultado.respuesta) {
-                            $('#ProveedorIndexGrid').DataTable().ajax.reload();
+                    success: function (datos) {
+                        if (datos.resultado) {
+                            swal({
+                                title: "Hecho",
+                                text: "Documento Eliminado",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                            },
+                            function (isConfirm) {
+                                if (isConfirm) {
+                                    window.location = '@Url.Content("~/Servicios/")';
+                                }
+                            });
+                        } else {
+                            swal({
+                                title: "Error",
+                                text: datos.error,
+                                type: "error",
+                                confirmButtonClass: "btn-danger",
+                            });
                         }
-
                     },
-                    error: function (xhr) { // if error occured
-                        loading_hide();
-                        console.log(xhr);
-                        window.parent.MostrarMensaje("Rojo", xhr.responseText);
-                        //$(placeholder).append(xhr.statusText + xhr.responseText);
+                    error: function (xhr) {
+                        swal({
+                            title: "Error",
+                            text: xhr.responseText,
+                            confirmButtonClass: "btn-danger",
+                        });
                     },
-                });*/
+                });
             }
         });
     }

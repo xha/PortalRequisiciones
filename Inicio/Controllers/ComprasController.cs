@@ -83,10 +83,9 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoCompras()
         {
-            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.ToList();
+            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ").ToList();
 
             var Resultado = (from N in compras
-                             where N.TIPOREQUI.Contains("RQ".ToString())
                              orderby N.FECREQUI
                              select N);
 

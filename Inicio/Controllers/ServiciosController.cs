@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Datos.Models;
-using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Inicio.Controllers
 {
@@ -15,6 +15,7 @@ namespace Inicio.Controllers
         private readonly BDWENCO Wenco;
         private readonly BDCOMUN Comun;
         public REQUISC_PORTAL Modelo = new REQUISC_PORTAL();
+        public REQUISD_PORTAL ModeloDetalle = new REQUISD_PORTAL();
 
         public ServiciosController(BDCOMUN context, BDWENCO context2)
         {
@@ -35,11 +36,11 @@ namespace Inicio.Controllers
             return Json(Resultado);
         }
 
-        public JsonResult Articulos()
+        public JsonResult Servicios()
         {
-            List<SP_PORTAL_LISTADO_ARTICULO_RQ> articulo = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '003BDCOMUN'").ToList();
+            List<SP_PORTAL_LISTADO_ARTICULO_RQ> servicio = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '003BDCOMUN'").ToList();
 
-            var Resultado = (from N in articulo
+            var Resultado = (from N in servicio
                              orderby N.ARTICULO
                              select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.UNIDAD });
 
@@ -82,11 +83,22 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoServicios()
         {
-            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.ToList();
+            List<REQUISC_PORTAL> Servicios = Comun?.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RS").ToList();
 
-            var Resultado = (from N in compras
-                             where N.TIPOREQUI.Contains("RS".ToString())
+            var Resultado = (from N in Servicios
                              orderby N.FECREQUI
+                             select N);
+
+            return Json(Resultado);
+        }
+
+        [HttpPost]
+        public JsonResult ListadoDetalle(string codigo)
+        {
+            List<REQUISD_PORTAL> detalle = Comun?.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo).ToList();
+
+            var Resultado = (from N in detalle
+                             orderby N.REQITEM
                              select N);
 
             return Json(Resultado);
@@ -96,9 +108,10 @@ namespace Inicio.Controllers
         // GET: Servicios
         public ActionResult Index()
         {
-            JsonResult servicios = ListadoServicios();
-            ViewBag.ListadoServicios = servicios;
+            JsonResult Servicios = ListadoServicios();
+            ViewBag.ListadoServicios = Servicios;
             ViewBag.AServicios = "activo";
+
             return View();
         }
 
@@ -107,81 +120,206 @@ namespace Inicio.Controllers
         {
             ViewBag.AServicios = "activo";
             JsonResult areas = Areas();
-            JsonResult articulos = Articulos();
+            JsonResult servicios = Servicios();
             JsonResult solicitantes = Solicitantes();
             JsonResult centro = CentroCosto();
             JsonResult orden = OrdenFabricacion();
             ViewBag.Solicitantes = solicitantes;
             ViewBag.Areas = areas;
-            ViewBag.Articulos = articulos;
+            ViewBag.Servicios = servicios;
             ViewBag.CentroCosto = centro;
-            ViewBag.OrdenFabricacion = orden;            
+            ViewBag.OrdenFabricacion = orden;
 
             return View();
         }
 
-        // POST: Servicios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL modelo)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
+                try
+                {
+                    string hora = DateTime.Now.ToString("hh:mm:ss");
+                    modelo.NROREQUI = modelo.NROREQUI.Trim();
+                    //modelo.FECREQUI = Convert.ToDateTime(modelo.FECREQUI + " " + hora);
+                    Comun.REQUISC_PORTAL.Add(modelo);
+                    Comun.SaveChanges();
+
+                    JArray ArrayDetalle = JArray.Parse(detalle);
+                    int i = 0;
+                    foreach (JObject item in ArrayDetalle)
+                    {
+                        i++;
+                        ModeloDetalle.CODPRO = item.GetValue("codigo").ToString();
+                        ModeloDetalle.DESCPRO = item.GetValue("descripcion").ToString();
+                        ModeloDetalle.UNIPRO = item.GetValue("unidad").ToString();
+                        ModeloDetalle.CANTID = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.FECREQUE = Convert.ToDateTime(item.GetValue("fecha_req") + " " + hora);
+                        ModeloDetalle.CENCOST = item.GetValue("centro_costo").ToString();
+                        ModeloDetalle.NROREQUI = modelo.NROREQUI;
+                        ModeloDetalle.ORDFAB_REQUI = item.GetValue("orden_fabricacion").ToString();
+                        ModeloDetalle.GLOSA = item.GetValue("glosa_servicio").ToString();
+                        ModeloDetalle.REQITEM = i;
+                        ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
+                        ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
+                        ModeloDetalle.LISTO_CARGAR = true;
+                        ModeloDetalle.ESTADO = false;
+
+                        Comun.REQUISD_PORTAL.Add(ModeloDetalle);
+                        //await Comun.SaveChangesAsync();
+                        Comun.SaveChanges();
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    ViewBag.Error = "Error al grabar";
+                    return View();
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: Servicios/Edit/5
-        public ActionResult Edit(int id)
-        {
+            ViewBag.AServicios = "activo";
+            JsonResult areas = Areas();
+            JsonResult servicios = Servicios();
+            JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Servicios = servicios;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
+
             return View();
         }
 
-        // POST: Servicios/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // GET: Test/Edit/5
+        public async Task<IActionResult> Edit(string codigo)
         {
             ViewBag.AServicios = "activo";
-            try
+            if (codigo == null)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, "RQ");
+            if (modelo == null)
             {
-                return View();
+                return NotFound();
             }
+
+            JsonResult areas = Areas();
+            JsonResult servicios = Servicios();
+            JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Servicios = servicios;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
+
+            return View(modelo);
         }
 
-        // GET: Servicios/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Servicios/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL modelo)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add delete logic here
+                try
+                {
+                    Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI);
+                    string hora = DateTime.Now.ToString("hh:mm:ss");
+                    Comun.REQUISC_PORTAL.Update(modelo);
+                    Comun.SaveChanges();
 
+                    JArray ArrayDetalle = JArray.Parse(detalle);
+                    int i = 0;
+                    foreach (JObject item in ArrayDetalle)
+                    {
+                        i++;
+                        ModeloDetalle.CODPRO = item.GetValue("codigo").ToString();
+                        ModeloDetalle.DESCPRO = item.GetValue("descripcion").ToString();
+                        ModeloDetalle.UNIPRO = item.GetValue("unidad").ToString();
+                        ModeloDetalle.CANTID = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.FECREQUE = Convert.ToDateTime(item.GetValue("fecha_req") + " " + hora);
+                        ModeloDetalle.CENCOST = item.GetValue("centro_costo").ToString();
+                        ModeloDetalle.NROREQUI = modelo.NROREQUI;
+                        ModeloDetalle.ORDFAB_REQUI = item.GetValue("orden_fabricacion").ToString();
+                        ModeloDetalle.GLOSA = item.GetValue("glosa_servicio").ToString();
+                        ModeloDetalle.REQITEM = i;
+                        ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
+                        ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
+                        ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
+                        ModeloDetalle.LISTO_CARGAR = true;
+                        ModeloDetalle.ESTADO = false;
+
+                        Comun.REQUISD_PORTAL.Add(ModeloDetalle);
+                        Comun.SaveChanges();
+                    }
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    return View(modelo);
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
+
+            return View(modelo);
+        }
+
+        [HttpPost]
+        public JsonResult Delete(string id)
+        {
+            var jsonData = new
             {
-                return View();
+                resultado = false,
+                error = "",
+            };
+
+            try
+            {
+                //ESTA ES LA FORMA FACIL
+                Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + id);
+
+                //ESTA FORMA DA ERROR A MULTIPLES DELETE
+                //Comun.REQUISD_PORTAL.RemoveRange(Comun.REQUISD_PORTAL.Where(s => s.NROREQUI == id));
+                //Comun.REQUISD_PORTAL.Remove(Comun.REQUISD_PORTAL.Find(id));
+                //Comun.REQUISD_PORTAL.Where(p => p.NROREQUI == id).ToList().ForEach(p => Comun.REQUISD_PORTAL.Remove(p));
+                //Comun.SaveChanges();
+                //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
+
+                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id, "RQ"));
+                Comun.SaveChanges();
+
+                jsonData = new
+                {
+                    resultado = true,
+                    error = "",
+                };
+
             }
+            catch (Exception ex)
+            {
+                jsonData = new
+                {
+                    resultado = false,
+                    error = "Error en la ejecución de comando"
+                };
+            }
+
+            return Json(jsonData);
+        }
+
+        private bool REQUISC_PORTALExists(string id)
+        {
+            return Comun.REQUISC_PORTAL.Any(e => e.NROREQUI == id);
         }
     }
 }

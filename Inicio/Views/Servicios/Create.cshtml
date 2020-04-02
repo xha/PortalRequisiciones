@@ -12,10 +12,11 @@
         </h5>
     </div>
     <div class="card-body p-2">
+        <input type="hidden" value="@ViewBag.Error" id="error" />
         <form asp-action="Create" asp-controller="Servicios" method="post">
             <div class="row">
-                <input asp-for="TipoDocumento" class="form-control" value="RQ" type="hidden" />
-                <input asp-for="TIPOREQUI" class="form-control" value="RQ" type="hidden" />
+                <input asp-for="TipoDocumento" class="form-control" value="" type="hidden" />
+                <input asp-for="TIPOREQUI" class="form-control" value="RS" type="hidden" />
                 <input type="hidden" name="detalle" id="detalle" />
                 @Html.Partial(nameof(Datos))
             </div>
@@ -44,10 +45,20 @@
     </a>
 </div>
 <script>
-    $(document).on("keydown", ":input:not(textarea):not(:submit)", function(event) {
+    //:not(:submit)
+    $(document).on("keydown", ":input:not(textarea)", function (event) {
         if (event.key == "Enter") {
             event.preventDefault();
             return false;
+        }
+
+        if ($("#error").val() != "") {
+            swal({
+                title: "Error",
+                text: $("#error").val(),
+                type: "danger",
+                confirmButtonText: "Aceptar",
+            })
         }
     });
 
@@ -56,23 +67,24 @@
 
         $("#tabla_articulo tr").each(function (index) {
             var td = $(this).children("td");
-            if (td.eq(0).text()!="") {
-                details.push({   
-	                codigo          : td.eq(1).text(),
-			        descripcion     : td.eq(2).text(),
-                    unidad          : td.eq(3).text(),
-                    cantidad        : td.eq(4).text(),
-                    fecha_req       : td.eq(5).text(),
-                    centro_costo    : td.eq(6).text(),
-                    nro_maquina     : td.eq(7).text(),
+            if (td.eq(0).text() != "") {
+                details.push({
+                    codigo: td.eq(1).text(),
+                    descripcion: td.eq(2).text(),
+                    unidad: td.eq(3).text(),
+                    cantidad: td.eq(4).text(),
+                    fecha_req: td.eq(5).text(),
+                    centro_costo: td.eq(6).text(),
+                    nro_maquina: td.eq(7).text(),
                     orden_fabricacion: td.eq(8).text(),
-                    glosa_articulo  : td.eq(9).text(),
+                    glosa_articulo: td.eq(9).text(),
                 });
             }
             $("#detalle").val(JSON.stringify(details));
         });
 
         if (($("#detalle").val() != "") && ($("#NROREQUI").val() != "")) {
+            $("#TipoDocumento").val("RS");
             document.forms[0].submit();
         } else {
             MostrarMensaje("Rojo", "Los campos con * son obligatorios");

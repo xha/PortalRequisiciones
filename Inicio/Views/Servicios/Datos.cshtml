@@ -14,18 +14,18 @@
 
     var solicitantes = Json.Serialize(ViewBag.Solicitantes);
     var areas = Json.Serialize(ViewBag.Areas);
-    var servicios = Json.Serialize(ViewBag.servicios);
+    var servicios = Json.Serialize(ViewBag.Servicios);
     var centro = Json.Serialize(ViewBag.CentroCosto);
     var orden = Json.Serialize(ViewBag.OrdenFabricacion);
 
 }
 
-<!-- INICIO MODAL servicioS -->
+<!-- INICIO MODAL ARTICULOS -->
 <div class="modal fade" id="m_servicios" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-pe" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
-                <h4 class="modal-title">Listado de Art&iacute;culos</h4>
+                <h4 class="modal-title">Listado de Servicios</h4>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -41,31 +41,27 @@
                                     <i class="fa fa-search"></i>
                                 </span>
                             </div>
-                            <input class="form-control" id="m_codigo" onblur="validar_id()" />
+                            <input class="form-control" id="m_codigo" onblur="validar_id()" maxlength="20" />
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-5">
                         <label>* Descripci&oacute;n</label>
-                        <input class="form-control" id="m_descripcion" />
+                        <input class="form-control" id="m_descripcion" maxlength="200" />
                     </div>
                     <div class="col-sm-2">
                         <label>* Cantidad</label>
                         <input class="form-control" id="m_cantidad" onkeypress="solo_enteros(event)" />
                     </div>
+                    <div class="col-sm-3">
+                        <label>Ord. Fab.</label>
+                        <select class="form-control" id="orden_fabricacion" maxlength="20"></select>
+                    </div>
                     <div class="col-sm-3 mt-1">
                         <label>* Centro de Costo</label>
                         <select class="form-control" id="centro_costo"></select>
                     </div>
-                    <div class="col-sm-3 mt-1">
-                        <label>Nro. Maquina</label>
-                        <input id="nro_maquina" class="form-control" />
-                    </div>
-                    <div class="col-sm-3 mt-1">
-                        <label>Ord. Fab.</label>
-                        <select class="form-control" id="orden_fabricacion"></select>
-                    </div>
                     <div class="col-sm-9 mt-1">
-                        <label>Glosa Art&iacute;culo</label>
+                        <label>Glosa</label>
                         <input id="glosa_servicio" class="form-control" />
                     </div>
                 </div>
@@ -83,13 +79,13 @@
         </div>
     </div>
 </div>
-<!-- FIN MODAL servicioS -->
-<!-- INICIO MODAL GRID servicioS -->
+<!-- FIN MODAL ARTICULOS -->
+<!-- INICIO MODAL GRID ARTICULOS -->
 <div class="modal fade" id="m_gservicio" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-xp" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
-                <h4 class="modal-title">Listado de Art&iacute;culos</h4>
+                <h4 class="modal-title">Listado de Servicios</h4>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -97,7 +93,7 @@
             <div class="modal-body h500">
                 <div class="row">
                     <div class="col-sm-12">
-                        <table class="table table-striped pre-scrollable2 dataTables" id="gridservicios" style="width: 100%">
+                        <table class="table table-striped pre-scrollable2 dataTables" id="gridServicios" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
                                     <th>C&oacute;digo</th>
@@ -119,7 +115,7 @@
         </div>
     </div>
 </div>
-<!-- FIN MODAL GRID servicioS -->
+<!-- FIN MODAL GRID ARTICULOS -->
 
 <div class="col-sm-3 col-lg-2">
     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
@@ -127,11 +123,11 @@
         <label asp-for="NROREQUI" class="control-label"></label> *
         @if (Model?.NROREQUI == null)
         {
-            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" />
+            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" maxlength="10" />
         }
         else
         {
-            <input asp-for="NROREQUI" class="form-control" readonly />
+            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" />
         }
         <span asp-validation-for="NROREQUI" class="text-danger w-100"></span>
     </div>
@@ -159,8 +155,8 @@
 </div>
 <div class="col-sm-12 mt-1 col-lg-4">
     <div class="form-group">
-        <label class="control-label">Observaci&oacute;n</label>
-        <input asp-for="GLOSA" class="form-control" />
+        <label asp-for="GLOSA" class="control-label"></label>
+        <input asp-for="GLOSA" class="form-control" maxlength="60" />
         <span asp-validation-for="GLOSA" class="text-danger w-100"></span>
     </div>
 </div>
@@ -196,8 +192,8 @@
     var datos_areas         = JSON.parse('@Html.Raw(areas)').value;
     var datos_servicio      = JSON.parse('@Html.Raw(servicios)').value;
     var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
-    var datos_orden = JSON.parse('@Html.Raw(orden)').value;
-    
+    var datos_orden         = JSON.parse('@Html.Raw(orden)').value;
+
     $(function () {
         $(".fecha").datepicker({
             language: 'es',
@@ -236,10 +232,37 @@
         }
 
         llenar_grid_servicio(datos_servicio);
+
+        if ($("#NROREQUI").val() != "") {
+            var tabla = $("#tabla_servicio")[0];
+            var arreglo = new Array();
+            $.ajax(
+                {
+                    type: "POST",
+                    dataType: "json",
+                    url: "@Url.Content("~/Servicios/ListadoDetalle")",
+                    data: "codigo="+$("#NROREQUI").val(),
+                    cache: false,
+                    success: function (datos) {
+                        for (var i = 0; i < datos.length; i++) {
+                            arreglo.length = 0;
+                            arreglo[0] = global;
+                            arreglo[1] = datos[i].codpro;
+                            arreglo[2] = datos[i].descpro;
+                            arreglo[3] = parseFloat(datos[i].cantid);
+                            arreglo[4] = datos[i].cencost;
+                            arreglo[5] = datos[i].ordfaB_REQUI;
+                            arreglo[6] = datos[i].glosa;
+                            tabla.appendChild(llenar_tabla(arreglo));
+                            global++;
+                        }
+                    },
+                });
+        }
     });
 
     function llenar_grid_servicio(datos) {
-        $("#gridservicios").DataTable({
+        $("#gridServicios").DataTable({
             destroy: true,
             bInfo: false,
             data: datos,
@@ -259,8 +282,6 @@
     function cargar_id(row) {
         $("#m_codigo").val(row.codigo);
         $("#m_descripcion").val(row.descripcion);
-        $("#m_unidad").val(row.unidad);
-        $("#m_stock").val(row.stock);
         $('#m_gservicio').modal('hide');
     }
 
@@ -277,124 +298,111 @@
 
             if (bandera) {
                 $("#m_codigo").val("");
-                $("#m_unidad").val("");
-                $("#m_stock").val("");
                 $("#m_descripcion").val("");
-                MostrarMensaje("Rojo", "Error en el Código del Artículo");
+                MostrarMensaje("Rojo", "Error en el Código del Servicio");
                 $("#m_codigo").focus();
             } else {
                 $("#m_codigo").val(datos_servicio[i].codigo);
-                $("#m_unidad").val(datos_servicio[i].unidad);
-                $("#m_stock").val(datos_servicio[i].stock);
                 $("#m_descripcion").val(datos_servicio[i].descripcion);
             }
         }
+    }
+
+    function llenar_tabla(row) {
+        for (var i = 0; i < row.length; i++) {
+            tr = document.createElement("tr");
+            tr.id = "r_" + row[0];
+            td0 = document.createElement("td");
+            node0 = document.createTextNode(row[0]);
+            td0.appendChild(node0);
+            tr.appendChild(td0);
+
+            td9 = document.createElement("td");
+            node9 = document.createTextNode(row[1]);
+            td9.appendChild(node9);
+            tr.appendChild(td9);
+
+            td1 = document.createElement("td");
+            node1 = document.createTextNode(row[2]);
+            td1.appendChild(node1);
+            tr.appendChild(td1);
+
+            td2 = document.createElement("td");
+            node2 = document.createTextNode(row[3]);
+            td2.appendChild(node2);
+            tr.appendChild(td2);
+
+            td3 = document.createElement("td");
+            node3 = document.createTextNode(row[4]);
+            td3.appendChild(node3);
+            tr.appendChild(td3);
+
+            td4 = document.createElement("td");
+            node4 = document.createTextNode(row[5]);
+            td4.appendChild(node4);
+            tr.appendChild(td4);
+
+            td5 = document.createElement("td");
+            node5 = document.createTextNode(row[6]);
+            td5.appendChild(node5);
+            tr.appendChild(td5);
+
+            td10 = document.createElement("td");
+            a0 = document.createElement("a");
+            i0 = document.createElement("i");
+            i0.className = "fa fa-edit";
+            a0.className = "btn btn-info";
+            a0.href = "#";
+            eval("a0.onclick = function(){editar_servicio(" + row[0] + ");}");
+            a0.appendChild(i0);
+            td10.appendChild(a0);
+            tr.appendChild(td10);
+
+            td11 = document.createElement("td");
+            a1 = document.createElement("a");
+            i1 = document.createElement("i");
+            i1.className = "fa fa-times";
+            a1.className = "btn btn-danger";
+            a1.href = "#";
+            eval("a1.onclick = function(){eliminar_servicio(" + row[0] + ");}");
+            a1.appendChild(i1);
+            td11.appendChild(a1);
+            tr.appendChild(td11);
+        }
+        return tr;
     }
 
     function agregar_servicio() {
         var linea = $("#m_linea").val();
         var codigo = $("#m_codigo").val();
         var glosa = $("#glosa_servicio").val();
-        var unidad = $("#m_unidad").val();
-        var stock = $("#m_stock").val();
         var descripcion = $("#m_descripcion").val();
         var cantidad = $("#m_cantidad").val();
         var centro_costo = $("#centro_costo").val();
-        var nro_maquina = $("#nro_maquina").val();
         var orden_fabricacion = $("#orden_fabricacion").val();
-        var fecha_req = $("#fecha_req").val();
         var tabla = $("#tabla_servicio")[0];
+        var arreglo = new Array();
 
-        if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
+        if ((codigo != "") && (descripcion != "") && (cantidad != "") && (centro_costo != "")) {
             if (linea == "") {
-                tr = document.createElement("tr");
-                tr.id = "r_" + global;
-                td0 = document.createElement("td");
-                node0 = document.createTextNode(global);
-                td0.appendChild(node0);
-                tr.appendChild(td0);
-
-                td9 = document.createElement("td");
-                node9 = document.createTextNode(codigo);
-                td9.appendChild(node9);
-                tr.appendChild(td9);
-
-                td1 = document.createElement("td");
-                node1 = document.createTextNode(descripcion);
-                td1.appendChild(node1);
-                tr.appendChild(td1);
-
-                td2 = document.createElement("td");
-                node2 = document.createTextNode(unidad);
-                td2.appendChild(node2);
-                tr.appendChild(td2);
-
-                td3 = document.createElement("td");
-                node3 = document.createTextNode(cantidad);
-                td3.appendChild(node3);
-                tr.appendChild(td3);
-
-                td4 = document.createElement("td");
-                node4 = document.createTextNode(fecha_req);
-                td4.appendChild(node4);
-                tr.appendChild(td4);
-
-                td5 = document.createElement("td");
-                node5 = document.createTextNode(centro_costo);
-                td5.appendChild(node5);
-                tr.appendChild(td5);
-
-                td6 = document.createElement("td");
-                node6 = document.createTextNode(nro_maquina);
-                td6.appendChild(node6);
-                tr.appendChild(td6);
-
-                td7 = document.createElement("td");
-                node7 = document.createTextNode(orden_fabricacion);
-                td7.appendChild(node7);
-                tr.appendChild(td7);
-
-                td8 = document.createElement("td");
-                node8 = document.createTextNode(glosa);
-                td8.appendChild(node8);
-                tr.appendChild(td8);
-
-                td10 = document.createElement("td");
-                a0 = document.createElement("a");
-                i0 = document.createElement("i");
-                i0.className = "fa fa-edit";
-                a0.className = "btn btn-info";
-                a0.href = "#";
-                eval("a0.onclick = function(){editar_servicio(" + global + ");}");
-                a0.appendChild(i0);
-                td10.appendChild(a0);
-                tr.appendChild(td10);
-
-                td11 = document.createElement("td");
-                a1 = document.createElement("a");
-                i1 = document.createElement("i");
-                i1.className = "fa fa-times";
-                a1.className = "btn btn-danger";
-                a1.href = "#";
-                eval("a1.onclick = function(){eliminar_servicio(" + global + ");}");
-                a1.appendChild(i1);
-                td11.appendChild(a1);
-                tr.appendChild(td11);
-
-                tabla.appendChild(tr);
+                arreglo[0] = global;
+                arreglo[1] = codigo;
+                arreglo[2] = descripcion;
+                arreglo[3] = cantidad;
+                arreglo[4] = centro_costo;
+                arreglo[5] = orden_fabricacion;
+                arreglo[6] = glosa;
+                tabla.appendChild(llenar_tabla(arreglo));
                 global++;
             } else {
                 $("#r_" + linea).each(function (index) {
                     var td = $(this).children("td");
                     td.eq(1).text($("#m_codigo").val());
                     td.eq(2).text($("#m_descripcion").val());
-                    td.eq(3).text($("#m_unidad").val());
-                    td.eq(4).text($("#m_cantidad").val());
-                    td.eq(5).text($("#fecha_req").val());
-                    td.eq(6).text($("#centro_costo").val());
-                    td.eq(7).text($("#nro_maquina").val());
-                    td.eq(8).text($("#orden_fabricacion").val());
-                    td.eq(9).text($("#glosa_servicio").val());            
+                    td.eq(3).text($("#m_cantidad").val());
+                    td.eq(4).text($("#centro_costo").val());
+                    td.eq(5).text($("#orden_fabricacion").val());
+                    td.eq(6).text($("#glosa_servicio").val());
                 });
             }
             limpiar_campos();
@@ -407,14 +415,9 @@
         $("#m_linea").val("");
         $("#m_codigo").val("");
         $("#glosa_servicio").val("");
-        $("#m_unidad").val("");
-        $("#m_stock").val("");
         $("#m_descripcion").val("");
         $("#m_cantidad").val("");
-        $("#centro_costo").val("");
-        $("#nro_maquina").val("");
         $("#orden_fabricacion").val("");
-        $("#fecha_req").val("");
     }
 
     function editar_servicio(linea) {
@@ -423,13 +426,10 @@
             $("#m_linea").val(td.eq(0).text());
             $("#m_codigo").val(td.eq(1).text());
             $("#m_descripcion").val(td.eq(2).text());
-            $("#m_unidad").val(td.eq(3).text());
-            $("#m_cantidad").val(td.eq(4).text());
-            $("#fecha_req").val(td.eq(5).text());
-            $("#centro_costo").val(td.eq(6).text());
-            $("#nro_maquina").val(td.eq(7).text());
-            $("#orden_fabricacion").val(td.eq(8).text());
-            $("#glosa_servicio").val(td.eq(9).text());            
+            $("#m_cantidad").val(td.eq(3).text());
+            $("#centro_costo").val(td.eq(4).text());
+            $("#orden_fabricacion").val(td.eq(5).text());
+            $("#glosa_servicio").val(td.eq(6).text());
             $('#m_servicios').modal('show')
         });
     }
