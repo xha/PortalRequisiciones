@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Datos.Models;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inicio.Controllers
 {
@@ -104,8 +105,8 @@ namespace Inicio.Controllers
             return Json(Resultado);
         }
         /********************************************************************************************************************************************/
-
         // GET: Compras
+        //[Authorize]
         public ActionResult Index()
         {
             JsonResult compras = ListadoCompras();
@@ -270,6 +271,18 @@ namespace Inicio.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.ACompras = "activo";
+            JsonResult areas = Areas();
+            JsonResult articulos = Articulos();
+            JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Articulos = articulos;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
 
             return View(modelo);
         }

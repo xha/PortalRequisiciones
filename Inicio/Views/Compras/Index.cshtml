@@ -139,17 +139,7 @@
                     cache: false,
                     success: function (datos) {
                         if (datos.resultado) {
-                            swal({
-                                title: "Hecho",
-                                text: "Documento Eliminado",
-                                type: "success",
-                                confirmButtonClass: "btn-success",
-                            },
-                            function (isConfirm) {
-                                if (isConfirm) {
-                                    window.location = '@Url.Content("~/Compras/")';
-                                }
-                            });
+                            window.location = '@Url.Content("~/Compras/")';
                         } else {
                             swal({
                                 title: "Error",
@@ -157,7 +147,7 @@
                                 type: "error",
                                 confirmButtonClass: "btn-danger",
                             });
-                        }
+                        };
                     },
                     error: function (xhr) { 
                         swal({
