@@ -6,12 +6,12 @@ namespace Datos.Helpers
 {
     public static class ExtensionMethods
     {
-        public static IEnumerable<LoginModel> WithoutPasswords(this IEnumerable<LoginModel> users) {
+        public static IEnumerable<USUARIO_COMP> WithoutPasswords(this IEnumerable<USUARIO_COMP> users) {
             return users.Select(x => x.WithoutPassword());
         }
 
-        public static LoginModel WithoutPassword(this LoginModel user) {
-            user.Password = null;
+        public static USUARIO_COMP WithoutPassword(this USUARIO_COMP user) {
+            user.USU_PASSWORD = null;
             return user;
         }
     }

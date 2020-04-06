@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Datos.Models;
 using Datos.Helpers;
 
@@ -13,8 +11,8 @@ namespace Inicio.Services
 {
     public interface IUserService
     {
-        LoginModel Authenticate(string username, string password);
-        IEnumerable<LoginModel> GetAll();
+        USUARIO_COMP Authenticate(string username, string password);
+        IEnumerable<USUARIO_COMP> GetAll();
     }
 
     public class UserService : IUserService
@@ -63,12 +61,12 @@ namespace Inicio.Services
             return _users.WithoutPasswords();
         }
         */
-        LoginModel IUserService.Authenticate(string username, string password)
+        USUARIO_COMP IUserService.Authenticate(string username, string password)
         {
             throw new NotImplementedException();
         }
 
-        IEnumerable<LoginModel> IUserService.GetAll()
+        IEnumerable<USUARIO_COMP> IUserService.GetAll()
         {
             throw new NotImplementedException();
         }

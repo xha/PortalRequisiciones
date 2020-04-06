@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = ".:Portal de Requisiciones:.";
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/site.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/adminlte.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/sweetalert2/sweetalert.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/toastr/toastr.css" rel="stylesheet" type="text/css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <style>
+        body {
+           background:  url(@Url.Content("~/Login1.jpg")) no-repeat center center fixed;
+           background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    @RenderBody()
+</body>
+</html>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/plugins/loading/jquery.loadingModal.js"></script>
+<script src="~/plugins/sweetalert2/sweetalert.js"></script>
+<script src="~/plugins/toastr/toastr.min.js"></script>
+<script src="~/js/adminlte.js"></script>
+<script src="~/js/jquery.inputmask.js"></script>
+<script src="~/js/inputmask.js"></script>
+@RenderSection("Scripts", required: false)

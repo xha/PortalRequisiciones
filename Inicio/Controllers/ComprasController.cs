@@ -106,8 +106,8 @@ namespace Inicio.Controllers
         }
         /********************************************************************************************************************************************/
         // GET: Compras
-        //[Authorize]
-        public ActionResult Index()
+        [Authorize]
+        public IActionResult Index()
         {
             JsonResult compras = ListadoCompras();
             ViewBag.ListadoCompras = compras;
@@ -117,7 +117,7 @@ namespace Inicio.Controllers
         }
 
         // GET: Compras/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
             ViewBag.ACompras = "activo";
             JsonResult areas = Areas();
