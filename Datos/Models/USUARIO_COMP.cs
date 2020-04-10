@@ -1,28 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace Datos.Models
 {
+    [Table("USUARIO_COMP")]
     public class USUARIO_COMP
     {
         [Required]
         [Display(Name = "Usuario")]
-        public string USU_NOMBRE { get; set; }
+        public string USU_CODIGO { get; set; }
         [Required]
         [Display(Name = "Clave")]
         [DataType(DataType.Password)]
         public string USU_PASSWORD { get; set; }
         [Display(Name = "Empresa")]
         public string EMP_CODIGO { get; set; }
-        public string USU_CODIGO { get; set; }
+        public string USU_NOMBRE { get; set; }
         public string EMAIL { get; set; }
         public string CARGO { get; set; }
-        public bool USU_ESTADO { get; set; }
-        public bool FLGPORTAL_APROB { get; set; }
-        public bool FLGPORTAL_COMPRAS { get; set; }
+        public string USU_NIVEL { get; set; }
+        public string ARCHIVO_FIRMA { get; set; }
+        public string NOMBRE_ARCHIVO { get; set; }
+        public string COD_AUDITORIA { get; set; }
+        public DateTime? USU_FEC_CREA { get; set; }
+        public DateTime? USU_FEC_INACTIVO { get; set; }
+
+        public bool? USU_ESTADO { get; set; }
+        public bool? FLGPORTAL_APROB { get; set; }
+        public bool? FLGPORTAL_COMPRAS { get; set; }
+        public bool? DIGITALIZA_FIRMA { get; set; }        
 
         public int Asc(string cadena)
         {
@@ -158,6 +173,56 @@ namespace Datos.Models
             catch (Exception)
             {
                 return input;
+            }
+        }
+
+        public bool ConsultarLicencia(string ruta, string ruc, string modulo)
+        {
+            HttpClient client = new HttpClient(new HttpClientHandler());
+            client.BaseAddress = new Uri("https://www.starsoftweb.com/ServicioLicenciaPortales/Api/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _CREDENCIALES);
+            HttpResponseMessage respuesta = new HttpResponseMessage();
+
+            JObject cadena = new JObject();
+            cadena.Add(new JProperty("ruc", ruc));
+            cadena.Add(new JProperty("modulo", modulo));
+
+            HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(cadena), Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(client.BaseAddress + ruta, httpContent).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                if (data.Contains("IsSuccess\":true"))
+                {
+                    DateTime Hoy = DateTime.Today;
+                    dynamic Listado = JsonConvert.DeserializeObject(data);
+
+                    string[] arreglo_fecha = Listado.fechaVigencia.ToString().Split(' ');
+
+                    DateTime fechaVigencia = Convert.ToDateTime(arreglo_fecha[0] + ' ' + arreglo_fecha[1]);
+
+                    if (fechaVigencia > Hoy)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
     }

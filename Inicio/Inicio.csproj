@@ -6,6 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\**" />
+    <Compile Remove="Data\**" />
+    <Content Remove="Areas\**" />
+    <Content Remove="Data\**" />
+    <EmbeddedResource Remove="Areas\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Areas\**" />
+    <None Remove="Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\MaestrasController.cs" />
+    <Compile Remove="Controllers\TestController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
@@ -54,5 +70,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Datos\Datos.csproj" />
   </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

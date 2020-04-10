@@ -1,4 +1,7 @@
 ﻿@model Datos.Models.REQUISC_PORTAL
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
     if (Model?.FECREQUI != null)
     {
@@ -137,6 +140,7 @@
 <!-- FIN MODAL GRID ARTICULOS -->
 
 <div class="col-sm-3 col-lg-2">
+    <input asp-for="COD_USUARIO" class="form-control" type="hidden" value="@HttpContextAccessor.HttpContext.Session.GetString("USU_CODIGO")" />
     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
     <div class="form-group">
         <label asp-for="NROREQUI" class="control-label"></label> *
@@ -215,7 +219,7 @@
     var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
     var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
     var datos_orden         = JSON.parse('@Html.Raw(orden)').value;
-    
+
     $(function () {
         $(".fecha").datepicker({
             language: 'es',
@@ -464,7 +468,7 @@
                     td.eq(6).text($("#centro_costo").val());
                     td.eq(7).text($("#nro_maquina").val());
                     td.eq(8).text($("#orden_fabricacion").val());
-                    td.eq(9).text($("#glosa_articulo").val());            
+                    td.eq(9).text($("#glosa_articulo").val());
                 });
             }
             limpiar_campos();
@@ -499,7 +503,7 @@
             $("#centro_costo").val(td.eq(6).text());
             $("#nro_maquina").val(td.eq(7).text());
             $("#orden_fabricacion").val(td.eq(8).text());
-            $("#glosa_articulo").val(td.eq(9).text());            
+            $("#glosa_articulo").val(td.eq(9).text());
             $('#m_articulos').modal('show')
         });
     }

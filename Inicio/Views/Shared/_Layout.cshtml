@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
     ViewData["Title"] = ".:Portal de Requerimientos:.";
 }
 <!DOCTYPE html>
@@ -96,6 +99,12 @@
                     </ul>
                 </div>
                 <ul class="order-1 order-md-2 navbar-nav navbar-no-expand ml-auto">
+                    <li>
+                        <a href="@Url.Action("Login", "Account")" class="nav-link ml-2" style="color:white;">
+                            <i class="nav-icon fa fa-power-off"></i>
+                            @HttpContextAccessor.HttpContext.Session.GetString("USU_NOMBRE");
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

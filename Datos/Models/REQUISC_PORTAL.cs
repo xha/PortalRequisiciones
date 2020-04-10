@@ -30,5 +30,7 @@ namespace Datos.Models
         [Required]
         [Display(Name = "Tipo de Doc.")]
         public string TipoDocumento { get; set; }
+        [Required]
+        public string COD_USUARIO { get; set; }
     }
 }

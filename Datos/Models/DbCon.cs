@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.EntityClient;
@@ -15,6 +16,15 @@ namespace Datos.Models
 
         }
 
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.Options.Extensions.OfType<RelationalOptionsExtension>().Any(ext => !string.IsNullOrEmpty(ext.ConnectionString) || ext.Connection != null))
+                optionsBuilder.UseSqlServer(@"...");
+
+            CustomizeConfiguration(ref optionsBuilder);
+            base.OnConfiguring(optionsBuilder);
+        }*/
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<USUARIO_COMP>()
@@ -22,7 +32,7 @@ namespace Datos.Models
         }
 
         public DbSet<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> CENTRO_COSTO { get; set; }
-        public DbSet<USUARIO_COMP> UsuarioModel { get; set; }
+        public DbSet<USUARIO_COMP> UsuarioModel { get; set; }   
 
         public string ConexDinamica(string datasour, string catalog, string user, string password)
         {
@@ -69,11 +79,22 @@ namespace Datos.Models
         }
 
         public DbSet<REQUISC_PORTAL> REQUISC_PORTAL { get; set; }
+        public DbSet<REQUISC> REQUISC { get; set; }
         public DbSet<REQUISD_PORTAL> REQUISD_PORTAL { get; set; }
         public DbSet<SP_PORTAL_LISTADO_AREA> AREA { get; set; }
         public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ> ARTICULO { get; set; }
         public DbSet<SP_PORTAL_LISTADO_SOLICITANTE> SOLICITANTE { get; set; }
         public DbSet<SP_PORTAL_LISTADO_ORDEN_FABRICACION> ORDEN_FABRICACION { get; set; }
+    }
+
+    public class BDCLIENTE : DbContext
+    {
+        public BDCLIENTE(DbContextOptions<BDCLIENTE> options) : base(options)
+        {
+
+        }
+
+        public DbSet<Clientes> TCliente { get; set; }
     }
 
     /*public bool ConsultaPost(string ruta, string ruc, string modulo)
