@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Datos.Models.REQUISC_PORTAL>
+﻿@model IEnumerable<Datos.Models.REQUISC>
 
 @{
     ViewData["Title"] = "Requisiciones de Servicios";
@@ -30,25 +30,19 @@
                         <thead class="bg-info">
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.NROREQUI)
+                                    @Html.DisplayNameFor(model => model.NUMERO)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.CODSOLIC)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.FECREQUI)
-                                </th>
-                                <th style="width: 30%">
-                                    @Html.DisplayNameFor(model => model.GLOSA)
+                                    @Html.DisplayNameFor(model => model.SOLICITANTE)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.AREA)
                                 </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.TIPOREQUI)
+                                <th style="width: 30%">
+                                    @Html.DisplayNameFor(model => model.FECHA)
                                 </th>
                                 <th>
-                                    Estatus
+                                    @Html.DisplayNameFor(model => model.ESTADO)
                                 </th>
                                 <th style="max-width: 5px"></th>
                                 <th style="max-width: 5px"></th>
@@ -84,11 +78,12 @@
             bInfo: false,
             data: datos,
             columns: [
-                { data: "nrorequi" },
-                { data: "codsolic" },
+                { data: "numero" },
+                { data: "solicitante" },
+                { data: "area" },
                 {
                     "render": function (data, type, row) {
-                        var arreglo1 = row.fecrequi.split("T");
+                        var arreglo1 = row.fecha.split("T");
                         var arreglo = arreglo1[0].split("-");
                         if (arreglo[2].length < 2) arreglo[2] = "0" + arreglo[2];
                         if (arreglo[1].length < 2) arreglo[1] = "0" + arreglo[1];
@@ -97,19 +92,16 @@
                         return myDate;
                     }
                 },
-                { data: "glosa" },
-                { data: "area" },
-                { data: "tiporequi" },
-                { data: "tipoDocumento" },
+                { data: "estado" },
                 {
                     render: function (data, type, row)
                     {
-                        return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Servicios/Edit?codigo=")'+row.nrorequi+'"><i class="fa fa-edit"></i></a>';
+                        return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Servicios/Edit?codigo=")'+row.numero+'"><i class="fa fa-edit"></i></a>';
                     }
                 },
                 {
                     data: null, render: function (data, type, row) {
-                        return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rServicio(\'' + row.nrorequi + '\')"><i class="fa fa-trash"></i></a>';
+                        return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rServicio(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
                     }
                 },
             ]

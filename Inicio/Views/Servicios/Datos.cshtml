@@ -1,4 +1,7 @@
 ﻿@model Datos.Models.REQUISC_PORTAL
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
     if (Model?.FECREQUI != null)
     {
@@ -119,11 +122,12 @@
 
 <div class="col-sm-3 col-lg-2">
     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
+    <input asp-for="COD_USUARIO" class="form-control" type="hidden" value="@HttpContextAccessor.HttpContext.Session.GetString("USU_CODIGO")" />
     <div class="form-group">
         <label asp-for="NROREQUI" class="control-label"></label> *
         @if (Model?.NROREQUI == null)
         {
-            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" maxlength="10" />
+            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" maxlength="10" onblur="buscar_req(this.value)" />
         }
         else
         {
@@ -450,5 +454,25 @@
                 $("#r_"+linea).remove();
             }
         });
+    }
+
+    function buscar_req(numero) {
+        if (numero.trim() != "") {
+            $.ajax(
+                {
+                    type: "GET",
+                    dataType: "json",
+                    url: "@Url.Content("~/Servicios/RequisicionExiste")",
+                    data: "codigo="+numero,
+                    cache: false,
+                    success: function (datos) {
+                        if (datos) {
+                            MostrarMensaje("Rojo", "El número de la requisición ya existe");
+                            $("#NROREQUI").val("");
+                            $("#NROREQUI").focus();
+                        }
+                    },
+                });
+        }
     }
 </script>

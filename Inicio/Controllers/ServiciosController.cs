@@ -7,15 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Datos.Models;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Session;
+using Microsoft.AspNetCore.Http;
+using Inicio.Services;
 
 namespace Inicio.Controllers
 {
     public class ServiciosController : Controller
     {
-        private readonly BDWENCO Wenco;
-        private readonly BDCOMUN Comun;
+        private static BDWENCO Wenco;
+        private static BDCOMUN Comun;
         public REQUISC_PORTAL Modelo = new REQUISC_PORTAL();
         public REQUISD_PORTAL ModeloDetalle = new REQUISD_PORTAL();
+        public USUARIO_COMP ModeloUsuComp = new USUARIO_COMP();
 
         public ServiciosController(BDCOMUN context, BDWENCO context2)
         {
@@ -27,7 +32,8 @@ namespace Inicio.Controllers
         //LLAMADOS JSON
         public JsonResult Areas()
         {
-            List<SP_PORTAL_LISTADO_AREA> area = Comun?.AREA.FromSqlRaw("SP_PORTAL_LISTADO_AREA '003'").ToList();
+            string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_AREA> area = Comun?.AREA.FromSqlRaw("SP_PORTAL_LISTADO_AREA '" + empresa + "'").ToList();
 
             var Resultado = (from N in area
                              orderby N.AREA
@@ -36,11 +42,12 @@ namespace Inicio.Controllers
             return Json(Resultado);
         }
 
-        public JsonResult Servicios()
+        public JsonResult LServicios()
         {
-            List<SP_PORTAL_LISTADO_ARTICULO_RQ> servicio = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '003BDCOMUN'").ToList();
+            string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_ARTICULO_RQ> articulo = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '" + empresa + "BDCOMUN'").ToList();
 
-            var Resultado = (from N in servicio
+            var Resultado = (from N in articulo
                              orderby N.ARTICULO
                              select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.UNIDAD });
 
@@ -49,7 +56,8 @@ namespace Inicio.Controllers
 
         public JsonResult Solicitantes()
         {
-            List<SP_PORTAL_LISTADO_SOLICITANTE> solicitante = Comun?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '003'").ToList();
+            string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_SOLICITANTE> solicitante = Comun?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '" + empresa + "'").ToList();
 
             var Resultado = (from N in solicitante
                              orderby N.SOLICITANTE
@@ -60,18 +68,30 @@ namespace Inicio.Controllers
 
         public JsonResult CentroCosto()
         {
-            List<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> centro_costo = Wenco?.CENTRO_COSTO.FromSqlRaw("SP_PORTAL_LISTADO_CENTROCOSTO_COMP '003'").ToList();
+            string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> centro_costo = Wenco?.CENTRO_COSTO.FromSqlRaw("SP_PORTAL_LISTADO_CENTROCOSTO_COMP '" + empresa + "'").ToList();
 
             var Resultado = (from N in centro_costo
                              orderby N.CENTRO_COSTO
                              select N);
 
             return Json(Resultado);
+            /* string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> centro_costo = Wenco?.CENTRO_COSTO.FromSqlRaw("SP_PORTAL_LISTADO_CENTROCOSTO_COMP '" + empresa + "'").ToList();
+
+            var Resultado = (from N in centro_costo
+                             orderby N.CENTRO_COSTO
+                             select N);
+
+            List<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> retorno = Resultado.ToList<SP_PORTAL_LISTADO_CENTROCOSTO_COMP>();
+
+            return retorno;*/
         }
 
         public JsonResult OrdenFabricacion()
         {
-            List<SP_PORTAL_LISTADO_ORDEN_FABRICACION> orden = Comun?.ORDEN_FABRICACION.FromSqlRaw("SP_PORTAL_LISTADO_ORDEN_FABRICACION '003'").ToList();
+            string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_ORDEN_FABRICACION> orden = Comun?.ORDEN_FABRICACION.FromSqlRaw("SP_PORTAL_LISTADO_ORDEN_FABRICACION '" + empresa + "'").ToList();
 
             var Resultado = (from N in orden
                              orderby N.ORDEN_FABRICACION
@@ -83,10 +103,18 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoServicios()
         {
-            List<REQUISC_PORTAL> Servicios = Comun?.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RS").ToList();
+            string empresa = "[" + HttpContext.Session.GetString("empresa").ToString() + "BDCOMUN]";
+            //List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ").ToList();
+            var cadena = "SELECT RC.NROREQUI AS NUMERO,S.TDESCRI AS SOLICITANTE,A.AREA_DESCRIPCION AS AREA,RC.FECREQUI AS FECHA,R.ESTREQUI AS ESTADO ";
+            cadena += "FROM " + empresa + ".DBO.REQUISC_PORTAL AS RC ";
+            cadena += "LEFT JOIN " + empresa + ".DBO.TABAYU AS S ON S.TCOD = '12' AND S.TCLAVE = RC.CODSOLIC ";
+            cadena += "LEFT JOIN " + empresa + ".DBO.AREA AS A ON A.AREA_CODIGO = RC.AREA ";
+            cadena += "LEFT JOIN " + empresa + ".DBO.REQUISC AS R ON R.TIPOREQUI = RC.TIPOREQUI AND R.NRO_REQUERIMIENTO_PORTAL = RC.NROREQUI ";
+            cadena += "WHERE RC.TIPOREQUI='RS' ORDER BY RC.NROREQUI";
+            List<REQUISC> compras = Comun?.REQUISC.FromSqlRaw(cadena).ToList();
 
-            var Resultado = (from N in Servicios
-                             orderby N.FECREQUI
+            var Resultado = (from N in compras
+                             orderby N.FECHA
                              select N);
 
             return Json(Resultado);
@@ -95,7 +123,8 @@ namespace Inicio.Controllers
         [HttpPost]
         public JsonResult ListadoDetalle(string codigo)
         {
-            List<REQUISD_PORTAL> detalle = Comun?.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo).ToList();
+            RehacerConexion();
+            List<REQUISD_PORTAL> detalle = Comun?.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo && p.TIPOREQUI == "RS").ToList();
 
             var Resultado = (from N in detalle
                              orderby N.REQITEM
@@ -104,10 +133,60 @@ namespace Inicio.Controllers
             return Json(Resultado);
         }
         /********************************************************************************************************************************************/
+        public void RehacerConexion()
+        {
+            dynamic d = TempData.Get<dynamic>("DataServer");
+            if (d != null)
+            {
+                JObject datosSesion = new JObject();
+                datosSesion.Add(new JProperty("servidor", ModeloUsuComp.Desencriptar(d.servidor.ToString())));
+                datosSesion.Add(new JProperty("Base_datos", ModeloUsuComp.Desencriptar(d.Base_datos.ToString())));
+                datosSesion.Add(new JProperty("usuario_server", ModeloUsuComp.Desencriptar(d.usuario_server.ToString())));
+                datosSesion.Add(new JProperty("contrasenia", ModeloUsuComp.Desencriptar(d.contrasenia.ToString())));
+                datosSesion.Add(new JProperty("empresa", TempData["USU_EMPRESA"].ToString()));
+                HttpContext.Session.SetString("empresa", TempData["USU_EMPRESA"].ToString());
+                HttpContext.Session.SetString("USU_CODIGO", TempData["USU_CODIGO"].ToString());
+                HttpContext.Session.SetString("USU_NOMBRE", TempData["USU_NOMBRE"].ToString());
+
+                HttpContext.Session.SetObjectAsJson("DataServer", datosSesion);
+            }
+
+            TempData.Keep();
+            dynamic s = HttpContext.Session.GetObjectFromJson<dynamic>("DataServer");
+
+            var optionsBuilder = new DbContextOptionsBuilder<BDWENCO>();
+            //services.AddDbContext<BDCOMUN>(options => options.UseSqlServer(Configuration.GetConnectionString("BDCOMUNConnectionString")));
+            string cadena = "Data Source=" + s.servidor + ";Initial Catalog=" + s.Base_datos + ";MultipleActiveResultSets=true;User ID=" + s.usuario_server + ";Password=" + s.contrasenia + "";
+            optionsBuilder.UseSqlServer(cadena);
+            Wenco = new BDWENCO(optionsBuilder.Options);
+
+            var optionsBuilder2 = new DbContextOptionsBuilder<BDCOMUN>();
+            cadena = "Data Source=" + s.servidor + ";Initial Catalog=" + s.empresa + "BDCOMUN;MultipleActiveResultSets=true;User ID=" + s.usuario_server + ";Password=" + s.contrasenia + "";
+            optionsBuilder2.UseSqlServer(cadena);
+            Comun = new BDCOMUN(optionsBuilder2.Options);
+        }
+
+        [HttpGet]
+        public bool RequisicionExiste(string codigo)
+        {
+            RehacerConexion();
+            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RS" && p.NROREQUI == codigo).ToList();
+
+            if (compras.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            };
+        }
+        /********************************************************************************************************************************************/
 
         // GET: Servicios
         public ActionResult Index()
         {
+            RehacerConexion();
             JsonResult Servicios = ListadoServicios();
             ViewBag.ListadoServicios = Servicios;
             ViewBag.AServicios = "activo";
@@ -118,9 +197,10 @@ namespace Inicio.Controllers
         // GET: Servicios/Create
         public ActionResult Create()
         {
+            RehacerConexion();
             ViewBag.AServicios = "activo";
             JsonResult areas = Areas();
-            JsonResult servicios = Servicios();
+            JsonResult servicios = LServicios();
             JsonResult solicitantes = Solicitantes();
             JsonResult centro = CentroCosto();
             JsonResult orden = OrdenFabricacion();
@@ -135,8 +215,9 @@ namespace Inicio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL modelo)
+        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
+            RehacerConexion();
             if (ModelState.IsValid)
             {
                 try
@@ -184,7 +265,7 @@ namespace Inicio.Controllers
 
             ViewBag.AServicios = "activo";
             JsonResult areas = Areas();
-            JsonResult servicios = Servicios();
+            JsonResult servicios = LServicios();
             JsonResult solicitantes = Solicitantes();
             JsonResult centro = CentroCosto();
             JsonResult orden = OrdenFabricacion();
@@ -201,6 +282,7 @@ namespace Inicio.Controllers
         public async Task<IActionResult> Edit(string codigo)
         {
             ViewBag.AServicios = "activo";
+            RehacerConexion();
             if (codigo == null)
             {
                 return NotFound();
@@ -213,7 +295,7 @@ namespace Inicio.Controllers
             }
 
             JsonResult areas = Areas();
-            JsonResult servicios = Servicios();
+            JsonResult servicios = LServicios();
             JsonResult solicitantes = Solicitantes();
             JsonResult centro = CentroCosto();
             JsonResult orden = OrdenFabricacion();
@@ -228,8 +310,9 @@ namespace Inicio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento")] REQUISC_PORTAL modelo)
+        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
+            RehacerConexion();
             if (ModelState.IsValid)
             {
                 try
@@ -285,6 +368,7 @@ namespace Inicio.Controllers
 
             try
             {
+                RehacerConexion();
                 //ESTA ES LA FORMA FACIL
                 Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + id);
 

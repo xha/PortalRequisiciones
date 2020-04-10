@@ -109,7 +109,8 @@ namespace Inicio.Controllers
             cadena += "FROM " + empresa + ".DBO.REQUISC_PORTAL AS RC ";
             cadena += "LEFT JOIN "+ empresa+".DBO.TABAYU AS S ON S.TCOD = '12' AND S.TCLAVE = RC.CODSOLIC ";
             cadena += "LEFT JOIN " + empresa + ".DBO.AREA AS A ON A.AREA_CODIGO = RC.AREA ";
-            cadena += "LEFT JOIN " + empresa + ".DBO.REQUISC AS R ON R.TIPOREQUI = RC.TIPOREQUI AND R.NRO_REQUERIMIENTO_PORTAL = RC.NROREQUI  ORDER BY RC.NROREQUI;";
+            cadena += "LEFT JOIN " + empresa + ".DBO.REQUISC AS R ON R.TIPOREQUI = RC.TIPOREQUI AND R.NRO_REQUERIMIENTO_PORTAL = RC.NROREQUI ";
+            cadena += "WHERE RC.TIPOREQUI='RQ' ORDER BY RC.NROREQUI";
             List<REQUISC> compras = Comun?.REQUISC.FromSqlRaw(cadena).ToList();
 
             var Resultado = (from N in compras
@@ -123,7 +124,7 @@ namespace Inicio.Controllers
         public JsonResult ListadoDetalle(string codigo)
         {
             RehacerConexion();
-            List<REQUISD_PORTAL> detalle = Comun?.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo).ToList();
+            List<REQUISD_PORTAL> detalle = Comun?.REQUISD_PORTAL.Where(p => p.NROREQUI == codigo && p.TIPOREQUI == "RQ").ToList();
 
             var Resultado = (from N in detalle
                              orderby N.REQITEM
@@ -131,7 +132,7 @@ namespace Inicio.Controllers
 
             return Json(Resultado);
         }
-
+        /********************************************************************************************************************************************/
         public void RehacerConexion()
         {
             dynamic d = TempData.Get<dynamic>("DataServer");
@@ -164,14 +165,30 @@ namespace Inicio.Controllers
             optionsBuilder2.UseSqlServer(cadena);
             Comun = new BDCOMUN(optionsBuilder2.Options);
         }
+
+        [HttpGet]
+        public bool RequisicionExiste(string codigo)
+        {
+            RehacerConexion();
+            List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ" && p.NROREQUI == codigo).ToList();
+
+            if (compras.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            };
+        }
         /********************************************************************************************************************************************/
-            // GET: Compras
+        // GET: Compras
         [Authorize]
         public IActionResult Index()
         {
             RehacerConexion();
             JsonResult compras = ListadoCompras();
-            JsonResult areas = Areas();
+            /*JsonResult areas = Areas();
             JsonResult articulos = Articulos();
             JsonResult solicitantes = Solicitantes();
             JsonResult centro = CentroCosto();
@@ -180,7 +197,7 @@ namespace Inicio.Controllers
             HttpContext.Session.SetObjectAsJson("articulos", articulos);
             HttpContext.Session.SetObjectAsJson("solicitantes", solicitantes);
             HttpContext.Session.SetObjectAsJson("centro", centro);
-            HttpContext.Session.SetObjectAsJson("orden", orden);
+            HttpContext.Session.SetObjectAsJson("orden", orden);*/
 
             ViewBag.ListadoCompras = compras;
             ViewBag.ACompras = "activo";
@@ -258,10 +275,7 @@ namespace Inicio.Controllers
                 }
 
                 return RedirectToAction(nameof(Index));
-            } else
-            {
-
-            }
+            } 
 
             ViewBag.ACompras = "activo";
             JsonResult areas = Areas();

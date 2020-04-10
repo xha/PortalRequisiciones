@@ -19,21 +19,21 @@
                 <input type="hidden" name="detalle" id="detalle" />
                 @Html.Partial(nameof(Datos))
             </div>
-            <div class="row my-1">
-                <div class="col-sm-12 text-right">
-                    <div class="form-group">
-                        <button type="reset" class="btn btn-danger">
-                            <i class="fa fa-times"></i>
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-success" onclick="enviar_datos()">
-                            <i class="fa fa-save"></i>
-                            Grabar
-                        </button>
-                    </div>
+        </form>
+        <div class="row my-1">
+            <div class="col-sm-12 text-right">
+                <div class="form-group">
+                    <button type="reset" class="btn btn-danger">
+                        <i class="fa fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success" onclick="enviar_datos()">
+                        <i class="fa fa-save"></i>
+                        Grabar
+                    </button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -63,7 +63,7 @@
     function enviar_datos() {
         var details = [];
 
-        $("#tabla_articulo tr").each(function (index) {
+        $("#tabla_servicio tr").each(function (index) {
             var td = $(this).children("td");
             if (td.eq(0).text() != "") {
                 details.push({
@@ -75,7 +75,7 @@
                     centro_costo: td.eq(6).text(),
                     nro_maquina: td.eq(7).text(),
                     orden_fabricacion: td.eq(8).text(),
-                    glosa_articulo: td.eq(9).text(),
+                    glosa_servicio: td.eq(9).text(),
                 });
             }
             $("#detalle").val(JSON.stringify(details));

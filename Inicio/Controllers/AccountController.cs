@@ -156,19 +156,19 @@ namespace Inicio.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("Error", "Usuario o clave inválida");
+                        ModelState.AddModelError("", "Usuario o clave inválida");
                         return View();
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("Error", "Licencia no válida");
+                    ModelState.AddModelError("", "Licencia no válida");
                     return View();
                 }
             }            
             else
             {
-                ModelState.AddModelError("Error", "RUC No válido");
+                ModelState.AddModelError("", "RUC No válido");
                 return View();
             }
         }
