@@ -115,7 +115,7 @@ namespace Inicio
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Compras}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=Login}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

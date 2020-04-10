@@ -172,5 +172,12 @@ namespace Inicio.Controllers
                 return View();
             }
         }
+
+        [Authorize]
+        public ActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
