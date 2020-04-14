@@ -55,18 +55,18 @@ namespace Inicio.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
-            HttpContext.SignOutAsync(
+            await HttpContext.SignOutAsync(
             CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
         [AllowAnonymous]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(Login userModel)
+        public async Task<IActionResult> Login(Login userModel)
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (!ModelState.IsValid)
             {
                 return View(userModel);
@@ -145,7 +145,7 @@ namespace Inicio.Controllers
                             RedirectUri = "/Account/Login"
                         };
 
-                        HttpContext.SignInAsync(
+                        await HttpContext.SignInAsync(
                             CookieAuthenticationDefaults.AuthenticationScheme,
                             new ClaimsPrincipal(claimsIdentity),
                             authProperties);

@@ -288,7 +288,7 @@ namespace Inicio.Controllers
                 return NotFound();
             }
 
-            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, "RQ");
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, "RS");
             if (modelo == null)
             {
                 return NotFound();
@@ -309,7 +309,7 @@ namespace Inicio.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
             RehacerConexion();
@@ -379,7 +379,7 @@ namespace Inicio.Controllers
                 //Comun.SaveChanges();
                 //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
 
-                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id, "RQ"));
+                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id, "RS"));
                 Comun.SaveChanges();
 
                 jsonData = new
