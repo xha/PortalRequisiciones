@@ -350,7 +350,7 @@ namespace Inicio.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
             RehacerConexion();
@@ -419,7 +419,7 @@ namespace Inicio.Controllers
             {
                 RehacerConexion();
                 //ESTA ES LA FORMA FACIL
-                //Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + id);
+                Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + id);
 
                 //ESTA FORMA DA ERROR A MULTIPLES DELETE
                 //Comun.REQUISD_PORTAL.RemoveRange(Comun.REQUISD_PORTAL.Where(s => s.NROREQUI == id));
@@ -443,7 +443,7 @@ namespace Inicio.Controllers
                 jsonData = new
                 {
                     resultado = false,
-                    error = "Error en la ejecución de comando"
+                    error = "No se grabaron los cambios"
                 };
             }
 
