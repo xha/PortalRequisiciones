@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = "Requisiciones de Compras";
     var datos_json = Json.Serialize(ViewBag.ListadoCompras);
+    DateTime hoy = DateTime.Now;
+
+    string miVariable = hoy.ToString("dd/MM/yyyy");
+    ViewBag.FechaHoy = miVariable;
+    miVariable = hoy.ToString("MM/yyyy");
+    ViewBag.Fecha1 = "01/"+miVariable;
 }
 
 <div class="container-fluid">
@@ -11,6 +17,23 @@
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item">@Html.ActionLink(ViewData["Title"].ToString(), "Index", "Compras")</li>
             </ol>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-sm-4 col-md-2">
+            <label>Fecha Desde</label>
+            <input id="fecha_desde" class="form-control fecha" value="@ViewBag.Fecha1" />
+        </div>
+        <div class="col-sm-4 col-md-2">
+            <label>Fecha Hasta</label>
+            <input id="fecha_hasta" class="form-control fecha" value="@ViewBag.FechaHoy" />
+        </div>
+        <div class="col-sm-4 col-md-2">
+            <label>&nbsp;</label><br />
+            <button class="btn btn-primary" onclick="buscar_index()">
+                <i class="fa fa-search"></i>
+                Buscar
+            </button>
         </div>
     </div>
     <div class="row">
@@ -25,7 +48,7 @@
                         Nuevo
                     </a>
                 </div>
-                <div class="card-body p-2"> 
+                <div class="card-body p-2">
                     <table id="GridComprasIndex" class="table table-hover table-striped pre-scrollable2 dataTables">
                         <thead class="bg-info">
                             <tr>
@@ -57,20 +80,38 @@
 </div>
 <script>
     $(function () {
-        /*$.ajax({
-            type: 'POST',
-            url: 'Url.Action("ListadoCompras", "Compras")',
-            data: '',
-            cache: false,
-            success: function (result) {
-                datos_json = result;
-                console.log(result);
-                //activar_datos();
-            },
-        });*/
+        $(".fecha").datepicker({
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            startDate: '-1Y',
+            endDate: '+1Y',
+            orientation: 'bottom'
+        });
+
+        $(".fecha").inputmask('99/99/9999', { numericInput: true });
+
         var datos = JSON.parse('@Html.Raw(datos_json)');
         activar_datos(datos.value);
     });
+
+    function buscar_index() {
+        var fecha_desde = $("#fecha_desde").val();
+        var fecha_hasta = $("#fecha_hasta").val();
+
+        if ((fecha_desde != "") && (fecha_hasta != "")) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ListadoCompras", "Compras")',
+                dataType: "json",
+                data: 'fecha_desde='+fecha_desde+'&fecha_hasta='+fecha_hasta,
+                cache: false,
+                success: function (result) {
+                    activar_datos(result);
+                },
+            });
+        }
+    }
 
     function activar_datos(datos) {
         $("#GridComprasIndex").DataTable({
@@ -141,7 +182,7 @@
                             });
                         };
                     },
-                    error: function (xhr) { 
+                    error: function (xhr) {
                         swal({
                             title: "Error",
                             text: xhr.responseText,

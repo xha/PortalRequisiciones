@@ -1,19 +1,18 @@
-﻿using System;
+﻿using Datos.Models;
+using Inicio.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Datos.Models;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Session;
-using Microsoft.AspNetCore.Http;
-using Inicio.Services;
 
 namespace Inicio.Controllers
 {
+    [Authorize]
     public class ComprasController : Controller
     {
         private static BDWENCO Wenco;
@@ -33,7 +32,7 @@ namespace Inicio.Controllers
         public JsonResult Areas()
         {
             string empresa = HttpContext.Session.GetString("empresa");
-            List<SP_PORTAL_LISTADO_AREA> area = Comun?.AREA.FromSqlRaw("SP_PORTAL_LISTADO_AREA '" + empresa + "'").ToList();
+            List<SP_PORTAL_LISTADO_AREA> area = Wenco?.AREA.FromSqlRaw("SP_PORTAL_LISTADO_AREA '" + empresa + "'").ToList();
 
             var Resultado = (from N in area
                              orderby N.AREA
@@ -45,11 +44,26 @@ namespace Inicio.Controllers
         public JsonResult Articulos()
         {
             string empresa = HttpContext.Session.GetString("empresa");
-            List<SP_PORTAL_LISTADO_ARTICULO_RQ> articulo = Comun?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '" + empresa + "BDCOMUN'").ToList();
+            string tipo = HttpContext.Session.GetString("TipoDocumento");
+            List<SP_PORTAL_LISTADO_ARTICULO_RQ> articulo = Wenco?.ARTICULO.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ '" + empresa + "BDCOMUN','" + tipo + "'").ToList();
 
             var Resultado = (from N in articulo
                              orderby N.ARTICULO
-                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.UNIDAD });
+                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.UNIDAD, N.FAMILIA });
+
+            return Json(Resultado);
+        }
+
+        [HttpGet]
+        public JsonResult ArticulosPorAlmacen(string codigo)
+        {
+            RehacerConexion();
+            string empresa = HttpContext.Session.GetString("empresa");
+            List<SP_PORTAL_LISTADO_ARTICULO_RQ_POR_ALMACEN> articulo = Wenco?.ARTICULOALM.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ_POR_ALMACEN '" + empresa + "BDCOMUN','" + codigo + "'").ToList();
+
+            var Resultado = (from N in articulo
+                             orderby N.ARTICULO
+                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.COD_ALMACEN, N.UNIDAD, N.ALMACEN });
 
             return Json(Resultado);
         }
@@ -57,7 +71,7 @@ namespace Inicio.Controllers
         public JsonResult Solicitantes()
         {
             string empresa = HttpContext.Session.GetString("empresa");
-            List<SP_PORTAL_LISTADO_SOLICITANTE> solicitante = Comun?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '" + empresa + "'").ToList();
+            List<SP_PORTAL_LISTADO_SOLICITANTE> solicitante = Wenco?.SOLICITANTE.FromSqlRaw("SP_PORTAL_LISTADO_SOLICITANTE '" + empresa + "'").ToList();
 
             var Resultado = (from N in solicitante
                              orderby N.SOLICITANTE
@@ -91,7 +105,7 @@ namespace Inicio.Controllers
         public JsonResult OrdenFabricacion()
         {
             string empresa = HttpContext.Session.GetString("empresa");
-            List<SP_PORTAL_LISTADO_ORDEN_FABRICACION> orden = Comun?.ORDEN_FABRICACION.FromSqlRaw("SP_PORTAL_LISTADO_ORDEN_FABRICACION '"+empresa+"'").ToList();
+            List<SP_PORTAL_LISTADO_ORDEN_FABRICACION> orden = Wenco?.ORDEN_FABRICACION.FromSqlRaw("SP_PORTAL_LISTADO_ORDEN_FABRICACION '" + empresa + "'").ToList();
 
             var Resultado = (from N in orden
                              orderby N.ORDEN_FABRICACION
@@ -101,16 +115,17 @@ namespace Inicio.Controllers
         }
 
         [HttpPost]
-        public JsonResult ListadoCompras()
+        public JsonResult ListadoCompras(string fecha_desde, string fecha_hasta)
         {
-            string empresa = "["+ HttpContext.Session.GetString("empresa").ToString() + "BDCOMUN]";
+            RehacerConexion();
+            string empresa = "[" + HttpContext.Session.GetString("empresa").ToString() + "BDCOMUN]";
             //List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ").ToList();
             var cadena = "SELECT RC.NROREQUI AS NUMERO,S.TDESCRI AS SOLICITANTE,A.AREA_DESCRIPCION AS AREA,RC.FECREQUI AS FECHA,R.ESTREQUI AS ESTADO ";
             cadena += "FROM " + empresa + ".DBO.REQUISC_PORTAL AS RC ";
-            cadena += "LEFT JOIN "+ empresa+".DBO.TABAYU AS S ON S.TCOD = '12' AND S.TCLAVE = RC.CODSOLIC ";
+            cadena += "LEFT JOIN " + empresa + ".DBO.TABAYU AS S ON S.TCOD = '12' AND S.TCLAVE = RC.CODSOLIC ";
             cadena += "LEFT JOIN " + empresa + ".DBO.AREA AS A ON A.AREA_CODIGO = RC.AREA ";
             cadena += "LEFT JOIN " + empresa + ".DBO.REQUISC AS R ON R.TIPOREQUI = RC.TIPOREQUI AND R.NRO_REQUERIMIENTO_PORTAL = RC.NROREQUI ";
-            cadena += "WHERE RC.TIPOREQUI='RQ' ORDER BY RC.NROREQUI";
+            cadena += "WHERE RC.TIPOREQUI='RQ' and RC.FECREQUI BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' ORDER BY RC.NROREQUI";
             List<REQUISC> compras = Comun?.REQUISC.FromSqlRaw(cadena).ToList();
 
             var Resultado = (from N in compras
@@ -128,6 +143,18 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in detalle
                              orderby N.REQITEM
+                             select N);
+
+            return Json(Resultado);
+        }
+
+        [HttpGet]
+        public JsonResult ListadoErrores(string codigo)
+        {
+            RehacerConexion();
+            List<OBS_PORTAL_RQ> obs = Comun.OBS.Where(p => p.NRO_RQ == codigo).ToList();
+
+            var Resultado = (from N in obs
                              select N);
 
             return Json(Resultado);
@@ -181,13 +208,30 @@ namespace Inicio.Controllers
                 return false;
             };
         }
+
+        [HttpGet]
+        public string Correlativo()
+        {
+            string correl = "";
+            int maximo = Convert.ToInt32(Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ").Max(p => p.NROREQUI)) + 1;
+            int minimo = maximo.ToString().Length;
+            for (int i = minimo; i < 10; i++) correl += "0";
+
+            return correl + maximo;
+        }
         /********************************************************************************************************************************************/
         // GET: Compras
         [Authorize]
         public IActionResult Index()
         {
-            RehacerConexion();
-            JsonResult compras = ListadoCompras();
+            DateTime hoy = DateTime.Now;
+
+            string fecha_hasta = hoy.ToString("dd/MM/yyyy");
+            string fecha_desde = hoy.ToString("MM/yyyy");
+            fecha_desde = "01/" + fecha_desde;
+
+            JsonResult compras = ListadoCompras(fecha_desde, fecha_hasta);
+            HttpContext.Session.SetString("TipoDocumento", "RQ");
             /*JsonResult areas = Areas();
             JsonResult articulos = Articulos();
             JsonResult solicitantes = Solicitantes();
@@ -207,7 +251,6 @@ namespace Inicio.Controllers
         }
 
         // GET: Compras/Create
-        [Authorize]
         public IActionResult Create()
         {
             RehacerConexion();
@@ -229,7 +272,7 @@ namespace Inicio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
+        public async Task<IActionResult> Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
             RehacerConexion();
             if (ModelState.IsValid)
@@ -237,13 +280,17 @@ namespace Inicio.Controllers
                 try
                 {
                     string hora = DateTime.Now.ToString("hh:mm:ss");
-                    modelo.NROREQUI = modelo.NROREQUI.Trim();
+                    modelo.NROREQUI = Correlativo();
                     //modelo.FECREQUI = Convert.ToDateTime(modelo.FECREQUI + " " + hora);
                     Comun.REQUISC_PORTAL.Add(modelo);
-                    Comun.SaveChanges();
+                    await Comun.SaveChangesAsync();
+                    /*JsonResult errores = ListadoErrores(modelo.NROREQUI);
+                    ViewBag.ListadoErrores = errores;
+                    ViewBag.Error = "No se grabó la operación";*/
 
                     JArray ArrayDetalle = JArray.Parse(detalle);
                     int i = 0;
+                    int longitud = ArrayDetalle.Count;
                     foreach (JObject item in ArrayDetalle)
                     {
                         i++;
@@ -260,22 +307,30 @@ namespace Inicio.Controllers
                         ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
                         ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
                         ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
-                        ModeloDetalle.LISTO_CARGAR = true;
+                        if (i == longitud)
+                        {
+                            ModeloDetalle.LISTO_CARGAR = true;
+                        }
+                        else
+                        {
+                            ModeloDetalle.LISTO_CARGAR = false;
+                        }
+
                         ModeloDetalle.ESTADO = false;
 
                         Comun.REQUISD_PORTAL.Add(ModeloDetalle);
-                        //await Comun.SaveChangesAsync();
-                        Comun.SaveChanges();
-                    }                    
+                        await Comun.SaveChangesAsync();
+                        //Comun.SaveChanges();
+                    }
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    ViewBag.Error = "Error al grabar";
+                    ViewBag.Error = "Faltan campos importantes";
                     return View();
                 }
 
                 return RedirectToAction(nameof(Index));
-            } 
+            }
 
             ViewBag.ACompras = "activo";
             JsonResult areas = Areas();
@@ -293,7 +348,6 @@ namespace Inicio.Controllers
         }
 
         // GET: Test/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(string codigo)
         {
             ViewBag.ACompras = "activo";
@@ -325,7 +379,7 @@ namespace Inicio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
+        public async Task<IActionResult> Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
             RehacerConexion();
             if (ModelState.IsValid)
@@ -335,10 +389,11 @@ namespace Inicio.Controllers
                     Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI);
                     string hora = DateTime.Now.ToString("hh:mm:ss");
                     Comun.REQUISC_PORTAL.Update(modelo);
-                    Comun.SaveChanges();
+                    await Comun.SaveChangesAsync();
 
                     JArray ArrayDetalle = JArray.Parse(detalle);
                     int i = 0;
+                    int longitud = ArrayDetalle.Count;
                     foreach (JObject item in ArrayDetalle)
                     {
                         i++;
@@ -355,12 +410,19 @@ namespace Inicio.Controllers
                         ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
                         ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
                         ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
-                        ModeloDetalle.LISTO_CARGAR = true;
+                        if (i == longitud)
+                        {
+                            ModeloDetalle.LISTO_CARGAR = true;
+                        }
+                        else
+                        {
+                            ModeloDetalle.LISTO_CARGAR = false;
+                        }
                         ModeloDetalle.ESTADO = false;
 
                         Comun.REQUISD_PORTAL.Add(ModeloDetalle);
-                        Comun.SaveChanges();
-                    }                    
+                        await Comun.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -384,7 +446,6 @@ namespace Inicio.Controllers
             return View(modelo);
         }
 
-        [Authorize]
         [HttpPost]
         public JsonResult Delete(string id)
         {
@@ -398,7 +459,7 @@ namespace Inicio.Controllers
             {
                 RehacerConexion();
                 //ESTA ES LA FORMA FACIL
-                Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI="+id);
+                //Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + id);
 
                 //ESTA FORMA DA ERROR A MULTIPLES DELETE
                 //Comun.REQUISD_PORTAL.RemoveRange(Comun.REQUISD_PORTAL.Where(s => s.NROREQUI == id));
@@ -407,7 +468,7 @@ namespace Inicio.Controllers
                 //Comun.SaveChanges();
                 //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
 
-                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id,"RQ"));
+                Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id, "RQ"));
                 Comun.SaveChanges();
 
                 jsonData = new
@@ -416,7 +477,9 @@ namespace Inicio.Controllers
                     error = "",
                 };
 
-            }  catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 jsonData = new
                 {
                     resultado = false,

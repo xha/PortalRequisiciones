@@ -16,6 +16,7 @@ using Datos.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Inicio.Services;
+using System.Net;
 
 namespace Inicio
 {
@@ -51,10 +52,11 @@ namespace Inicio
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromSeconds(3);
+                options.ExpireTimeSpan = TimeSpan.FromSeconds(5);
 
-                options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.LoginPath = "$/Account/Login";
+                options.AccessDeniedPath = "$/Home/Index";
+                options.LogoutPath = $"/Account/Login";
                 options.SlidingExpiration = true;
             });
 
@@ -62,8 +64,10 @@ namespace Inicio
              services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, act => {
                 act.LoginPath = "/Account/Login";
-                act.AccessDeniedPath = "/Account/AccessDenied";
+                act.LogoutPath = "/Account/Logout";
+                act.AccessDeniedPath = "/Home/Index";
                 act.SlidingExpiration = true;
+                act.ExpireTimeSpan = TimeSpan.FromSeconds(5);
             });
 
             services.AddDistributedMemoryCache();
@@ -78,7 +82,7 @@ namespace Inicio
 
             services.AddSession(options =>
             { 
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -97,7 +101,7 @@ namespace Inicio
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Index");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -110,6 +114,15 @@ namespace Inicio
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            /*app.UseStatusCodePages(async context =>
+            {
+                var response = context.HttpContext.Response;
+
+                if (response.StatusCode == (int)HttpStatusCode.Unauthorized ||
+                    response.StatusCode == (int)HttpStatusCode.Forbidden)
+                    response.Redirect("/Account/Login");
+            });*/
 
             app.UseEndpoints(endpoints =>
             {

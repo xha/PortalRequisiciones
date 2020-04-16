@@ -112,7 +112,7 @@
             <div class="modal-footer">
                 <a href="#" class="btn btn-danger" onclick="$('#m_gservicio').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Salir
+                    Cerrar Ventana
                 </a>
             </div>
         </div>
@@ -127,7 +127,7 @@
         <label asp-for="NROREQUI" class="control-label"></label> *
         @if (Model?.NROREQUI == null)
         {
-            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" maxlength="10" onblur="buscar_req(this.value)" />
+            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" value="0" />
         }
         else
         {
@@ -197,7 +197,6 @@
     var datos_servicio      = JSON.parse('@Html.Raw(servicios)').value;
     var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
     var datos_orden         = JSON.parse('@Html.Raw(orden)').value;
-
     $(function () {
         $(".fecha").datepicker({
             language: 'es',
@@ -207,36 +206,29 @@
             endDate: '+1Y',
             orientation: 'bottom'
         });
-
         $(".fecha").inputmask('99/99/9999', { numericInput: true });
-
         CODSOLIC = $("#CODSOLIC")[0];
         CODSOLIC.length = 0;
         for (var i = 0; i < datos_solicitantes.length; i++) {
             CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante,datos_solicitantes[i].codigo,"","");
         }
-
         AREA = $("#AREA")[0];
         AREA.length = 0;
         for (i = 0; i < datos_areas.length; i++) {
             AREA[i] = new Option(datos_areas[i].area,datos_areas[i].codigo,"","");
         }
-
         CENTRO = $("#centro_costo")[0];
         CENTRO.length = 0;
         for (i = 0; i < datos_centro.length; i++) {
             CENTRO[i] = new Option(datos_centro[i].centrO_COSTO,datos_centro[i].codigo,"","");
         }
-
         ORDEN = $("#orden_fabricacion")[0];
         ORDEN.length = 0;
         ORDEN[0] = new Option("Seleccione","","","");
         for (i = 1; i <= datos_orden.length; i++) {
             ORDEN[i] = new Option(datos_orden[i-1].orden_fabricacion,datos_orden[i-1].codigo,"","");
         }
-
         llenar_grid_servicio(datos_servicio);
-
         if ($("#NROREQUI").val() != "") {
             var tabla = $("#tabla_servicio")[0];
             var arreglo = new Array();
@@ -264,7 +256,6 @@
                 });
         }
     });
-
     function llenar_grid_servicio(datos) {
         $("#gridServicios").DataTable({
             destroy: true,
@@ -282,13 +273,11 @@
             ]
         });
     }
-
     function cargar_id(row) {
         $("#m_codigo").val(row.codigo);
         $("#m_descripcion").val(row.descripcion);
         $('#m_gservicio').modal('hide');
     }
-
     function validar_id() {
         var bandera = true;
         var servicio = $("#m_codigo").val().trim();
@@ -299,7 +288,6 @@
                     break;
                 }
             }
-
             if (bandera) {
                 $("#m_codigo").val("");
                 $("#m_descripcion").val("");
@@ -311,7 +299,6 @@
             }
         }
     }
-
     function llenar_tabla(row) {
         for (var i = 0; i < row.length; i++) {
             tr = document.createElement("tr");
@@ -320,37 +307,30 @@
             node0 = document.createTextNode(row[0]);
             td0.appendChild(node0);
             tr.appendChild(td0);
-
             td9 = document.createElement("td");
             node9 = document.createTextNode(row[1]);
             td9.appendChild(node9);
             tr.appendChild(td9);
-
             td1 = document.createElement("td");
             node1 = document.createTextNode(row[2]);
             td1.appendChild(node1);
             tr.appendChild(td1);
-
             td2 = document.createElement("td");
             node2 = document.createTextNode(row[3]);
             td2.appendChild(node2);
             tr.appendChild(td2);
-
             td3 = document.createElement("td");
             node3 = document.createTextNode(row[4]);
             td3.appendChild(node3);
             tr.appendChild(td3);
-
             td4 = document.createElement("td");
             node4 = document.createTextNode(row[5]);
             td4.appendChild(node4);
             tr.appendChild(td4);
-
             td5 = document.createElement("td");
             node5 = document.createTextNode(row[6]);
             td5.appendChild(node5);
             tr.appendChild(td5);
-
             td10 = document.createElement("td");
             a0 = document.createElement("a");
             i0 = document.createElement("i");
@@ -361,7 +341,6 @@
             a0.appendChild(i0);
             td10.appendChild(a0);
             tr.appendChild(td10);
-
             td11 = document.createElement("td");
             a1 = document.createElement("a");
             i1 = document.createElement("i");
@@ -375,7 +354,6 @@
         }
         return tr;
     }
-
     function agregar_servicio() {
         var linea = $("#m_linea").val();
         var codigo = $("#m_codigo").val();
@@ -386,7 +364,6 @@
         var orden_fabricacion = $("#orden_fabricacion").val();
         var tabla = $("#tabla_servicio")[0];
         var arreglo = new Array();
-
         if ((codigo != "") && (descripcion != "") && (cantidad != "") && (centro_costo != "")) {
             if (linea == "") {
                 arreglo[0] = global;
@@ -414,7 +391,6 @@
             MostrarMensaje("Rojo", "Faltan datos obligatorios");
         }
     }
-
     function limpiar_campos() {
         $("#m_linea").val("");
         $("#m_codigo").val("");
@@ -423,7 +399,6 @@
         $("#m_cantidad").val("");
         $("#orden_fabricacion").val("");
     }
-
     function editar_servicio(linea) {
         $("#r_" + linea).each(function (index) {
             var td = $(this).children("td");
@@ -437,7 +412,6 @@
             $('#m_servicios').modal('show')
         });
     }
-
     function eliminar_servicio(linea) {
         swal({
             title: "¿Estás seguro?",
@@ -455,7 +429,6 @@
             }
         });
     }
-
     function buscar_req(numero) {
         if (numero.trim() != "") {
             $.ajax(

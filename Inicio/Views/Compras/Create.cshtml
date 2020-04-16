@@ -2,7 +2,11 @@
 
 @{
     ViewData["Title"] = "Crear Requisición de Compras";
-}
+
+    var error = ViewBag.Error;
+
+    var listadoError = ViewBag.ListadoError;
+}    
 
 <hr />
 <div class="card card-danger">
@@ -45,6 +49,9 @@
     </a>
 </div>
 <script>//:not(:submit)
+    var error = '@Html.Raw(error)';
+    console.log(error);
+
     $(document).on("keydown", ":input:not(textarea)", function(event) {
         if (event.key == "Enter") {
             event.preventDefault();

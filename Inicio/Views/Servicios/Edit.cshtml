@@ -69,13 +69,13 @@
                 details.push({
                     codigo: td.eq(1).text(),
                     descripcion: td.eq(2).text(),
-                    unidad: td.eq(3).text(),
-                    cantidad: td.eq(4).text(),
-                    fecha_req: td.eq(5).text(),
-                    centro_costo: td.eq(6).text(),
-                    nro_maquina: td.eq(7).text(),
-                    orden_fabricacion: td.eq(8).text(),
-                    glosa_servicio: td.eq(9).text(),
+                    unidad: "",
+                    cantidad: td.eq(3).text(),
+                    fecha_req: "",
+                    centro_costo: td.eq(4).text(),
+                    nro_maquina: "",
+                    orden_fabricacion: td.eq(5).text(),
+                    glosa_servicio: td.eq(6).text(),
                 });
             }
             $("#detalle").val(JSON.stringify(details));

@@ -59,11 +59,17 @@
                         <label>* Cantidad</label>
                         <input class="form-control" id="m_cantidad" onkeypress="solo_enteros(event)" />
                     </div>
-                    <div class="col-sm-3 mt-1">
+                    <div class="col-sm-2 mt-1">
+                        <label class="btn btn-primary w-100 disabled" href="javascript:(void)" onclick="if (!document.querySelector('#m_btn_artalm.disabled')) $('#m_garticuloalm').modal('show');" id="m_btn_artalm">
+                            <i class="fa fa-search"></i>
+                            Detalle por <br />Almac&eacute;n
+                        </label>
+                    </div>
+                    <div class="col-sm-2 mt-1">
                         <label class="w-100">Stock</label>
                         <input id="m_stock" readonly class="form-control" />
                     </div>
-                    <div class="col-sm-3 mt-1">
+                    <div class="col-sm-2 mt-1">
                         <label>* Fecha Requerim.</label>
                         <input id="fecha_req" class="form-control fecha" value="@ViewBag.Fecha" />
                     </div>
@@ -81,7 +87,7 @@
                     </div>
                     <div class="col-sm-9 mt-1">
                         <label>Glosa Art&iacute;culo</label>
-                        <input id="glosa_articulo" class="form-control" />
+                        <input id="glosa_articulo" class="form-control" maxlength="60" />
                     </div>
                 </div>
             </div>
@@ -92,7 +98,7 @@
                 </a>
                 <a href="#" class="btn btn-danger" onclick="$('#m_articulos').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Salir
+                    Cerrar Ventana
                 </a>
             </div>
         </div>
@@ -118,7 +124,7 @@
                                     <th>C&oacute;digo</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Unidad</th>
-                                    <th>Cod. Familia</th>
+                                    <th>Familia</th>
                                     <th>Stock</th>
                                     <th style="width: 5px"></th>
                                 </tr>
@@ -131,13 +137,52 @@
             <div class="modal-footer">
                 <a href="#" class="btn btn-danger" onclick="$('#m_garticulo').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Salir
+                    Cerrar Ventana
                 </a>
             </div>
         </div>
     </div>
 </div>
 <!-- FIN MODAL GRID ARTICULOS -->
+<!-- INICIO MODAL GRID ARTICULOS ALMACEN -->
+<div class="modal fade" id="m_garticuloalm" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+    <div class="modal-dialog modal-xp" role="document">
+        <div class="modal-content p-2">
+            <div class="modal-header col-sm-12">
+                <h4 class="modal-title">Listado de Art&iacute;culos por Almac&eacute;n</h4>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body h500">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulosAlm" style="width: 100%">
+                            <thead class="bg-info">
+                                <tr>
+                                    <th>C&oacute;digo</th>
+                                    <th>Descripci&oacute;n</th>
+                                    <th>Unidad</th>
+                                    <th>Almacén</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" onclick="$('#m_garticuloalm').modal('hide')">
+                    <i class='fa fa-times'></i>
+                    Cerrar Ventana
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN MODAL GRID ARTICULOS ALMACEN -->
+
 
 <div class="col-sm-3 col-lg-2">
     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
@@ -146,7 +191,7 @@
         <label asp-for="NROREQUI" class="control-label"></label> *
         @if (Model?.NROREQUI == null)
         {
-            <input asp-for="NROREQUI" class="form-control" onkeypress="solo_enteros(event)" onblur="buscar_req(this.value)" maxlength="10" />
+            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" value="0" />
         }
         else
         {
@@ -259,7 +304,7 @@
 
         llenar_grid_articulo(datos_articulo);
 
-        if ($("#NROREQUI").val() != "") {
+        if ($("#NROREQUI").val() != "0") {
             var tabla = $("#tabla_articulo")[0];
             var arreglo = new Array();
             $.ajax(
@@ -293,23 +338,42 @@
         }
     });
 
+    function buscar_xalmacen() {
+        var numero = $("#m_codigo").val().trim();
+        if (numero != "") {
+            $.ajax(
+            {
+                type: "GET",
+                dataType: "json",
+                url: "@Url.Content("~/Compras/ArticulosPorAlmacen")",
+                data: "codigo="+numero,
+                cache: false,
+                success: function (datos) {
+                    if (datos.length>0) {
+                        llenar_grid_articuloalm(datos);
+                    }
+                },
+            });
+        }
+    }
+
     function buscar_req(numero) {
         if (numero.trim() != "") {
             $.ajax(
-                {
-                    type: "GET",
-                    dataType: "json",
-                    url: "@Url.Content("~/Compras/RequisicionExiste")",
-                    data: "codigo="+numero,
-                    cache: false,
-                    success: function (datos) {
-                        if (datos) {
-                            MostrarMensaje("Rojo", "El número de la requisición ya existe");
-                            $("#NROREQUI").val("");
-                            $("#NROREQUI").focus();
-                        }
-                    },
-                });
+            {
+                type: "GET",
+                dataType: "json",
+                url: "@Url.Content("~/Compras/RequisicionExiste")",
+                data: "codigo="+numero,
+                cache: false,
+                success: function (datos) {
+                    if (datos) {
+                        MostrarMensaje("Rojo", "El número de la requisición ya existe");
+                        $("#NROREQUI").val("");
+                        $("#NROREQUI").focus();
+                    }
+                },
+            });
         }
     }
 
@@ -322,7 +386,7 @@
                 { data: "codigo" },
                 { data: "descripcion" },
                 { data: "unidad" },
-                { data: "coD_FAMILIA" },
+                { data: "familia" },
                 { data: "stock" },
                 {
                     render: function (data, type, row)
@@ -334,11 +398,28 @@
         });
     }
 
+    function llenar_grid_articuloalm(datos) {
+        $("#gridArticulosAlm").DataTable({
+            destroy: true,
+            bInfo: false,
+            data: datos,
+            columns: [
+                { data: "codigo" },
+                { data: "descripcion" },
+                { data: "unidad" },
+                { data: "almacen" },
+                { data: "stock" },
+            ]
+        });
+    }
+
     function cargar_id(row) {
         $("#m_codigo").val(row.codigo);
         $("#m_descripcion").val(row.descripcion);
         $("#m_unidad").val(row.unidad);
         $("#m_stock").val(row.stock);
+        $("#m_btn_artalm").removeClass("disabled");
+        buscar_xalmacen();
         $('#m_garticulo').modal('hide');
     }
 
@@ -358,13 +439,16 @@
                 $("#m_unidad").val("");
                 $("#m_stock").val("");
                 $("#m_descripcion").val("");
-                MostrarMensaje("Rojo", "Error en el Código del Artículo");
+                MostrarMensaje("Rojo", "Código del Artículo no válido");
+                $("#m_btn_artalm").addClass("disabled");
                 $("#m_codigo").focus();
             } else {
                 $("#m_codigo").val(datos_articulo[i].codigo);
                 $("#m_unidad").val(datos_articulo[i].unidad);
                 $("#m_stock").val(datos_articulo[i].stock);
                 $("#m_descripcion").val(datos_articulo[i].descripcion);
+                $("#m_btn_artalm").removeClass("disabled");
+                buscar_xalmacen();
             }
         }
     }

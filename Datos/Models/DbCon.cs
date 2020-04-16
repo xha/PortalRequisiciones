@@ -32,27 +32,12 @@ namespace Datos.Models
         }
 
         public DbSet<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> CENTRO_COSTO { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_AREA> AREA { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ> ARTICULO { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ_POR_ALMACEN> ARTICULOALM { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_SOLICITANTE> SOLICITANTE { get; set; }
+        public DbSet<SP_PORTAL_LISTADO_ORDEN_FABRICACION> ORDEN_FABRICACION { get; set; }
         public DbSet<USUARIO_COMP> UsuarioModel { get; set; }   
-
-        public string ConexDinamica(string datasour, string catalog, string user, string password)
-        {
-            string providerName = "System.Data.SqlClient";
-            EntityConnectionStringBuilder sqlBuilders = new EntityConnectionStringBuilder();
-            sqlBuilders.Provider = providerName;
-            sqlBuilders.ProviderConnectionString = "data source=" + datasour + ";initial catalog=" + catalog + ";user id=" + user + ";password=" + password + ";MultipleActiveResultSets=True;App=EntityFramework";
-            //sqlBuilders.Metadata = "res://*/ProcedimientosAlmacenados.CModel.csdl|res://*/ProcedimientosAlmacenados.CModel.ssdl|res://*/ProcedimientosAlmacenados.CModel.msl";
-            return sqlBuilders.ToString();
-        }
-
-        public string ConexFIJA(string datasour, string catalog, string user, string password)
-        {
-            string providerName = "System.Data.SqlClient";
-            EntityConnectionStringBuilder sqlBuilders = new EntityConnectionStringBuilder();
-            sqlBuilders.Provider = providerName;
-            sqlBuilders.ProviderConnectionString = "data source=" + datasour + ";initial catalog=" + catalog + ";user id=" + user + ";password=" + password + ";MultipleActiveResultSets=True;App=EntityFramework";
-            sqlBuilders.Metadata = "res://*/ProcedimientosAlmacenadosEstaticos.ModeloEstatico.csdl|res://*/ProcedimientosAlmacenadosEstaticos.ModeloEstatico.ssdl|res://*/ProcedimientosAlmacenadosEstaticos.ModeloEstatico.msl";
-            return sqlBuilders.ToString();
-        }
     }
 
     public class BDCOMUN : DbContext
@@ -81,10 +66,7 @@ namespace Datos.Models
         public DbSet<REQUISC_PORTAL> REQUISC_PORTAL { get; set; }
         public DbSet<REQUISC> REQUISC { get; set; }
         public DbSet<REQUISD_PORTAL> REQUISD_PORTAL { get; set; }
-        public DbSet<SP_PORTAL_LISTADO_AREA> AREA { get; set; }
-        public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ> ARTICULO { get; set; }
-        public DbSet<SP_PORTAL_LISTADO_SOLICITANTE> SOLICITANTE { get; set; }
-        public DbSet<SP_PORTAL_LISTADO_ORDEN_FABRICACION> ORDEN_FABRICACION { get; set; }
+        public DbSet<OBS_PORTAL_RQ> OBS { get; set; }
     }
 
     public class BDCLIENTE : DbContext

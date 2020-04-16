@@ -98,7 +98,6 @@ X:\web\PortalRequisiciones\Datos\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netco
 X:\web\PortalRequisiciones\Datos\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
 X:\web\PortalRequisiciones\Datos\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 X:\web\PortalRequisiciones\Datos\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
-X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.csprojAssemblyReference.cache
 X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.AssemblyInfoInputs.cache
 X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.AssemblyInfo.cs
 X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.csproj.CopyComplete
