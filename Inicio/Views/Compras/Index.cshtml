@@ -172,10 +172,10 @@
                     cache: false,
                     success: function (datos) {
                         if (datos.resultado) {
-                            window.location = '@Url.Content("~/Compras/")';
+                            window.location = '@Url.Content("~/Compras/Index")';
                         } else {
                             swal({
-                                title: "Error",
+                                title: "Alerta",
                                 text: datos.error,
                                 type: "error",
                                 confirmButtonClass: "btn-danger",
@@ -184,7 +184,7 @@
                     },
                     error: function (xhr) {
                         swal({
-                            title: "Error",
+                            title: "Alerta",
                             text: xhr.responseText,
                             confirmButtonClass: "btn-danger",
                         });

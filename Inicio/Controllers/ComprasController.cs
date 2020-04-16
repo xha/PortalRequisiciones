@@ -447,7 +447,7 @@ namespace Inicio.Controllers
         }
 
         [HttpPost]
-        public JsonResult Delete(string id)
+        public async Task<JsonResult> Delete(string id)
         {
             var jsonData = new
             {
@@ -469,7 +469,7 @@ namespace Inicio.Controllers
                 //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
 
                 Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(id, "RQ"));
-                Comun.SaveChanges();
+                await Comun.SaveChangesAsync();
 
                 jsonData = new
                 {
