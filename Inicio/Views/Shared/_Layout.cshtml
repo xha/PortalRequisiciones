@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = ".:Portal de Requerimientos:.";
+
+    var vempresas = Json.Serialize(ViewBag.Empresas);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -84,21 +86,26 @@
                 <div class="collapse navbar-collapse order-3 order-lg-2" id="navbarCollapse">
                     <ul class="nav nav-pills nav-sidebar ">
                         <li class="nav-item  ">
-                            <a href="@Url.Action("Index", "Compras")" class="nav-link @ViewBag.ACompras ml-2" style="color:white;">
+                            <a href="@Url.Action("Index", "Compras", new { tipo = "RQ" })" class="nav-link @ViewBag.ACompras ml-2" style="color:white;">
                                 <i class="nav-icon fas fa-balance-scale"></i>
                                 <p class="text">Compras</p>
                             </a>
                         </li>
                         <li class="nav-item  ">
-                            <a href="@Url.Action("Index", "Servicios")" class="nav-link @ViewBag.AServicios ml-2" style="color:white;">
+                            <a href="@Url.Action("Index", "Compras", new { tipo = "RS" })" class="nav-link @ViewBag.AServicios ml-2" style="color:white;">
                                 <i class="nav-icon fas fa-file-invoice-dollar"></i>
                                 <p class="text">Servicios</p>
                             </a>
                         </li>
-
                     </ul>
                 </div>
-                <ul class="order-1 order-md-2 navbar-nav navbar-no-expand ml-auto">
+                <ul class="order-md-2 navbar-nav navbar-no-expand mr-5">
+                    <li>
+                        <label style="color:white;">Empresa Actual:</label>
+                        <select class="form-control" id="empresa_actual"></select>
+                    </li>
+                </ul>
+                <ul class="order-md-2 navbar-nav navbar-no-expand ml-auto">
                     <li>
                         <a href="#" onclick="salir_sistema()" class="nav-link ml-2" style="color:white;">
                             <i class="nav-icon fa fa-power-off"></i>
@@ -134,6 +141,44 @@
     <script src="~/plugins/datatables/datatables.js"></script>
     <script src="~/plugins/datatables/dataTables.checkboxes.js"></script>
     <script type="text/javascript">
+        var datos_empresas = JSON.parse('@Html.Raw(vempresas)').value;
+        empact = $("#empresa_actual")[0];
+        empact.length = 0;
+        for (var z = 0; z < (datos_empresas.length - 1); z++) {
+            empact[z] = new Option(datos_empresas[z].trim(), datos_empresas[z].trim(), "", "");
+
+            if (datos_empresas[z] == '@HttpContextAccessor.HttpContext.Session.GetString("empresa")') {
+                //$("#empresa_actual")[0].setAttribute("selected", "selected");
+                $("#empresa_actual")[0].options.selectedIndex = z;
+            }
+        }
+
+        $('#empresa_actual').unbind('change').bind('change', function (e){
+            optionSeleccionado = $(this).val();
+
+            $.ajax(
+            {
+                type: "POST",
+                dataType: "json",
+                url: "@Url.Content("~/Compras/ActualizarEmpresa")",
+                data: "empresa="+optionSeleccionado,
+                cache: false,
+                success: function (datos) {
+                    swal({
+                        title: "Hecho",
+                        text: "Empresa actual: " + optionSeleccionado,
+                        type: "success",
+                        confirmButtonText: "Aceptar",
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            window.location = '@Url.Content("~/Compras/Index")';
+                        }
+                    });
+                },
+            });
+        });
+
         $('.dataTables').DataTable({
             "responsive": true,
             "bInfo": false,

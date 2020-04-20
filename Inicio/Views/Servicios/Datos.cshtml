@@ -172,7 +172,7 @@
 </div>
 
 <div class="col-sm-12 mt-1 table-responsive">
-    <table class="table table-striped">
+    <table class="table table-striped d-none" id="t_servicios">
         <thead>
             <tr>
                 <th>No.</th>
@@ -232,28 +232,27 @@
         if ($("#NROREQUI").val() != "") {
             var tabla = $("#tabla_servicio")[0];
             var arreglo = new Array();
-            $.ajax(
-                {
-                    type: "POST",
-                    dataType: "json",
-                    url: "@Url.Content("~/Servicios/ListadoDetalle")",
-                    data: "codigo="+$("#NROREQUI").val(),
-                    cache: false,
-                    success: function (datos) {
-                        for (var i = 0; i < datos.length; i++) {
-                            arreglo.length = 0;
-                            arreglo[0] = global;
-                            arreglo[1] = datos[i].codpro;
-                            arreglo[2] = datos[i].descpro;
-                            arreglo[3] = parseFloat(datos[i].cantid);
-                            arreglo[4] = datos[i].cencost;
-                            arreglo[5] = datos[i].ordfaB_REQUI;
-                            arreglo[6] = datos[i].glosa;
-                            tabla.appendChild(llenar_tabla(arreglo));
-                            global++;
-                        }
-                    },
-                });
+        $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '@Url.Content("~/Servicios/ListadoDetalle")',
+                data: "codigo="+$("#NROREQUI").val(),
+                cache: false,
+                success: function (datos) {
+                    for (var i = 0; i < datos.length; i++) {
+                        arreglo.length = 0;
+                        arreglo[0] = global;
+                        arreglo[1] = datos[i].codpro;
+                        arreglo[2] = datos[i].descpro;
+                        arreglo[3] = parseFloat(datos[i].cantid);
+                        arreglo[4] = datos[i].cencost;
+                        arreglo[5] = datos[i].ordfaB_REQUI;
+                        arreglo[6] = datos[i].glosa;
+                        tabla.appendChild(llenar_tabla(arreglo));
+                        global++;
+                    }
+                },
+            });
         }
     });
     function llenar_grid_servicio(datos) {
@@ -354,6 +353,7 @@
         }
         return tr;
     }
+
     function agregar_servicio() {
         var linea = $("#m_linea").val();
         var codigo = $("#m_codigo").val();

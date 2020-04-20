@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Datos.Models.REQUISC>
 
 @{
-    ViewData["Title"] = "Requisiciones de Compras";
+    ViewData["Title"] = ViewBag.Titulo;
     var datos_json = Json.Serialize(ViewBag.ListadoCompras);
     DateTime hoy = DateTime.Now;
 
@@ -12,10 +12,11 @@
 }
 
 <div class="container-fluid">
+    <input type="hidden" id="error" name="error" value="@ViewBag.error" />
     <div class="row mt-1">
         <div class="col-sm-12">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">@Html.ActionLink(ViewData["Title"].ToString(), "Index", "Compras")</li>
+                <li class="breadcrumb-item">@Html.ActionLink("Requisiciones de "+ViewData["Title"].ToString(), "Index", "Compras")</li>
             </ol>
         </div>
     </div>
@@ -41,7 +42,7 @@
             <div class="card card-danger card-outline">
                 <div class="card-header mb-1">
                     <h5 class="float-left">
-                        Listado de Requisiciones de Compras
+                        Listado Requisiciones de @ViewData["Title"].ToString()
                     </h5>
                     <a href="@Url.Action("Create", "Compras")" class="btn btn-primary float-right">
                         <i class="fa fa-plus"></i>
@@ -91,9 +92,24 @@
 
         $(".fecha").inputmask('99/99/9999', { numericInput: true });
 
+        revisar_error();
+
         var datos = JSON.parse('@Html.Raw(datos_json)');
         activar_datos(datos.value);
     });
+
+    function revisar_error() {
+        if ($("#error").val() != "") {
+            /*swal({
+                title: "Alerta",
+                text: $("#error").val(),
+                type: "info",
+                confirmButtonText: "Aceptar",
+            });*/
+            MostrarMensaje("Rojo", $("#error").val());
+            $("#error").val("");
+        }
+    }
 
     function buscar_index() {
         var fecha_desde = $("#fecha_desde").val();
@@ -137,18 +153,27 @@
                 {
                     render: function (data, type, row)
                     {
-                        return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")'+row.numero+'"><i class="fa fa-edit"></i></a>';
+                        if (row.estado == "P") {
+                            return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")'+row.numero+'"><i class="fa fa-edit"></i></a>';
+                        } else {
+                            return '';
+                        }
+                        
                     }
                 },
                 {
                     data: null, render: function (data, type, row) {
-                        return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                        if (row.estado == "P") {
+                            return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                        } else {
+                            return '';
+                        }                        
                     }
                 },
             ]
         });
     }
-
+    
     function anular_rcompra(nrorequi) {
         swal({
             title: "¿Estás seguro?",
@@ -171,15 +196,12 @@
                     data: parametros,
                     cache: false,
                     success: function (datos) {
-                        if (datos.resultado) {
-                            window.location = '@Url.Content("~/Compras/Index")';
+                        if (datos.error != "") {
+                            //MostrarMensaje("Rojo", datos.error);
+                            $("#error").val(datos.error);
+                            revisar_error();
                         } else {
-                            swal({
-                                title: "Alerta",
-                                text: datos.error,
-                                type: "error",
-                                confirmButtonClass: "btn-danger",
-                            });
+                            window.location = '@Url.Content("~/Compras/Index")';
                         };
                     },
                     error: function (xhr) {

@@ -103,10 +103,23 @@ namespace Inicio.Controllers
                     //SetAppSettingValue("BDWENCOConnectionString", "Data Source = "+ servidor + "; Initial Catalog = "+ Base_datos + "; MultipleActiveResultSets = true; User ID = "+ usuario_server + "; Password = "+ contrasenia + "");
 
                     // && i.USU_PASSWORD == clave
-                    List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.USU_CODIGO && i.FLGPORTAL_COMPRAS == true).ToList();
+                    List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.USU_CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == userModel.USU_PASSWORD).ToList();
 
                     if (user.Count > 0)
                     {
+                        var Resultado = (from p in user
+                                         group p.EMP_CODIGO by p.EMP_CODIGO into g
+                                         select new { N = g.ToList() });
+
+                        string vempresas = "";
+                        foreach (var rs in Resultado)
+                        {
+                            if (vempresas=="") TempData["USU_EMPRESA"] = rs.N[0];
+
+                            vempresas += rs.N[0] + ",";
+                        }
+
+                        TempData["Empresas"] = vempresas;
                         //var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
                         //identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userModel.USU_CODIGO));
                         //identity.AddClaim(new Claim(ClaimTypes.Name, user[0].USU_NOMBRE));
@@ -116,20 +129,19 @@ namespace Inicio.Controllers
                         datosSesion.Add(new JProperty("Base_datos", rs_cliente[0].Base_Datos));
                         datosSesion.Add(new JProperty("usuario_server", rs_cliente[0].Usuario_Server));
                         datosSesion.Add(new JProperty("contrasenia", rs_cliente[0].Contrasenia_Server));
-
-                        //TempData["servidor"] = rs_cliente[0].Servidor;
+                        //TempData["USU_EMPRESA"] = "003";
 
                         TempData.Put<dynamic>("DataServer", datosSesion);
                         TempData["USU_NOMBRE"] = user[0].USU_NOMBRE;
                         TempData["USU_CODIGO"] = userModel.USU_CODIGO;
-                        TempData["USU_EMPRESA"] = "003";
+                        
                         //TempData.Keep();
                         //HttpContext.Session.SetString("SessionNombre", user[0].USU_NOMBRE);
 
                         var claims = new List<Claim>{
                             new Claim(ClaimTypes.NameIdentifier, userModel.USU_CODIGO),
                             new Claim(ClaimTypes.Name, user[0].USU_NOMBRE),
-                            new Claim(ClaimTypes.Role, user[0].CARGO),
+                            //new Claim(ClaimTypes.Role, user[0].CARGO),
                         };
 
                         var claimsIdentity = new ClaimsIdentity(
@@ -152,7 +164,7 @@ namespace Inicio.Controllers
                         /*HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,
                             new ClaimsPrincipal(identity))
                             */
-                        return RedirectToAction(nameof(ComprasController.Index), "Compras");
+                        return RedirectToAction(nameof(ComprasController.Index), "Compras", new { tipo = "RQ" });
                     }
                     else
                     {

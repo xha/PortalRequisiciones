@@ -108,7 +108,7 @@ function MostrarMensaje(Tipo, Mensaje) {
             break;
 
         case "Rojo":
-            toastr.error(Mensaje, "Error");
+            toastr.error(Mensaje, "Alerta");
             break;
 
         case "Azul":

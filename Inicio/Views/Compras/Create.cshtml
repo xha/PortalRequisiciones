@@ -1,12 +1,14 @@
 ﻿@model Datos.Models.REQUISC_PORTAL
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    ViewData["Title"] = "Crear Requisición de Compras";
+    ViewData["Title"] = "Crear Requisición de "+ViewBag.Titulo;
 
     var error = ViewBag.Error;
 
     var listadoError = ViewBag.ListadoError;
-}    
+}
 
 <hr />
 <div class="card card-danger">
@@ -20,7 +22,7 @@
         <form asp-action="Create" asp-controller="Compras" method="post">
             <div class="row">
                 <input asp-for="TipoDocumento" class="form-control" value="" type="hidden" />
-                <input asp-for="TIPOREQUI" class="form-control" value="RQ" type="hidden" />
+                <input asp-for="TIPOREQUI" class="form-control" value="@HttpContextAccessor.HttpContext.Session.GetString("TipoDocumento")" type="hidden" />
                 <input type="hidden" name="detalle" id="detalle" />
                 @Html.Partial(nameof(Datos))
             </div>
@@ -48,7 +50,8 @@
         Regresar
     </a>
 </div>
-<script>//:not(:submit)
+<script>
+//:not(:submit)
     var error = '@Html.Raw(error)';
     console.log(error);
 
@@ -60,7 +63,7 @@
 
         if ($("#error").val() != "") {
             swal({
-                title: "Error",
+                title: "Alerta",
                 text: $("#error").val(),
                 type: "danger",
                 confirmButtonText: "Aceptar",
@@ -71,31 +74,50 @@
     function enviar_datos() {
         var details = [];
 
-        $("#tabla_articulo tr").each(function (index) {
-            var td = $(this).children("td");
-            if (td.eq(0).text()!="") {
-                details.push({   
-	                codigo          : td.eq(1).text(),
-			        descripcion     : td.eq(2).text(),
-                    unidad          : td.eq(3).text(),
-                    cantidad        : td.eq(4).text(),
-                    fecha_req       : td.eq(5).text(),
-                    centro_costo    : td.eq(6).text(),
-                    nro_maquina     : td.eq(7).text(),
-                    orden_fabricacion: td.eq(8).text(),
-                    glosa_articulo  : td.eq(9).text(),
-                });
-            }
-            $("#detalle").val(JSON.stringify(details));
-        });
+        if ($("#TIPOREQUI").val() == "RQ") {
+            $("#tabla_articulo tr").each(function (index) {
+                var td = $(this).children("td");
+                if (td.eq(0).text()!="") {
+                    details.push({
+	                    codigo          : td.eq(1).text(),
+			            descripcion     : td.eq(2).text(),
+                        unidad          : td.eq(3).text(),
+                        cantidad        : td.eq(4).text(),
+                        fecha_req       : td.eq(5).text(),
+                        centro_costo    : td.eq(6).text(),
+                        nro_maquina     : td.eq(7).text(),
+                        orden_fabricacion: td.eq(8).text(),
+                        glosa_articulo  : td.eq(9).text(),
+                    });
+                }
+                $("#detalle").val(JSON.stringify(details));
+            });
+        } else {
+            $("#tabla_servicio tr").each(function (index) {
+                var td = $(this).children("td");
+                if (td.eq(0).text() != "") {
+                    details.push({
+                        codigo: td.eq(1).text(),
+                        descripcion: td.eq(2).text(),
+                        unidad: "",
+                        cantidad: td.eq(3).text(),
+                        fecha_req: "",
+                        centro_costo: td.eq(4).text(),
+                        nro_maquina: "",
+                        orden_fabricacion: td.eq(5).text(),
+                        glosa_articulo: td.eq(6).text(),
+                    });
+                }
+                $("#detalle").val(JSON.stringify(details));
+            });
+        }        
 
         if (($("#detalle").val() != "") && ($("#NROREQUI").val() != "")) {
-            $("#TipoDocumento").val("RQ");
+            $("#TipoDocumento").val($("#TIPOREQUI").val());
             document.forms[0].submit();
         } else {
             MostrarMensaje("Rojo", "Los campos con * son obligatorios");
         }
-
     }
 </script>
 @section Scripts {

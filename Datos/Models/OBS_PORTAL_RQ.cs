@@ -8,6 +8,8 @@ namespace Datos.Models
     public class OBS_PORTAL_RQ
     {
         [Key]
+        public string TIPO_RQ { get; set; }
+        [Key]
         public string NRO_RQ { get; set; }
         public int PASO { get; set; }
         public string EJECUCION { get; set; }

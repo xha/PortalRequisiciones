@@ -8,16 +8,21 @@
   <ItemGroup>
     <Compile Remove="Areas\**" />
     <Compile Remove="Data\**" />
+    <Compile Remove="Views\Servicios\**" />
     <Content Remove="Areas\**" />
     <Content Remove="Data\**" />
+    <Content Remove="Views\Servicios\**" />
     <EmbeddedResource Remove="Areas\**" />
     <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Views\Servicios\**" />
     <None Remove="Areas\**" />
     <None Remove="Data\**" />
+    <None Remove="Views\Servicios\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Controllers\MaestrasController.cs" />
+    <Compile Remove="Controllers\ServiciosController.cs" />
     <Compile Remove="Controllers\TestController.cs" />
   </ItemGroup>
 

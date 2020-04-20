@@ -54,9 +54,9 @@ namespace Inicio
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromSeconds(5);
 
-                options.LoginPath = "$/Account/Login";
-                options.AccessDeniedPath = "$/Home/Index";
-                options.LogoutPath = $"/Account/Login";
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Home/Index";
+                options.LogoutPath = "/Account/Logout";
                 options.SlidingExpiration = true;
             });
 

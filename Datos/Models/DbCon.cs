@@ -37,7 +37,8 @@ namespace Datos.Models
         public DbSet<SP_PORTAL_LISTADO_ARTICULO_RQ_POR_ALMACEN> ARTICULOALM { get; set; }
         public DbSet<SP_PORTAL_LISTADO_SOLICITANTE> SOLICITANTE { get; set; }
         public DbSet<SP_PORTAL_LISTADO_ORDEN_FABRICACION> ORDEN_FABRICACION { get; set; }
-        public DbSet<USUARIO_COMP> UsuarioModel { get; set; }   
+        public DbSet<USUARIO_COMP> UsuarioModel { get; set; }
+        public DbSet<SP_PORTAL_ESTADO_REQUISICION> SP_ESTADO { get; set; }
     }
 
     public class BDCOMUN : DbContext
@@ -60,6 +61,12 @@ namespace Datos.Models
                     t.NROREQUI,
                     t.REQITEM,
                     t.TIPOREQUI,
+                });
+
+            modelBuilder.Entity<OBS_PORTAL_RQ>()
+                .HasKey(t => new {
+                    t.TIPO_RQ,
+                    t.NRO_RQ,
                 });
         }
 

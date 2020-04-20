@@ -103,3 +103,4 @@ X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.AssemblyInfo.cs
 X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.csproj.CopyComplete
 X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.dll
 X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.pdb
+X:\web\PortalRequisiciones\Datos\obj\Debug\netcoreapp3.1\Datos.csprojAssemblyReference.cache
