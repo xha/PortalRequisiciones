@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Datos.Models
 {
     public class Login
     {
-        public string USU_RUC { get; set; }
-        public string USU_CODIGO { get; set; }
-        public string USU_PASSWORD { get; set; }
+        [Required(ErrorMessage = "El RUC es obligatorio.")]
+        public string RUC { get; set; }
+        [Required(ErrorMessage = "El Código es obligatorio.")]
+        public string CODIGO { get; set; }
+        [Required(ErrorMessage = "La Clave es obligatoria.")]
+        public string CLAVE { get; set; }
     }
 }

@@ -62,7 +62,7 @@ namespace Inicio.Controllers
             List<SP_PORTAL_LISTADO_ARTICULO_RQ_POR_ALMACEN> articulo = Wenco?.ARTICULOALM.FromSqlRaw("SP_PORTAL_LISTADO_ARTICULO_RQ_POR_ALMACEN '" + empresa + "','" + codigo + "'").ToList();
 
             var Resultado = (from N in articulo
-                             orderby N.ARTICULO
+                             orderby N.ALMACEN
                              select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.COD_ALMACEN, N.UNIDAD, N.ALMACEN });
 
             return Json(Resultado);
@@ -109,7 +109,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in orden
                              orderby N.ORDEN_FABRICACION
-                             select N);
+                             select new { N.CODIGO, DESCRIPCION = N.ORDEN_FABRICACION.Replace('"', ' ') });
 
             return Json(Resultado);
         }
@@ -286,9 +286,15 @@ namespace Inicio.Controllers
             ViewBag.error = "";
             switch (error)
             {
+                case "0":
+                    ViewBag.error = "No se pueden grabar los cambios";
+                    break;
                 case "1":
                     ViewBag.error = "La requisición no se puede editar";
                 break;
+                case "2":
+                    ViewBag.error = "La requisición no se puede eliminar";
+                    break;
             }
             
 
@@ -343,6 +349,7 @@ namespace Inicio.Controllers
                 {
                     string hora = DateTime.Now.ToString("hh:mm:ss");
                     modelo.NROREQUI = Correlativo();
+                    if (modelo.GLOSA == null) modelo.GLOSA = " ";
                     //modelo.FECREQUI = Convert.ToDateTime(modelo.FECREQUI + " " + hora);
                     Comun.REQUISC_PORTAL.Add(modelo);
                     await Comun.SaveChangesAsync();
@@ -417,25 +424,33 @@ namespace Inicio.Controllers
             {
                 return NotFound();
             }
-            RehacerConexion();
-            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
-            if (modelo == null)
+            //RehacerConexion();
+            bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
+            if (opt)
             {
-                return NotFound();
+                var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
+                if (modelo == null)
+                {
+                    return NotFound();
+                }
+
+                JsonResult areas = Areas();
+                JsonResult articulos = Articulos();
+                JsonResult solicitantes = Solicitantes();
+                JsonResult centro = CentroCosto();
+                JsonResult orden = OrdenFabricacion();
+                ViewBag.Solicitantes = solicitantes;
+                ViewBag.Areas = areas;
+                ViewBag.Articulos = articulos;
+                ViewBag.CentroCosto = centro;
+                ViewBag.OrdenFabricacion = orden;
+
+                return View(modelo);
+            } 
+            else
+            {
+                return RedirectToAction(nameof(Index), new { error = "1" });
             }
-
-            JsonResult areas = Areas();
-            JsonResult articulos = Articulos();
-            JsonResult solicitantes = Solicitantes();
-            JsonResult centro = CentroCosto();
-            JsonResult orden = OrdenFabricacion();
-            ViewBag.Solicitantes = solicitantes;
-            ViewBag.Areas = areas;
-            ViewBag.Articulos = articulos;
-            ViewBag.CentroCosto = centro;
-            ViewBag.OrdenFabricacion = orden;
-
-            return View(modelo);
         }
 
         [HttpPost]
@@ -514,7 +529,7 @@ namespace Inicio.Controllers
             return View(modelo);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<JsonResult> Delete(string id)
         {
             var jsonData = new
@@ -565,6 +580,38 @@ namespace Inicio.Controllers
             }
 
             return Json(jsonData);
+        }*/
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string codigo)
+        {
+            bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
+            if (opt)
+            {
+                try
+                {
+                    //ESTA ES LA FORMA FACIL
+                    Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + codigo + " and TIPOREQUI='" + HttpContext.Session.GetString("TipoDocumento") + "'");
+
+                    //ESTA FORMA DA ERROR A MULTIPLES DELETE
+                    //Comun.REQUISD_PORTAL.RemoveRange(Comun.REQUISD_PORTAL.Where(s => s.NROREQUI == id));
+                    //Comun.REQUISD_PORTAL.Remove(Comun.REQUISD_PORTAL.Find(id));
+                    //Comun.REQUISD_PORTAL.Where(p => p.NROREQUI == id).ToList().ForEach(p => Comun.REQUISD_PORTAL.Remove(p));
+                    //Comun.SaveChanges();
+                    //LA FORMA POR ENTITY ES RECORRER EL LISTADO E IR BORRANDO LINEA A LINEA
+
+                    Comun.REQUISC_PORTAL.Remove(Comun.REQUISC_PORTAL.Find(codigo, HttpContext.Session.GetString("TipoDocumento")));
+                    await Comun.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction(nameof(Index), new { error = "0" });
+                }
+            } else {
+                return RedirectToAction(nameof(Index), new { error = "2" });
+            }
         }
 
         private bool REQUISC_PORTALExists(string id)

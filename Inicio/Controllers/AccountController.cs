@@ -74,9 +74,9 @@ namespace Inicio.Controllers
 
             USUARIO_COMP Modelo = new USUARIO_COMP();
 
-            string clave = Modelo.CODIFICA(userModel.USU_PASSWORD,5);
-            string clave2 = Modelo.DECODIFICA(userModel.USU_PASSWORD, 5);
-            string ruc_encrip = Modelo.Encriptar(userModel.USU_RUC);
+            string clave = Modelo.CODIFICA(userModel.CLAVE,5);
+            string clave2 = Modelo.DECODIFICA(userModel.CLAVE, 5);
+            string ruc_encrip = Modelo.Encriptar(userModel.RUC);
 
             List<Clientes> rs_cliente = Client.TCliente.Where(i => i.RUC_Cliente == ruc_encrip).ToList();
 
@@ -103,7 +103,7 @@ namespace Inicio.Controllers
                     //SetAppSettingValue("BDWENCOConnectionString", "Data Source = "+ servidor + "; Initial Catalog = "+ Base_datos + "; MultipleActiveResultSets = true; User ID = "+ usuario_server + "; Password = "+ contrasenia + "");
 
                     // && i.USU_PASSWORD == clave
-                    List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.USU_CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == userModel.USU_PASSWORD).ToList();
+                    List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == userModel.CLAVE).ToList();
 
                     if (user.Count > 0)
                     {
@@ -114,6 +114,7 @@ namespace Inicio.Controllers
                         string vempresas = "";
                         foreach (var rs in Resultado)
                         {
+                            //List<EMPRESA> empre = Wenco?.EMPRESA.FromSqlRaw("SELECT EMP_CODIGO,EMP_RAZON_NOMBRE FROM EMPRESA WHERE EMP_CODIGO='" + empresa + "'").ToList();
                             if (vempresas=="") TempData["USU_EMPRESA"] = rs.N[0];
 
                             vempresas += rs.N[0] + ",";
@@ -133,13 +134,13 @@ namespace Inicio.Controllers
 
                         TempData.Put<dynamic>("DataServer", datosSesion);
                         TempData["USU_NOMBRE"] = user[0].USU_NOMBRE;
-                        TempData["USU_CODIGO"] = userModel.USU_CODIGO;
+                        TempData["USU_CODIGO"] = userModel.CODIGO;
                         
                         //TempData.Keep();
                         //HttpContext.Session.SetString("SessionNombre", user[0].USU_NOMBRE);
 
                         var claims = new List<Claim>{
-                            new Claim(ClaimTypes.NameIdentifier, userModel.USU_CODIGO),
+                            new Claim(ClaimTypes.NameIdentifier, userModel.CODIGO),
                             new Claim(ClaimTypes.Name, user[0].USU_NOMBRE),
                             //new Claim(ClaimTypes.Role, user[0].CARGO),
                         };

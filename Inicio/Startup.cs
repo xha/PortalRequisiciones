@@ -82,7 +82,7 @@ namespace Inicio
 
             services.AddSession(options =>
             { 
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });

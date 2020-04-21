@@ -164,7 +164,8 @@
                 {
                     data: null, render: function (data, type, row) {
                         if (row.estado == "P") {
-                            return '<a class="btn btn-danger" title="Anular" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                            //return '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                            return '<a class="btn btn-danger" title="Eliminar"  href="@Url.Content("~/Compras/Delete?codigo=")'+row.numero+'"><i class="fa fa-trash"></i></a>';
                         } else {
                             return '';
                         }                        

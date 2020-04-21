@@ -12,6 +12,7 @@ namespace Datos.Models
         public string ARTICULO { get; set; }
         public string UNIDAD { get; set; }
         public string COD_FAMILIA { get; set; }
+        [Key]
         public string COD_ALMACEN { get; set; }
         public string ALMACEN { get; set; }
         public decimal STOCK { get; set; }

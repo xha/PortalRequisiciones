@@ -62,7 +62,7 @@ function valida_cantidad(campo) {
 function solo_decimal(e, valor) {
     var tipo = e.keyCode;
     //if ((tipo == 8) || (tipo == 9) || (tipo == 116) || (tipo == 46)) return true; // BACKSPACE, TAB, F5, DELETE
-    var regex = new RegExp("^[0-9.]+$");
+    var regex = new RegExp("^[0-9,]+$");
     var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
     var tempValue = valor.value + str;
     if (regex.test(str)) {
@@ -73,7 +73,7 @@ function solo_decimal(e, valor) {
 }
 
 function filter(__val__) {
-    var preg = /^([0-9]+\.?[0-9]{0,3})$/;
+    var preg = /^([0-9]+\,?[0-9]{0,3})$/;
     if (preg.test(__val__) === true) {
         return true;
     } else {
@@ -127,4 +127,15 @@ function loading_show() {
 
 function loading_hide() {
     $('body').loadingModal('hide');
+}
+
+function textCounter(f, c, maxlimit) {
+    var field = $("#" +f)[0];
+    var countfield = $("#" + c)[0];
+    if (field.value.length > maxlimit) {// if too long...trim it!
+        field.value = field.value.substring(0, maxlimit);
+        // otherwise, update 'characters left' counter
+    } else {
+        countfield.value = maxlimit - field.value.length;
+    }
 }

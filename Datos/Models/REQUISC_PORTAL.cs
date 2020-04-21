@@ -10,7 +10,7 @@ namespace Datos.Models
         //SELECT GRID
         [Key]
         [Required]
-        [Display(Name = "No. Req.")]
+        [Display(Name = "Nro. Requisición.")]
         public string NROREQUI { get; set; }
         [Required]
         [Display(Name = "Solicitante")]
