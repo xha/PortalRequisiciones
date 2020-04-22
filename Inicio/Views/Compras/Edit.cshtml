@@ -3,7 +3,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    ViewData["Title"] = "Ediar Requisición de "+ViewBag.Titulo+" No.";
+    ViewData["Title"] = "Editar Requisición de "+ViewBag.Titulo+" Nro.";
 }
 
 <hr />
@@ -23,7 +23,7 @@
                 @Html.Partial(nameof(Datos))
             </div>
         </form>
-        <div class="row my-1">
+        <div class="row my-1 editable">
             <div class="col-sm-12 text-right">
                 <div class="form-group">
                     <button type="reset" class="btn btn-danger">

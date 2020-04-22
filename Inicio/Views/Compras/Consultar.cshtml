@@ -1,0 +1,313 @@
+﻿@model Datos.Models.REQUISC_PORTAL
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Consulta Requisición de "+ViewBag.Titulo+" Nro.";
+    if (Model?.FECREQUI != null)
+    {
+        ViewBag.Fecha = Convert.ToDateTime(Model.FECREQUI).ToString("dd/MM/yyyy");
+    }
+    else
+    {
+        DateTime hoy = DateTime.Now;
+
+        string miVariable = hoy.ToString("dd/MM/yyyy");
+        ViewBag.Fecha = miVariable;
+    }
+
+    var solicitantes = Json.Serialize(ViewBag.Solicitantes);
+    var areas = Json.Serialize(ViewBag.Areas);
+    var articulos = Json.Serialize(ViewBag.Articulos);
+    var centro = Json.Serialize(ViewBag.CentroCosto);
+    var orden = Json.Serialize(ViewBag.OrdenFabricacion);
+}
+
+<hr />
+<div class="card card-danger">
+    <div class="card-header">
+        <h5 class="float-left">
+            <img src="~/LogoMenu.png" alt="StartSoft" class="img-circle image-responsive mb-2" style="opacity: .8" width="25">
+            @ViewData["Title"] <b>@Model.NROREQUI</b>
+        </h5>
+    </div>
+    <div class="card-body p-2">
+        <form asp-action="Edit">
+            <div class="row">
+
+                <div class="col-sm-3 col-lg-2">
+                    <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
+                    <input asp-for="COD_USUARIO" class="form-control" type="hidden" value="@HttpContextAccessor.HttpContext.Session.GetString("USU_CODIGO")" />
+                    <div class="form-group">
+                        <label asp-for="NROREQUI" class="control-label"></label> *
+                        @if (Model?.NROREQUI == null)
+                        {
+                            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" value="0" />
+                        }
+                        else
+                        {
+                            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" />
+                        }
+                        <span asp-validation-for="NROREQUI" class="text-danger w-100"></span>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-2">
+                    <div class="form-group">
+                        <label asp-for="FECREQUI" class="control-label"></label> *
+                        <input asp-for="FECREQUI" class="form-control" value="@ViewBag.Fecha" readonly />
+                        <span asp-validation-for="FECREQUI" class="text-danger w-100"></span>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-2">
+                    <div class="form-group">
+                        <label asp-for="CODSOLIC" class="control-label"></label> *
+                        <select class="form-control" asp-for="CODSOLIC" disabled></select>
+                        <span asp-validation-for="CODSOLIC" class="text-danger w-100"></span>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-2">
+                    <div class="form-group">
+                        <label asp-for="AREA" class="control-label"></label> *
+                        <select class="form-control" asp-for="AREA" disabled></select>
+                        <span asp-validation-for="AREA" class="text-danger w-100"></span>
+                    </div>
+                </div>
+                <div class="col-sm-12 mt-1 col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="GLOSA" class="control-label"></label>
+                        <input asp-for="GLOSA" class="form-control" maxlength="60" readonly />
+                        <span asp-validation-for="GLOSA" class="text-danger w-100"></span>
+                    </div>
+                </div>
+                <div class="col-sm-12 mt-1 table-responsive">
+                    <table class="table table-striped d-none" id="t_articulos">
+                        <thead>
+                            <tr>
+                                <th style="display: none">fila</th>
+                                <th>C&oacute;digo</th>
+                                <th>Descripci&oacute;n</th>
+                                <th>Unidad</th>
+                                <th>Cantidad</th>
+                                <th>Fecha Req.</th>
+                                <th>Centro Costo</th>
+                                <th>No. Maquina</th>
+                                <th>Ord. Fab.</th>
+                                <th>Glosa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla_articulo"></tbody>
+                    </table>
+                    <table class="table table-striped d-none" id="t_servicios">
+                        <thead>
+                            <tr>
+                                <th style="display: none">fila</th>
+                                <th>C&oacute;digo</th>
+                                <th>Descripci&oacute;n</th>
+                                <th>Cantidad</th>
+                                <th>Centro Costo</th>
+                                <th>Ord. Fab.</th>
+                                <th>Glosa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla_servicio"></tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="my-2">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+        Regresar
+    </a>
+</div>
+<script>
+        var global = 1;
+    var datos_solicitantes  = JSON.parse('@Html.Raw(solicitantes)').value;
+    var datos_areas         = JSON.parse('@Html.Raw(areas)').value;
+    var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
+    var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
+    var datos_orden = JSON.parse('@Html.Raw(orden)').value;
+
+    $(function () {
+        $(".fecha").datepicker({
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            startDate: '-1Y',
+            endDate: '+1Y',
+            orientation: 'bottom'
+        });
+
+        $(".fecha").inputmask('99/99/9999', { numericInput: true });
+
+        CODSOLIC = $("#CODSOLIC")[0];
+        CODSOLIC.length = 0;
+        for (var i = 0; i < datos_solicitantes.length; i++) {
+            CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante,datos_solicitantes[i].codigo,"","");
+        }
+
+        AREA = $("#AREA")[0];
+        AREA.length = 0;
+        for (i = 0; i < datos_areas.length; i++) {
+            AREA[i] = new Option(datos_areas[i].area,datos_areas[i].codigo,"","");
+        }
+
+        if ($("#TIPOREQUI").val() == "RS") {
+            $("#t_servicios").removeClass("d-none");
+            $("#t_aservicios").removeClass("d-none");
+        } else {
+            $("#t_aarticulos").removeClass("d-none");
+            $("#t_articulos").removeClass("d-none");
+        }
+
+        if ($("#NROREQUI").val() != "0") {
+            var arreglo = new Array();
+            $.ajax(
+                {
+                type: "POST",
+                dataType: "json",
+                url: "@Url.Content("~/Compras/ListadoDetalle")",
+                data: "codigo="+$("#NROREQUI").val(),
+                cache: false,
+                success: function (datos) {
+                    if ($("#TIPOREQUI").val() == "RS") {
+                        var tabla = $("#tabla_servicio")[0];
+                        for (var i = 0; i < datos.length; i++) {
+                            arreglo.length = 0;
+                            arreglo[0] = global;
+                            arreglo[1] = datos[i].codpro;
+                            arreglo[2] = datos[i].descpro;
+                            arreglo[3] = parseFloat(datos[i].cantid);
+                            arreglo[4] = datos[i].cencost;
+                            arreglo[5] = datos[i].ordfaB_REQUI;
+                            arreglo[6] = datos[i].glosa;
+                            tabla.appendChild(llenar_tabla(arreglo));
+                            global++;
+                        }
+                    } else {
+                        var tabla = $("#tabla_articulo")[0];
+                        for (var i = 0; i < datos.length; i++) {
+                            arreglo.length = 0;
+                            arreglo[0] = global;
+                            arreglo[1] = datos[i].codpro;
+                            arreglo[2] = datos[i].descpro;
+                            arreglo[3] = datos[i].unipro;
+                            arreglo[4] = parseFloat(datos[i].cantid);
+
+                            var fecha = datos[i].fecreque.split("T");
+                            var fecha = fecha[0].split("-");
+                            arreglo[5] = fecha[2]+"/"+fecha[1]+"/"+fecha[0];
+                            arreglo[6] = datos[i].cencost;
+                            arreglo[7] = datos[i].remaq;
+                            arreglo[8] = datos[i].ordfaB_REQUI;
+                            arreglo[9] = datos[i].glosa;
+                            tabla.appendChild(llenar_tabla(arreglo));
+                            global++;
+                        }
+                    }
+                },
+            });
+        }
+    });
+
+    function llenar_tabla(row) {
+        if ($("#TIPOREQUI").val() == "RS") {
+            for (var i = 0; i < row.length; i++) {
+                tr = document.createElement("tr");
+                tr.id = "r_" + row[0];
+                td0 = document.createElement("td");
+                node0 = document.createTextNode(row[0]);
+                td0.appendChild(node0);
+                td0.style.display = "none";
+                tr.appendChild(td0);
+                td9 = document.createElement("td");
+                node9 = document.createTextNode(row[1]);
+                td9.appendChild(node9);
+                tr.appendChild(td9);
+                td1 = document.createElement("td");
+                node1 = document.createTextNode(row[2]);
+                td1.appendChild(node1);
+                tr.appendChild(td1);
+                td2 = document.createElement("td");
+                node2 = document.createTextNode(row[3]);
+                td2.appendChild(node2);
+                tr.appendChild(td2);
+                td3 = document.createElement("td");
+                node3 = document.createTextNode(row[4]);
+                td3.appendChild(node3);
+                tr.appendChild(td3);
+                td4 = document.createElement("td");
+                node4 = document.createTextNode(row[5]);
+                td4.appendChild(node4);
+                tr.appendChild(td4);
+                td5 = document.createElement("td");
+                node5 = document.createTextNode(row[6]);
+                td5.appendChild(node5);
+                tr.appendChild(td5);
+            }
+        } else {
+            for (var i = 0; i < row.length; i++) {
+                tr = document.createElement("tr");
+                tr.id = "r_" + row[0];
+                td0 = document.createElement("td");
+                node0 = document.createTextNode(row[0]);
+                td0.appendChild(node0);
+                td0.style.display = "none";
+                tr.appendChild(td0);
+
+                td9 = document.createElement("td");
+                node9 = document.createTextNode(row[1]);
+                td9.appendChild(node9);
+                tr.appendChild(td9);
+
+                td1 = document.createElement("td");
+                node1 = document.createTextNode(row[2]);
+                td1.appendChild(node1);
+                tr.appendChild(td1);
+
+                td2 = document.createElement("td");
+                node2 = document.createTextNode(row[3]);
+                td2.appendChild(node2);
+                tr.appendChild(td2);
+
+                td3 = document.createElement("td");
+                node3 = document.createTextNode(row[4]);
+                td3.appendChild(node3);
+                tr.appendChild(td3);
+
+                td4 = document.createElement("td");
+                node4 = document.createTextNode(row[5]);
+                td4.appendChild(node4);
+                tr.appendChild(td4);
+
+                td5 = document.createElement("td");
+                node5 = document.createTextNode(row[6]);
+                td5.appendChild(node5);
+                tr.appendChild(td5);
+
+                td6 = document.createElement("td");
+                node6 = document.createTextNode(row[7]);
+                td6.appendChild(node6);
+                tr.appendChild(td6);
+
+                td7 = document.createElement("td");
+                node7 = document.createTextNode(row[8]);
+                td7.appendChild(node7);
+                tr.appendChild(td7);
+
+                td8 = document.createElement("td");
+                node8 = document.createTextNode(row[9]);
+                td8.appendChild(node8);
+                tr.appendChild(td8);
+            }
+        }
+
+        return tr;
+    }
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

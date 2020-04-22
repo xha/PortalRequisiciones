@@ -477,6 +477,43 @@ namespace Inicio.Controllers
             }
         }
 
+        // GET: Test/Consultar/5
+        public async Task<IActionResult> Consultar(string codigo)
+        {
+            Titulo();
+            if (codigo == null)
+            {
+                return NotFound();
+            }
+            //RehacerConexion();
+            bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
+            if (opt)
+            {
+                var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
+                if (modelo == null)
+                {
+                    return NotFound();
+                }
+
+                JsonResult areas = Areas();
+                JsonResult articulos = Articulos();
+                JsonResult solicitantes = Solicitantes();
+                JsonResult centro = CentroCosto();
+                JsonResult orden = OrdenFabricacion();
+                ViewBag.Solicitantes = solicitantes;
+                ViewBag.Areas = areas;
+                ViewBag.Articulos = articulos;
+                ViewBag.CentroCosto = centro;
+                ViewBag.OrdenFabricacion = orden;
+
+                return View(modelo);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index), new { error = "1" });
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)

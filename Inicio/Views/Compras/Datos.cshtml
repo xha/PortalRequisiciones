@@ -474,50 +474,50 @@
             var arreglo = new Array();
             $.ajax(
                 {
-                    type: "POST",
-                    dataType: "json",
-                    url: "@Url.Content("~/Compras/ListadoDetalle")",
-                    data: "codigo="+$("#NROREQUI").val(),
-                    cache: false,
-                    success: function (datos) {
-                        if ($("#TIPOREQUI").val() == "RS") {
-                            var tabla = $("#tabla_servicio")[0];
-                            for (var i = 0; i < datos.length; i++) {
-                                arreglo.length = 0;
-                                arreglo[0] = global;
-                                arreglo[1] = datos[i].codpro;
-                                arreglo[2] = datos[i].descpro;
-                                arreglo[3] = parseFloat(datos[i].cantid);
-                                arreglo[4] = datos[i].cencost;
-                                arreglo[5] = datos[i].ordfaB_REQUI;
-                                arreglo[6] = datos[i].glosa;
-                                tabla.appendChild(llenar_tabla(arreglo));
-                                global++;
-                            }
-                        } else {
-                            var tabla = $("#tabla_articulo")[0];
-                            for (var i = 0; i < datos.length; i++) {
-                                arreglo.length = 0;
-                                arreglo[0] = global;
-                                arreglo[1] = datos[i].codpro;
-                                arreglo[2] = datos[i].descpro;
-                                arreglo[3] = datos[i].unipro;
-                                arreglo[4] = parseFloat(datos[i].cantid);
-
-                                var fecha = datos[i].fecreque.split("T");
-                                var fecha = fecha[0].split("-");
-                                arreglo[5] = fecha[2]+"/"+fecha[1]+"/"+fecha[0];
-                                arreglo[6] = datos[i].cencost;
-                                arreglo[7] = datos[i].remaq;
-                                arreglo[8] = datos[i].ordfaB_REQUI;
-                                arreglo[9] = datos[i].glosa;
-                                arreglo[10] = 0;
-                                tabla.appendChild(llenar_tabla(arreglo));
-                                global++;
-                            }
+                type: "POST",
+                dataType: "json",
+                url: "@Url.Content("~/Compras/ListadoDetalle")",
+                data: "codigo="+$("#NROREQUI").val(),
+                cache: false,
+                success: function (datos) {
+                    if ($("#TIPOREQUI").val() == "RS") {
+                        var tabla = $("#tabla_servicio")[0];
+                        for (var i = 0; i < datos.length; i++) {
+                            arreglo.length = 0;
+                            arreglo[0] = global;
+                            arreglo[1] = datos[i].codpro;
+                            arreglo[2] = datos[i].descpro;
+                            arreglo[3] = parseFloat(datos[i].cantid);
+                            arreglo[4] = datos[i].cencost;
+                            arreglo[5] = datos[i].ordfaB_REQUI;
+                            arreglo[6] = datos[i].glosa;
+                            tabla.appendChild(llenar_tabla(arreglo));
+                            global++;
                         }
-                    },
-                });
+                    } else {
+                        var tabla = $("#tabla_articulo")[0];
+                        for (var i = 0; i < datos.length; i++) {
+                            arreglo.length = 0;
+                            arreglo[0] = global;
+                            arreglo[1] = datos[i].codpro;
+                            arreglo[2] = datos[i].descpro;
+                            arreglo[3] = datos[i].unipro;
+                            arreglo[4] = parseFloat(datos[i].cantid);
+
+                            var fecha = datos[i].fecreque.split("T");
+                            var fecha = fecha[0].split("-");
+                            arreglo[5] = fecha[2]+"/"+fecha[1]+"/"+fecha[0];
+                            arreglo[6] = datos[i].cencost;
+                            arreglo[7] = datos[i].remaq;
+                            arreglo[8] = datos[i].ordfaB_REQUI;
+                            arreglo[9] = datos[i].glosa;
+                            arreglo[10] = 0;
+                            tabla.appendChild(llenar_tabla(arreglo));
+                            global++;
+                        }
+                    }
+                },
+            });
         }
     });
 
@@ -746,6 +746,7 @@
                 a0.className = "btn btn-info";
                 a0.href = "#";
                 eval("a0.onclick = function(){editar_servicio(" + row[0] + ");}");
+                td10.className = "editable";
                 a0.appendChild(i0);
                 td10.appendChild(a0);
                 tr.appendChild(td10);
@@ -756,6 +757,7 @@
                 a1.className = "btn btn-danger";
                 a1.href = "#";
                 eval("a1.onclick = function(){eliminar_servicio(" + row[0] + ");}");
+                td11.className = "editable";
                 a1.appendChild(i1);
                 td11.appendChild(a1);
                 tr.appendChild(td11);
@@ -822,6 +824,7 @@
                 a0.className = "btn btn-info";
                 a0.href = "#";
                 eval("a0.onclick = function(){editar_articulo(" + row[0] + ");}");
+                td10.className = "editable";
                 a0.appendChild(i0);
                 td10.appendChild(a0);
                 tr.appendChild(td10);
@@ -833,6 +836,7 @@
                 a1.className = "btn btn-danger";
                 a1.href = "#";
                 eval("a1.onclick = function(){eliminar_articulo(" + row[0] + ");}");
+                td11.className = "editable";
                 a1.appendChild(i1);
                 td11.appendChild(a1);
                 tr.appendChild(td11);

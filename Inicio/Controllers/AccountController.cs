@@ -103,21 +103,22 @@ namespace Inicio.Controllers
                     //SetAppSettingValue("BDWENCOConnectionString", "Data Source = "+ servidor + "; Initial Catalog = "+ Base_datos + "; MultipleActiveResultSets = true; User ID = "+ usuario_server + "; Password = "+ contrasenia + "");
 
                     // && i.USU_PASSWORD == clave
-                    List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == userModel.CLAVE).ToList();
+                    //List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == userModel.CLAVE).ToList();
+                    List<SP_PORTAL_COMPRAS> user = Wenco?.PORTAL_COMPRAS.FromSqlRaw("SP_PORTAL_COMPRAS '" + userModel.CODIGO + "','" + userModel.CLAVE + "'").ToList();
 
                     if (user.Count > 0)
                     {
-                        var Resultado = (from p in user
-                                         group p.EMP_CODIGO by p.EMP_CODIGO into g
-                                         select new { N = g.ToList() });
+                        /*var Resultado = (from p in user
+                                         group p.EMP_CODIGO by p.EMP_CODIGO, p.EMP_NOMBRE by p.EMP_NOMBRE into g
+                                         select new { N = g.ToList() });*/
 
                         string vempresas = "";
-                        foreach (var rs in Resultado)
+                        foreach (var rs in user)
                         {
                             //List<EMPRESA> empre = Wenco?.EMPRESA.FromSqlRaw("SELECT EMP_CODIGO,EMP_RAZON_NOMBRE FROM EMPRESA WHERE EMP_CODIGO='" + empresa + "'").ToList();
-                            if (vempresas=="") TempData["USU_EMPRESA"] = rs.N[0];
+                            if (vempresas=="") TempData["USU_EMPRESA"] = rs.EMP_CODIGO;
 
-                            vempresas += rs.N[0] + ",";
+                            vempresas += rs.EMP_CODIGO + " - "+ rs.EMP_RAZON_NOMBRE + ",";
                         }
 
                         TempData["Empresas"] = vempresas;

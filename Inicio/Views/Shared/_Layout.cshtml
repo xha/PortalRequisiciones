@@ -144,10 +144,12 @@
         var datos_empresas = JSON.parse('@Html.Raw(vempresas)').value;
         empact = $("#empresa_actual")[0];
         empact.length = 0;
+        var arreglo = "";
         for (var z = 0; z < (datos_empresas.length - 1); z++) {
-            empact[z] = new Option(datos_empresas[z].trim(), datos_empresas[z].trim(), "", "");
+            arreglo = datos_empresas[z].split(" - ");
+            empact[z] = new Option(datos_empresas[z].trim(), arreglo[0], "", "");
 
-            if (datos_empresas[z] == '@HttpContextAccessor.HttpContext.Session.GetString("empresa")') {
+            if (arreglo[0] == '@HttpContextAccessor.HttpContext.Session.GetString("empresa")') {
                 //$("#empresa_actual")[0].setAttribute("selected", "selected");
                 $("#empresa_actual")[0].options.selectedIndex = z;
             }

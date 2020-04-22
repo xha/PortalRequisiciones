@@ -71,7 +71,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.NRO_REQUISICION)
                                 </th>
-                                <th>Eliminar</th>
+                                <th>Acci&oacute;n</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -172,6 +172,19 @@
                 },
                 { data: "estado" },
                 { data: "nrO_REQUISICION" },
+                {
+                    render: function (data, type, row)
+                    {
+                        if (row.estado == "P") {
+                            var cadena = '<a class="btn btn-primary mr-1" title = "Consultar" href="@Url.Content("~/Compras/Consultar?codigo=")' + row.numero + '" > <i class="fa fa-search"></i></a > ';
+                            cadena+= '<a class="btn btn-danger mr-1" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                            return cadena;
+                        } else {
+                            return '';
+                        }
+                        
+                    }
+                },
                 /*{
                     render: function (data, type, row)
                     {
@@ -182,7 +195,7 @@
                         }
                         
                     }
-                },*/
+                },
                 {
                     data: null, render: function (data, type, row) {
                         if (row.estado == "P") {
@@ -192,7 +205,7 @@
                             return '';
                         }                        
                     }
-                },
+                },*/
             ]
         });
     }
