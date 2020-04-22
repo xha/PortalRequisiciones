@@ -153,6 +153,8 @@
             }
         }
 
+        if (empact.length==1) empact.disabled = true
+
         $('#empresa_actual').unbind('change').bind('change', function (e){
             optionSeleccionado = $(this).val();
 

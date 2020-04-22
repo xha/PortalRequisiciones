@@ -18,7 +18,7 @@ namespace Datos.Models
         public DateTime FECHA { get; set; }
         [Display(Name = "Estado")]
         public string ESTADO { get; set; }
-        //[Display(Name = "Nro. Requisición")]
-        //public string NRO_REQUISICION { get; set; }
+        [Display(Name = "Nro. Requisición")]
+        public string NRO_REQUISICION { get; set; }
     }
 }

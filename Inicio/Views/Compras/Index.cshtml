@@ -68,8 +68,10 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.ESTADO)
                                 </th>
-                                <th style="max-width: 5px"></th>
-                                <th style="max-width: 5px"></th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NRO_REQUISICION)
+                                </th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -93,20 +95,32 @@
         $(".fecha").inputmask('99/99/9999', { numericInput: true });
 
         revisar_error();
-
+        
         var datos = JSON.parse('@Html.Raw(datos_json)');
         activar_datos(datos.value);
+        if (datos.value.error!= undefined) session_finalizada();
     });
+
+    function session_finalizada() {
+        swal({
+            title: "Alerta",
+            text: "La sesión ha caducado",
+            type: "info",
+            confirmButtonText: "Aceptar",
+        });
+
+        setTimeout(function(){ window.location = '@Url.Action("Logout", "Account")'; }, 3000);
+    }
 
     function revisar_error() {
         if ($("#error").val() != "") {
-            /*swal({
+            swal({
                 title: "Alerta",
                 text: $("#error").val(),
                 type: "info",
                 confirmButtonText: "Aceptar",
-            });*/
-            MostrarMensaje("Rojo", $("#error").val());
+            });
+            //MostrarMensaje("Rojo", $("#error").val());
             $("#error").val("");
         }
     }
@@ -124,6 +138,7 @@
                 cache: false,
                 success: function (result) {
                     activar_datos(result);
+                    if (result.error!= undefined) session_finalizada();
                 },
             });
         }
@@ -134,6 +149,12 @@
             destroy: true,
             bInfo: false,
             data: datos,
+            columnDefs:
+            [{
+                targets: [6],
+                orderable: false,
+                searchable: false
+            }],
             columns: [
                 { data: "numero" },
                 { data: "solicitante" },
@@ -150,22 +171,23 @@
                     }
                 },
                 { data: "estado" },
-                {
+                { data: "nrO_REQUISICION" },
+                /*{
                     render: function (data, type, row)
                     {
                         if (row.estado == "P") {
-                            return '<a class="btn btn-info grid_opt" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")'+row.numero+'"><i class="fa fa-edit"></i></a>';
+                            return '<a class="btn btn-info grid_opt" title="Editar" href="Url.Content("~/Compras/Edit?codigo=")'+row.numero+'"><i class="fa fa-edit"></i></a>';
                         } else {
                             return '';
                         }
                         
                     }
-                },
+                },*/
                 {
                     data: null, render: function (data, type, row) {
                         if (row.estado == "P") {
-                            //return '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
-                            return '<a class="btn btn-danger" title="Eliminar"  href="@Url.Content("~/Compras/Delete?codigo=")'+row.numero+'"><i class="fa fa-trash"></i></a>';
+                            return '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                            //return '<a class="btn btn-danger" title="Eliminar"  href="Url.Content("~/Compras/Delete?codigo=")'+row.numero+'"><i class="fa fa-trash"></i></a>';
                         } else {
                             return '';
                         }                        
@@ -189,11 +211,11 @@
         function (isConfirm) {
             if (isConfirm) {
                 var parametros = "id=" + nrorequi;
-                $.ajax(
+                /*$.ajax(
                 {
                     type: "POST",
                     dataType: "json",
-                    url: "@Url.Content("~/Compras/Delete")",
+                    url: "Url.Content("~/Compras/Delete")",
                     data: parametros,
                     cache: false,
                     success: function (datos) {
@@ -202,7 +224,7 @@
                             $("#error").val(datos.error);
                             revisar_error();
                         } else {
-                            window.location = '@Url.Content("~/Compras/Index")';
+                            window.location = 'Url.Content("~/Compras/Index")';
                         };
                     },
                     error: function (xhr) {
@@ -212,7 +234,11 @@
                             confirmButtonClass: "btn-danger",
                         });
                     },
-                });
+                });*/
+                var url = '@Url.Action("Delete", "Compras", new { codigo = "Id" })';
+                url = url.replace('Id', encodeURIComponent(nrorequi));
+                window.location.href = url;
+                //console.log(url);
             }
         });
     }

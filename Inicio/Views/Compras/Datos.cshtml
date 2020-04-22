@@ -282,16 +282,21 @@
                         <input class="form-control" readonly id="descripcion_art_almacen" />
                     </div>
                     <div class="col-sm-12 mt-3">
-                        <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulosAlm" style="width: 100%">
+                        <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulosAlm" style="width: 100%; cursor: pointer">
                             <thead class="bg-info">
                                 <tr>
                                     <th>C&oacute;digo</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Stock</th>
+                                    <th class="d-none"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
+                    </div>
+                    <div class="col-sm-12 mt-1">
+                        <label>Ubicación</label>
+                        <input class="form-control" id="almacen_ubicacion" />
                     </div>
                 </div>
             </div>
@@ -597,11 +602,23 @@
             destroy: true,
             bInfo: false,
             data: datos,
+            columnDefs: [
+            {
+                className: "d-none",
+                targets: [3]
+            }],
             columns: [
                 { data: "coD_ALMACEN" },
                 { data: "almacen" },
                 { data: "stock" },
+                { data: "ubicacion" },
             ]
+        });
+
+        $('#gridArticulosAlm tbody').on('click', 'tr', function () {
+            $('#gridArticulosAlm').DataTable().$('tr').removeClass('bg-secondary text-white');
+            $(this).addClass('bg-secondary text-white');
+            $("#almacen_ubicacion").val($(this).children("td").eq(3).text());
         });
     }
 
@@ -873,7 +890,7 @@
                     td.eq(7).text($("#nro_maquina").val());
                     td.eq(8).text($("#orden_fabricacion").val().trim());
                     td.eq(9).text($("#glosa_articulo").val());
-                    td.eq(10).text(stock);
+                    td.eq(12).text(stock);
                 });
             }
             limpiar_campos();

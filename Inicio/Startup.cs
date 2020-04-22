@@ -52,7 +52,7 @@ namespace Inicio
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromSeconds(5);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
 
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Home/Index";

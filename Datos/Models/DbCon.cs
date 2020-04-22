@@ -46,6 +46,7 @@ namespace Datos.Models
         public DbSet<USUARIO_COMP> UsuarioModel { get; set; }
         public DbSet<SP_PORTAL_ESTADO_REQUISICION> SP_ESTADO { get; set; }
         public DbSet<EMPRESA> EMPRESA { get; set; }
+        public DbSet<REQUISC> REQUISC { get; set; }
     }
 
     public class BDCOMUN : DbContext
@@ -78,7 +79,6 @@ namespace Datos.Models
         }
 
         public DbSet<REQUISC_PORTAL> REQUISC_PORTAL { get; set; }
-        public DbSet<REQUISC> REQUISC { get; set; }
         public DbSet<REQUISD_PORTAL> REQUISD_PORTAL { get; set; }
         public DbSet<OBS_PORTAL_RQ> OBS { get; set; }
     }

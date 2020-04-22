@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace Inicio.Controllers
         public REQUISC_PORTAL Modelo = new REQUISC_PORTAL();
         public REQUISD_PORTAL ModeloDetalle = new REQUISD_PORTAL();
         public USUARIO_COMP ModeloUsuComp = new USUARIO_COMP();
+        CultureInfo culture = new CultureInfo("es-ES");
 
         public ComprasController(BDCOMUN context, BDWENCO context2)
         {
@@ -63,7 +65,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in articulo
                              orderby N.ALMACEN
-                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.COD_ALMACEN, N.UNIDAD, N.ALMACEN });
+                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.COD_ALMACEN, N.UNIDAD, N.ALMACEN, N.UBICACION });
 
             return Json(Resultado);
         }
@@ -118,21 +120,39 @@ namespace Inicio.Controllers
         public JsonResult ListadoCompras(string fecha_desde, string fecha_hasta)
         {
             RehacerConexion();
-            string empresa = "[" + HttpContext.Session.GetString("empresa").ToString() + "BDCOMUN]";
-            //List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ").ToList();
-            var cadena = "SELECT RC.NROREQUI AS NUMERO,S.TDESCRI AS SOLICITANTE,A.AREA_DESCRIPCION AS AREA,RC.FECREQUI AS FECHA,R.ESTREQUI AS ESTADO ";
-            cadena += "FROM " + empresa + ".DBO.REQUISC_PORTAL AS RC ";
-            cadena += "LEFT JOIN " + empresa + ".DBO.TABAYU AS S ON S.TCOD = '12' AND S.TCLAVE = RC.CODSOLIC ";
-            cadena += "LEFT JOIN " + empresa + ".DBO.AREA AS A ON A.AREA_CODIGO = RC.AREA ";
-            cadena += "LEFT JOIN " + empresa + ".DBO.REQUISC AS R ON R.TIPOREQUI = RC.TIPOREQUI AND R.NRO_REQUERIMIENTO_PORTAL = RC.NROREQUI ";
-            cadena += "WHERE RC.TIPOREQUI='"+ HttpContext.Session.GetString("TipoDocumento") + "' and RC.FECREQUI BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' ORDER BY RC.NROREQUI";
-            List<REQUISC> compras = Comun?.REQUISC.FromSqlRaw(cadena).ToList();
+            var jsonData = new
+            {
+                error = false,
+            };
 
-            var Resultado = (from N in compras
-                             orderby N.FECHA
-                             select N);
+            try
+            {
+                //string empresa = "[" + HttpContext.Session.GetString("empresa").ToString() + "BDCOMUN]";
+                string empresa = HttpContext.Session.GetString("empresa").ToString();
+                string tipo = HttpContext.Session.GetString("TipoDocumento").ToString();
+                //List<REQUISC_PORTAL> compras = Comun.REQUISC_PORTAL.Where(p => p.TIPOREQUI == "RQ").ToList();
+                /*var cadena = "SELECT RC.NROREQUI AS NUMERO,S.TDESCRI AS SOLICITANTE,A.AREA_DESCRIPCION AS AREA,RC.FECREQUI AS FECHA,R.ESTREQUI AS ESTADO ";
+                cadena += "FROM " + empresa + ".DBO.REQUISC_PORTAL AS RC ";
+                cadena += "LEFT JOIN " + empresa + ".DBO.TABAYU AS S ON S.TCOD = '12' AND S.TCLAVE = RC.CODSOLIC ";
+                cadena += "LEFT JOIN " + empresa + ".DBO.AREA AS A ON A.AREA_CODIGO = RC.AREA ";
+                cadena += "LEFT JOIN " + empresa + ".DBO.REQUISC AS R ON R.TIPOREQUI = RC.TIPOREQUI AND R.NRO_REQUERIMIENTO_PORTAL = RC.NROREQUI ";
+                cadena += "WHERE RC.TIPOREQUI='"+ HttpContext.Session.GetString("TipoDocumento") + "' and RC.FECREQUI BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' ORDER BY RC.NROREQUI";
+                List<REQUISC> compras = Comun?.REQUISC.FromSqlRaw(cadena).ToList();*/
+                List<REQUISC> compras = Wenco?.REQUISC.FromSqlRaw("SP_PORTAL_LISTADO_REQUISICION '" + empresa + "','" + fecha_desde + "','" + fecha_hasta + "','" + tipo + "'").ToList();
+                var Resultado = (from N in compras
+                                 orderby N.FECHA
+                                 select N);
 
-            return Json(Resultado);
+                return Json(Resultado);
+            } catch (Exception ex)
+            {
+                jsonData = new
+                {
+                    error = true,
+                };
+
+                return Json(jsonData);
+            }            
         }
 
         [HttpPost]
@@ -184,15 +204,21 @@ namespace Inicio.Controllers
         {
             RehacerConexion();
             string empresa = HttpContext.Session.GetString("empresa");
-
-            List<SP_PORTAL_ESTADO_REQUISICION> opt = Wenco.SP_ESTADO.FromSqlRaw("SP_PORTAL_ESTADO_REQUISICION '" + empresa + "', '" + tipo + "','" + numero + "'").ToList();
-            if (opt[0].ESTADO=="P")
+            try
             {
-                return true;
-            } else
+                List<SP_PORTAL_ESTADO_REQUISICION> opt = Wenco.SP_ESTADO.FromSqlRaw("SP_PORTAL_ESTADO_REQUISICION '" + empresa + "', '" + tipo + "','" + numero + "'").ToList();
+                if (opt[0].ESTADO == "P")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            } catch(Exception ex)
             {
                 return false;
-            }           
+            }            
         }
         /********************************************************************************************************************************************/
         public void RehacerConexion()
@@ -284,20 +310,6 @@ namespace Inicio.Controllers
             string fecha_desde = hoy.ToString("MM/yyyy");
             fecha_desde = "01/" + fecha_desde;
             ViewBag.error = "";
-            switch (error)
-            {
-                case "0":
-                    ViewBag.error = "No se pueden grabar los cambios";
-                    break;
-                case "1":
-                    ViewBag.error = "La requisición no se puede editar";
-                break;
-                case "2":
-                    ViewBag.error = "La requisición no se puede eliminar";
-                    break;
-            }
-            
-
             if (tipo != null) HttpContext.Session.SetString("TipoDocumento", tipo);
             JsonResult compras = ListadoCompras(fecha_desde, fecha_hasta);
             /*JsonResult areas = Areas();
@@ -310,10 +322,22 @@ namespace Inicio.Controllers
             HttpContext.Session.SetObjectAsJson("solicitantes", solicitantes);
             HttpContext.Session.SetObjectAsJson("centro", centro);
             HttpContext.Session.SetObjectAsJson("orden", orden);*/
-
             ViewBag.ListadoCompras = compras;
             Titulo();
             ViewBag.SessionUsuario = TempData["USU_NOMBRE"];
+
+            switch (error)
+            {
+                case "0":
+                    ViewBag.error = "No se pueden grabar los cambios";
+                    break;
+                case "1":
+                    ViewBag.error = "La requisición no se puede editar";
+                break;
+                case "2":
+                    ViewBag.error = "La requisición no se puede eliminar";
+                    break;
+            }
 
             return View();
         }
@@ -465,6 +489,7 @@ namespace Inicio.Controllers
                     bool opt = EstadoRequisicion(modelo.TIPOREQUI, modelo.NROREQUI);
                     if (opt)
                     {
+                        CultureInfo culture = new CultureInfo("es-ES");
                         Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI + " and TIPOREQUI='" + modelo.TIPOREQUI + "'");
                         string hora = DateTime.Now.ToString("hh:mm:ss");
                         Comun.REQUISC_PORTAL.Update(modelo);
@@ -582,7 +607,6 @@ namespace Inicio.Controllers
             return Json(jsonData);
         }*/
 
-        [HttpPost]
         public async Task<IActionResult> Delete(string codigo)
         {
             bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);

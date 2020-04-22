@@ -16,5 +16,6 @@ namespace Datos.Models
         public string COD_ALMACEN { get; set; }
         public string ALMACEN { get; set; }
         public decimal STOCK { get; set; }
+        public string UBICACION { get; set; }
     }
 }
