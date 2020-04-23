@@ -41,6 +41,12 @@ namespace Datos.Models
                    t.EMP_CODIGO,
                    t.USU_NOMBRE,
                });
+
+            modelBuilder.Entity<SP_PORTAL_REQUERIMIENTO>()
+               .HasKey(t => new {
+                   t.TIPO,
+                   t.NRO_REQUERIMIENTO,
+               });
         }
 
         public DbSet<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> CENTRO_COSTO { get; set; }
@@ -53,6 +59,7 @@ namespace Datos.Models
         public DbSet<SP_PORTAL_ESTADO_REQUISICION> SP_ESTADO { get; set; }
         public DbSet<REQUISC> REQUISC { get; set; }
         public DbSet<SP_PORTAL_COMPRAS> PORTAL_COMPRAS { get; set; }
+        public DbSet<SP_PORTAL_REQUERIMIENTO> LISTADO_REQUERIMIENTO { get; set; }
     }
 
     public class BDCOMUN : DbContext

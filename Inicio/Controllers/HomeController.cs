@@ -6,21 +6,28 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Inicio.Models;
+using Wkhtmltopdf.NetCore;
 
 namespace Inicio.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        readonly IGeneratePdf generatePdf;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IGeneratePdf generatePdf)
         {
             _logger = logger;
+            this.generatePdf = generatePdf;
         }
 
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             return View();
+        }*/
+        public async Task<IActionResult> Index()
+        {
+            return await generatePdf.GetPdf("Home/Index", "Hello World");
         }
 
         public IActionResult Privacy()

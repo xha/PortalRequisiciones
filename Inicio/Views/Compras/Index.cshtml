@@ -71,7 +71,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.NRO_REQUISICION)
                                 </th>
-                                <th>Acci&oacute;n</th>
+                                <th style="width: 200px">Acci&oacute;n</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -176,8 +176,10 @@
                     render: function (data, type, row)
                     {
                         if (row.estado == "P") {
-                            var cadena = '<a class="btn btn-primary mr-1" title = "Consultar" href="@Url.Content("~/Compras/Consultar?codigo=")' + row.numero + '" > <i class="fa fa-search"></i></a > ';
-                            cadena+= '<a class="btn btn-danger mr-1" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
+                            var cadena = '<a class="btn btn-primary" title = "Consultar" href="@Url.Content("~/Compras/Consultar?codigo=")' + row.numero + '" > <i class="fa fa-search"></i></a > ';
+                            cadena+= '<a class="btn btn-info" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")' + row.numero + '"><i class="fa fa-edit"></i></a> ';
+                            cadena+= '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a> ';
+                            cadena+= '<a class="btn btn-secondary" target="_blank" title="Imprimir" href="@Url.Content("~/Compras/Imprimir?codigo=")' + row.numero + '"><i class="fa fa-print"></i></a>';
                             return cadena;
                         } else {
                             return '';

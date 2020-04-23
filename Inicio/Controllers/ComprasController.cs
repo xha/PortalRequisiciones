@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Wkhtmltopdf.NetCore;
 
 namespace Inicio.Controllers
 {
@@ -22,11 +23,13 @@ namespace Inicio.Controllers
         public REQUISD_PORTAL ModeloDetalle = new REQUISD_PORTAL();
         public USUARIO_COMP ModeloUsuComp = new USUARIO_COMP();
         CultureInfo culture = new CultureInfo("es-ES");
+        readonly IGeneratePdf generatePdf;
 
-        public ComprasController(BDCOMUN context, BDWENCO context2)
+        public ComprasController(BDCOMUN context, BDWENCO context2, IGeneratePdf generatePdf)
         {
             Comun = context;
             Wenco = context2;
+            this.generatePdf = generatePdf;
         }
 
         /********************************************************************************************************************************************/
@@ -526,11 +529,8 @@ namespace Inicio.Controllers
                     bool opt = EstadoRequisicion(modelo.TIPOREQUI, modelo.NROREQUI);
                     if (opt)
                     {
-                        CultureInfo culture = new CultureInfo("es-ES");
                         Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI + " and TIPOREQUI='" + modelo.TIPOREQUI + "'");
                         string hora = DateTime.Now.ToString("hh:mm:ss");
-                        Comun.REQUISC_PORTAL.Update(modelo);
-                        await Comun.SaveChangesAsync();
 
                         JArray ArrayDetalle = JArray.Parse(detalle);
                         int i = 0;
@@ -551,19 +551,15 @@ namespace Inicio.Controllers
                             ModeloDetalle.SALDO = Convert.ToDecimal(item.GetValue("cantidad"));
                             ModeloDetalle.REMAQ = item.GetValue("nro_maquina").ToString();
                             ModeloDetalle.TIPOREQUI = modelo.TIPOREQUI;
-                            if (i == longitud)
-                            {
-                                ModeloDetalle.LISTO_CARGAR = true;
-                            }
-                            else
-                            {
-                                ModeloDetalle.LISTO_CARGAR = false;
-                            }
+                            ModeloDetalle.LISTO_CARGAR = false;
                             ModeloDetalle.ESTADO = false;
 
                             Comun.REQUISD_PORTAL.Add(ModeloDetalle);
                             await Comun.SaveChangesAsync();
                         }
+
+                        Comun.REQUISC_PORTAL.Update(modelo);
+                        await Comun.SaveChangesAsync();
                     } else
                     {
                         return RedirectToAction(nameof(Index), new { error = "1" });
@@ -678,6 +674,19 @@ namespace Inicio.Controllers
         private bool REQUISC_PORTALExists(string id)
         {
             return Comun.REQUISC_PORTAL.Any(e => e.NROREQUI == id);
+        }
+
+        //public IActionResult Imprimir()
+        public async Task<IActionResult> Imprimir(string codigo)
+        {
+            RehacerConexion();
+            string empresa = HttpContext.Session.GetString("empresa");
+            string tipo = HttpContext.Session.GetString("TipoDocumento");
+            List<SP_PORTAL_REQUERIMIENTO> modelo = Wenco.LISTADO_REQUERIMIENTO.FromSqlRaw("SP_PORTAL_REQUERIMIENTO '" + empresa + "','" + tipo + "', '" + codigo + "'").ToList();
+            ViewBag.Codigo = codigo;
+            //return View(modelo);
+            //List<SP_PORTAL_REQUERIMIENTO> Modelo = new List<SP_PORTAL_REQUERIMIENTO>();
+            return await generatePdf.GetPdf("Compras/Imprimir", modelo);
         }
     }
 }

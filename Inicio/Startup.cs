@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Inicio.Services;
 using System.Net;
+using Wkhtmltopdf.NetCore;
 
 namespace Inicio
 {
@@ -86,7 +87,7 @@ namespace Inicio
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
+            services.AddWkhtmltopdf("wkhtmltopdf");
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

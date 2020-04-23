@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Datos.Models.SP_PORTAL_REQUERIMIENTO>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = null;
+    DateTime hoy = DateTime.Now;
+
+    ViewBag.Fecha = hoy.ToString("dd/MM/yyyy");
+    ViewBag.Hora = hoy.ToString("HH:mm");
+    if (HttpContextAccessor.HttpContext.Session.GetString("TipoDocumento") == "RQ")
+    {
+        ViewBag.Titulo = "COMPRA";
+    }
+    else
+    {
+        ViewBag.Titulo = "SERVICIO";
+    }
+
+    string fecha = Model.First().FECHA.ToString("dd-MM-yyyy");
+    decimal suma = 0;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Imprimir</title>
+</head>
+<body>
+    <h3>@HttpContextAccessor.HttpContext.Session.GetString("empresa") - REQUISICIONES</h3>
+    <table width="100%" border="0">
+        <tr>
+            <td width="10%">Fecha: </td>
+            <td>@ViewBag.Fecha</td>
+        </tr>
+        <tr>
+            <td width="10%">Hora: </td>
+            <td>@ViewBag.Hora</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <h2><b>REQUERIMIENTO DE @ViewBag.Titulo NRO. @Html.DisplayFor(model => model.First().NRO_REQUERIMIENTO)</b></h2>
+            </td>
+        </tr>
+        <tr>
+            <td>Área:</td>
+            <td>@Html.DisplayFor(model => model.First().CODIGO_AREA) - @Html.DisplayFor(model => model.First().AREA)</td>
+        </tr>
+        <tr>
+            <td>Fecha:</td>
+            <td>@fecha</td>
+        </tr>
+        <tr>
+            <td>Solicitante:</td>
+            <td>@Html.DisplayFor(model => model.First().CODIGO_SOLICITANTE) - @Html.DisplayFor(model => model.First().SOLICITANTE)</td>
+        </tr>
+        <tr>
+            <td>Comentario:</td>
+            <td>@Html.DisplayFor(model => model.First().GLOSA)</td>
+        </tr>
+    </table>
+    <br />
+    <table width="100%" border="1">
+        <tr>
+            <th><b>Código</b></th>
+            <th><b>Descripción</b></th>
+            <th><b>Und.</b></th>
+            <th><b>Cantidad</b></th>
+            <th><b>Nro. Máquina</b></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            suma+= item.CANTIDAD;
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NRO_REQUERIMIENTO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ARTICULO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UNIDAD_MEDIDA)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CANTIDAD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MAQUINA)
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="3" align="right">
+                <b>Total:</b>
+            </td>
+            <td colspan="2">
+                @suma
+            </td>
+        </tr>
+    </table>    
+</body>
+</html>

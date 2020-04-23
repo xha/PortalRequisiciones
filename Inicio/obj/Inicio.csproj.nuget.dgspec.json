@@ -126,7 +126,7 @@
               "target": "Package",
               "version": "[3.1.0, )"
             },
-            "Microsoft.AspNetCore.Mvc": {
+            "Microsoft.AspNetCore.Mvc.Razor.ViewCompilation": {
               "target": "Package",
               "version": "[2.2.0, )"
             },
@@ -137,6 +137,14 @@
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
               "version": "[3.1.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Wkhtmltopdf.NetCore": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             }
           },
           "imports": [
