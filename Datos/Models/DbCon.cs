@@ -43,10 +43,7 @@ namespace Datos.Models
                });
 
             modelBuilder.Entity<SP_PORTAL_REQUERIMIENTO>()
-               .HasKey(t => new {
-                   t.TIPO,
-                   t.NRO_REQUERIMIENTO,
-               });
+                .HasNoKey();
         }
 
         public DbSet<SP_PORTAL_LISTADO_CENTROCOSTO_COMP> CENTRO_COSTO { get; set; }

@@ -113,11 +113,12 @@
             });
         }        
 
-        if (($("#detalle").val() != "") && ($("#NROREQUI").val() != "")) {
+        if (($("#detalle").val() != "") && ($("#NROREQUI").val() == "")) {
+            $("#NROREQUI").val(0);
             $("#TipoDocumento").val($("#TIPOREQUI").val());
             document.forms[0].submit();
         } else {
-            MostrarMensaje("Rojo", "Los campos con * son obligatorios");
+            MostrarMensaje("Rojo", "No se ha agregado ningún artículo");
         }
     }
 </script>

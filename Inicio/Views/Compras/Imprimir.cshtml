@@ -27,7 +27,7 @@
     <title>Imprimir</title>
 </head>
 <body>
-    <h3>@HttpContextAccessor.HttpContext.Session.GetString("empresa") - REQUISICIONES</h3>
+    <h3>@HttpContextAccessor.HttpContext.Session.GetString("EmpresaNombre")</h3>
     <table width="100%" border="0">
         <tr>
             <td width="10%">Fecha: </td>
@@ -73,7 +73,7 @@
             suma+= item.CANTIDAD;
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NRO_REQUERIMIENTO)
+                    @Html.DisplayFor(modelItem => item.CODIGO_ARTICULO)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ARTICULO)

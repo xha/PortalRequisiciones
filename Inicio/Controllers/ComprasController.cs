@@ -202,6 +202,17 @@ namespace Inicio.Controllers
             return true;
         }
 
+        public string EmpresaNombre()
+        {
+            string empresa = HttpContext.Session.GetString("empresa");
+
+            List<dynamic> emp = HttpContext.Session.GetObjectFromJson<dynamic>("Empresas").ToObject<List<dynamic>>();
+
+            List<dynamic> Resultado = emp.Where(t => t.Contains(empresa)).ToList();
+
+            return Resultado[0].ToString();
+        }
+
         [HttpPost]
         public bool EstadoRequisicion(string tipo, string numero)
         {
@@ -531,7 +542,7 @@ namespace Inicio.Controllers
                     {
                         Comun.Database.ExecuteSqlRaw("DELETE FROM REQUISD_PORTAL WHERE NROREQUI=" + modelo.NROREQUI + " and TIPOREQUI='" + modelo.TIPOREQUI + "'");
                         string hora = DateTime.Now.ToString("hh:mm:ss");
-
+                        if (modelo.GLOSA == null) modelo.GLOSA = " ";
                         JArray ArrayDetalle = JArray.Parse(detalle);
                         int i = 0;
                         int longitud = ArrayDetalle.Count;
@@ -682,6 +693,7 @@ namespace Inicio.Controllers
             RehacerConexion();
             string empresa = HttpContext.Session.GetString("empresa");
             string tipo = HttpContext.Session.GetString("TipoDocumento");
+            HttpContext.Session.SetString("EmpresaNombre", EmpresaNombre());
             List<SP_PORTAL_REQUERIMIENTO> modelo = Wenco.LISTADO_REQUERIMIENTO.FromSqlRaw("SP_PORTAL_REQUERIMIENTO '" + empresa + "','" + tipo + "', '" + codigo + "'").ToList();
             ViewBag.Codigo = codigo;
             //return View(modelo);

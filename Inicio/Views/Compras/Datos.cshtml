@@ -3,9 +3,13 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
+    string codsoli = "";
+    string codarea = "";
     if (Model?.FECREQUI != null)
     {
         ViewBag.Fecha = Convert.ToDateTime(Model.FECREQUI).ToString("dd/MM/yyyy");
+        codsoli = Model.CODSOLIC;
+        codarea = Model.AREA;
     }
     else
     {
@@ -319,7 +323,7 @@
         <label asp-for="NROREQUI" class="control-label"></label> *
         @if (Model?.NROREQUI == null)
         {
-            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" value="0" />
+            <input asp-for="NROREQUI" class="form-control" readonly maxlength="10" value="" />
         }
         else
         {
@@ -413,6 +417,8 @@
     var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
     var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
     var datos_orden = JSON.parse('@Html.Raw(orden)').value;
+    var codarea = '@codarea'.trim();
+    var codsoli = '@codsoli'.trim();
 
     $(function () {
         $(".fecha").datepicker({
@@ -429,13 +435,21 @@
         CODSOLIC = $("#CODSOLIC")[0];
         CODSOLIC.length = 0;
         for (var i = 0; i < datos_solicitantes.length; i++) {
-            CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante,datos_solicitantes[i].codigo,"","");
+            CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante, datos_solicitantes[i].codigo, "", "");
+
+            if (datos_solicitantes[i].codigo == codsoli) {
+                $("#CODSOLIC")[0].options.selectedIndex = i;
+            }            
         }
 
         AREA = $("#AREA")[0];
         AREA.length = 0;
         for (i = 0; i < datos_areas.length; i++) {
-            AREA[i] = new Option(datos_areas[i].area,datos_areas[i].codigo,"","");
+            AREA[i] = new Option(datos_areas[i].area, datos_areas[i].codigo, "", "");
+            
+            if (datos_areas[i].codigo == codarea) {
+                $("#AREA")[0].options.selectedIndex = i;
+            }            
         }
 
         CENTRO = $("#centro_costo")[0];
@@ -470,7 +484,7 @@
             $("#t_articulos").removeClass("d-none");
         }
 
-        if ($("#NROREQUI").val() != "0") {
+        if ($("#NROREQUI").val() != "") {
             var arreglo = new Array();
             $.ajax(
                 {
