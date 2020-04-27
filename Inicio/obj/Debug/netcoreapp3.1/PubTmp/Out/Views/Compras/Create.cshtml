@@ -1,0 +1,127 @@
+﻿@model Datos.Models.REQUISC_PORTAL
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Crear Requisición de "+ViewBag.Titulo;
+
+    var error = ViewBag.Error;
+
+    var listadoError = ViewBag.ListadoError;
+}
+
+<hr />
+<div class="card card-danger">
+    <div class="card-header">
+        <h5 class="float-left">
+            <img src="~/LogoMenu.png" alt="StartSoft" class="img-circle image-responsive mb-2" style="opacity: .8" width="25">
+            @ViewData["Title"]
+        </h5>
+    </div>
+    <div class="card-body p-2">
+        <input type="hidden" value="@ViewBag.Error" id="error" />
+        <form asp-action="Create" asp-controller="Compras" method="post">
+            <div class="row">
+                <input asp-for="TipoDocumento" class="form-control" value="" type="hidden" />
+                <input asp-for="TIPOREQUI" class="form-control" value="@HttpContextAccessor.HttpContext.Session.GetString("TipoDocumento")" type="hidden" />
+                <input type="hidden" name="detalle" id="detalle" />
+                @Html.Partial(nameof(Datos))
+            </div>
+        </form>
+        <div class="row my-1">
+            <div class="col-sm-12 text-right">
+                <div class="form-group">
+                    <button type="reset" class="btn btn-danger">
+                        <i class="fa fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button class="btn btn-success" onclick="enviar_datos()">
+                        <i class="fa fa-save"></i>
+                        Grabar Requerimiento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="my-2">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i>
+        Regresar
+    </a>
+</div>
+<script>
+//:not(:submit)
+    var error = '@Html.Raw(error)';
+    console.log(error);
+
+    $(document).on("keydown", ":input:not(textarea)", function(event) {
+        if (event.key == "Enter") {
+            event.preventDefault();
+            return false;
+        }
+
+        if ($("#error").val() != "") {
+            swal({
+                title: "Alerta",
+                text: $("#error").val(),
+                type: "danger",
+                confirmButtonText: "Aceptar",
+            })
+        }
+    });
+
+    function enviar_datos() {
+        var details = [];
+
+        if ($("#TIPOREQUI").val() == "RQ") {
+            $("#tabla_articulo tr").each(function (index) {
+                var td = $(this).children("td");
+                if (td.eq(0).text()!="") {
+                    details.push({
+	                    codigo          : td.eq(1).text(),
+			            descripcion     : td.eq(2).text(),
+                        unidad          : td.eq(3).text(),
+                        cantidad        : td.eq(4).text(),
+                        fecha_req       : td.eq(5).text(),
+                        centro_costo    : td.eq(6).text(),
+                        nro_maquina     : td.eq(7).text(),
+                        orden_fabricacion: td.eq(8).text(),
+                        glosa_articulo  : td.eq(9).text(),
+                    });
+                }
+                $("#detalle").val(JSON.stringify(details));
+            });
+        } else {
+            $("#tabla_servicio tr").each(function (index) {
+                var td = $(this).children("td");
+                if (td.eq(0).text() != "") {
+                    details.push({
+                        codigo: td.eq(1).text(),
+                        descripcion: td.eq(2).text(),
+                        unidad: "",
+                        cantidad: td.eq(3).text(),
+                        fecha_req: "",
+                        centro_costo: td.eq(4).text(),
+                        nro_maquina: "",
+                        orden_fabricacion: td.eq(5).text(),
+                        glosa_articulo: td.eq(6).text(),
+                    });
+                }
+                $("#detalle").val(JSON.stringify(details));
+            });
+        }        
+
+        if (($("#detalle").val() != "") && ($("#NROREQUI").val() == "")) {
+            $("#NROREQUI").val(0);
+            $("#TipoDocumento").val($("#TIPOREQUI").val());
+            document.forms[0].submit();
+        } else {
+            MostrarMensaje("Rojo", "No se ha agregado ningún artículo");
+        }
+    }
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

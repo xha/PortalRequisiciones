@@ -83,9 +83,9 @@ namespace Inicio.Controllers
             if (rs_cliente.Count > 0)
             {
                 bool LicenciaValida;
-                //LicenciaValida = Modelo.ConsultarLicencia("ValidarLicencia", userModel.USU_RUC.ToString(), "03");
+                LicenciaValida = Modelo.ConsultarLicencia("ValidarLicencia", userModel.RUC.ToString(), "03");
                 //OJO
-                LicenciaValida = true;
+                //LicenciaValida = true;
                 if (LicenciaValida)
                 {
                     int id_cliente          = rs_cliente[0].ID_Clientes_Portales;
