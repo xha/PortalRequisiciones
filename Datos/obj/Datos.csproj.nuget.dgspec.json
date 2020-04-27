@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "Z:\\web\\PortalRequisiciones\\Datos\\Datos.csproj": {}
+    "X:\\web\\PortalRequisiciones\\Datos\\Datos.csproj": {}
   },
   "projects": {
-    "Z:\\web\\PortalRequisiciones\\Datos\\Datos.csproj": {
+    "X:\\web\\PortalRequisiciones\\Datos\\Datos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "Z:\\web\\PortalRequisiciones\\Datos\\Datos.csproj",
+        "projectUniqueName": "X:\\web\\PortalRequisiciones\\Datos\\Datos.csproj",
         "projectName": "Datos",
-        "projectPath": "Z:\\web\\PortalRequisiciones\\Datos\\Datos.csproj",
-        "packagesPath": "C:\\Users\\vico_\\.nuget\\packages\\",
-        "outputPath": "Z:\\web\\PortalRequisiciones\\Datos\\obj\\",
+        "projectPath": "X:\\web\\PortalRequisiciones\\Datos\\Datos.csproj",
+        "packagesPath": "C:\\Users\\Xha\\.nuget\\packages\\",
+        "outputPath": "X:\\web\\PortalRequisiciones\\Datos\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\vico_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Xha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

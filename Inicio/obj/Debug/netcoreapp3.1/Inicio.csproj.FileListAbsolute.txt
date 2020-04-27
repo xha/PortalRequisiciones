@@ -359,7 +359,6 @@ X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Text.Encod
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Text.Encoding.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Text.Encoding.Extensions.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Text.Encodings.Web.dll
-X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Text.Json.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Text.RegularExpressions.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Threading.Channels.dll
 X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\refs\System.Threading.dll
@@ -1008,3 +1007,4 @@ Z:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.pdb
 Z:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\System.Text.Json.dll
 Z:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.MvcApplicationPartsAssemblyInfo.cs
 Z:\web\PortalRequisiciones\Inicio\obj\Debug\netcoreapp3.1\Inicio.MvcApplicationPartsAssemblyInfo.cache
+X:\web\PortalRequisiciones\Inicio\bin\Debug\netcoreapp3.1\System.Text.Json.dll

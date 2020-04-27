@@ -242,7 +242,8 @@ namespace Inicio.Controllers
             {
                 JObject datosSesion = new JObject();
                 datosSesion.Add(new JProperty("servidor", ModeloUsuComp.Desencriptar(d.servidor.ToString())));
-                datosSesion.Add(new JProperty("Base_datos", ModeloUsuComp.Desencriptar(d.Base_datos.ToString())));
+                //datosSesion.Add(new JProperty("Base_datos", ModeloUsuComp.Desencriptar(d.Base_datos.ToString())));
+                datosSesion.Add(new JProperty("Base_datos", d.Base_datos.ToString()));
                 datosSesion.Add(new JProperty("usuario_server", ModeloUsuComp.Desencriptar(d.usuario_server.ToString())));
                 datosSesion.Add(new JProperty("contrasenia", ModeloUsuComp.Desencriptar(d.contrasenia.ToString())));
                 datosSesion.Add(new JProperty("empresa", TempData["USU_EMPRESA"].ToString()));

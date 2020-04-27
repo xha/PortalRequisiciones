@@ -90,7 +90,8 @@ namespace Inicio.Controllers
                 {
                     int id_cliente          = rs_cliente[0].ID_Clientes_Portales;
                     string servidor         = Modelo.Desencriptar(rs_cliente[0].Servidor);
-                    string Base_datos       = Modelo.Desencriptar(rs_cliente[0].Base_Datos);
+                    //string Base_datos       = Modelo.Desencriptar(rs_cliente[0].Base_Datos);
+                    string Base_datos       = "BDWENCO";
                     string usuario_server   = Modelo.Desencriptar(rs_cliente[0].Usuario_Server);
                     string contrasenia      = Modelo.Desencriptar(rs_cliente[0].Contrasenia_Server);
 
@@ -103,8 +104,8 @@ namespace Inicio.Controllers
                     //SetAppSettingValue("BDWENCOConnectionString", "Data Source = "+ servidor + "; Initial Catalog = "+ Base_datos + "; MultipleActiveResultSets = true; User ID = "+ usuario_server + "; Password = "+ contrasenia + "");
 
                     // && i.USU_PASSWORD == clave
-                    //List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == userModel.CLAVE).ToList();
-                    List<SP_PORTAL_COMPRAS> user = Wenco?.PORTAL_COMPRAS.FromSqlRaw("SP_PORTAL_COMPRAS '" + userModel.CODIGO + "','" + userModel.CLAVE + "'").ToList();
+                    //List<USUARIO_COMP> user = Wenco?.UsuarioModel.Where(i => i.USU_CODIGO == userModel.CODIGO && i.FLGPORTAL_COMPRAS == true && i.USU_PASSWORD == clave).ToList();
+                    List<SP_PORTAL_COMPRAS> user = Wenco?.PORTAL_COMPRAS.FromSqlRaw("SP_PORTAL_COMPRAS '" + userModel.CODIGO.ToUpper() + "','" + clave + "'").ToList();
 
                     if (user.Count > 0)
                     {
@@ -128,7 +129,8 @@ namespace Inicio.Controllers
                         JObject datosSesion = new JObject();
                         datosSesion.Add(new JProperty("id_cliente", id_cliente));
                         datosSesion.Add(new JProperty("servidor", rs_cliente[0].Servidor));
-                        datosSesion.Add(new JProperty("Base_datos", rs_cliente[0].Base_Datos));
+                        //datosSesion.Add(new JProperty("Base_datos", rs_cliente[0].Base_Datos));
+                        datosSesion.Add(new JProperty("Base_datos", "BDWENCO"));
                         datosSesion.Add(new JProperty("usuario_server", rs_cliente[0].Usuario_Server));
                         datosSesion.Add(new JProperty("contrasenia", rs_cliente[0].Contrasenia_Server));
                         //TempData["USU_EMPRESA"] = "003";
