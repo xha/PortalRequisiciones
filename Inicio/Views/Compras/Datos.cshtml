@@ -7,7 +7,7 @@
     string codarea = "";
     if (Model?.FECREQUI != null)
     {
-        ViewBag.Fecha = Convert.ToDateTime(Model.FECREQUI).ToString("dd/MM/yyyy");
+        ViewBag.FechaHoy = Convert.ToDateTime(Model.FECREQUI).ToString("dd/MM/yyyy");
         codsoli = Model.CODSOLIC;
         codarea = Model.AREA;
     }
@@ -16,7 +16,7 @@
         DateTime hoy = DateTime.Now;
 
         string miVariable = hoy.ToString("dd/MM/yyyy");
-        ViewBag.Fecha = miVariable;
+        ViewBag.FechaHoy = miVariable;
     }
 
     var solicitantes = Json.Serialize(ViewBag.Solicitantes);
@@ -74,7 +74,7 @@
                         <label>Glosa</label>
                         <textarea id="glosa_servicio" class="form-control" rows="3" onkeyup="textCounter(this.id,'counter_servicio',250)"></textarea>
                         <label class="w-25">
-                            <input id="counter_servicio" class="form-control w-50" value="250" />
+                            <input id="counter_servicio" class="form-control w-50" value="250" readonly />
                         </label>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label>* Fecha Requerim.</label>
-                        <input id="fecha_req" class="form-control fecha" value="@ViewBag.Fecha" />
+                        <input id="fecha_req" class="form-control fecha" value="@ViewBag.FechaHoy" />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>* Centro de Costo</label>
@@ -201,7 +201,7 @@
                         <label>Glosa Art&iacute;culo</label>
                         <textarea id="glosa_articulo" class="form-control" rows="3" onkeyup="textCounter(this.id,'counter_articulo',250)"></textarea>
                         <label class="w-25">
-                            <input id="counter_articulo" class="form-control w-50" value="250" />
+                            <input id="counter_articulo" class="form-control w-50" value="250" readonly />
                         </label>                        
                     </div>
                 </div>
@@ -335,7 +335,7 @@
 <div class="col-sm-3 col-lg-2">
     <div class="form-group">
         <label asp-for="FECREQUI" class="control-label"></label> *
-        <input asp-for="FECREQUI" class="form-control fecha" value="@ViewBag.Fecha" />
+        <input asp-for="FECREQUI" class="form-control fecha" value="@ViewBag.FechaHoy" type="text" />
         <span asp-validation-for="FECREQUI" class="text-danger w-100"></span>
     </div>
 </div>

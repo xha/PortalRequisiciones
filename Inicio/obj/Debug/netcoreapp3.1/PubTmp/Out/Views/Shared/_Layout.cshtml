@@ -7,7 +7,7 @@
     var vempresas = Json.Serialize(ViewBag.Empresas);
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,6 +24,7 @@
     <link href="~/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
     <link href="~/plugins/toastr/toastr.css" rel="stylesheet" type="text/css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon" />
     <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
     <style>
         .modal {
@@ -105,7 +106,7 @@
                         <select class="form-control" id="empresa_actual"></select>
                     </li>
                 </ul>
-                <ul class="order-md-2 navbar-nav navbar-no-expand ml-auto">
+                <ul class="order-md-2 navbar-nav navbar-no-expand left">
                     <li>
                         <a href="#" onclick="salir_sistema()" class="nav-link ml-2" style="color:white;">
                             <i class="nav-icon fa fa-power-off"></i>

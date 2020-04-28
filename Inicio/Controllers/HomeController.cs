@@ -21,14 +21,14 @@ namespace Inicio.Controllers
             this.generatePdf = generatePdf;
         }
 
-        /*public IActionResult Index()
+        public IActionResult Index()
         {
             return View();
-        }*/
-        public async Task<IActionResult> Index()
+        }
+        /*public async Task<IActionResult> Index()
         {
             return await generatePdf.GetPdf("Home/Index", "Hello World");
-        }
+        }*/
 
         public IActionResult Privacy()
         {
