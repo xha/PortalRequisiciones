@@ -93,6 +93,8 @@ function MostrarMensaje(Tipo, Mensaje) {
     toastr.options = {
         closeButton: true,
         progressBar: true,
+        preventDuplicates: true,
+        preventOpenDuplicates: true,
         showMethod: 'slideDown',
         timeOut: 4000,
         positionClass: "toast-bottom-center",

@@ -12,17 +12,17 @@ namespace Datos.Models
         [Required]
         [Display(Name = "Nro. Requisición.")]
         public string NROREQUI { get; set; }
-        [Required]
+        [Required(ErrorMessage = "El solicitante es obligatorio.")]
         [Display(Name = "Solicitante")]
         public string CODSOLIC { get; set; }
-        [Required]
+        [Required(ErrorMessage = "La fecha es obligatoria.")]
         [Display(Name = "Fecha")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date)]
         public DateTime? FECREQUI { get; set; }
         [Display(Name = "Glosa")]
         public string GLOSA { get; set; }
-        [Required]
+        [Required(ErrorMessage = "El área es obligatoria.")]
         [Display(Name = "Área")]
         public string AREA { get; set; }
         [Key]

@@ -28,7 +28,7 @@
 }
 
 <!-- INICIO MODAL SERVICIOS -->
-<div class="modal fade" id="m_servicios" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<div class="modal fade" id="m_servicios" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-pe" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -51,7 +51,7 @@
                                     <i class="fa fa-search"></i>
                                 </span>
                             </div>
-                            <input class="form-control" id="m_codigo_servicio" onblur="validar_id()" maxlength="20" />
+                            <input class="form-control" id="m_codigo_servicio" onblur="validar_id()" onkeypress="solo_alfanumericos(event)" onkeydown="pulsado(event)" maxlength="20" />
                         </div>
                     </div>
                     <div class="col-sm-8">
@@ -86,7 +86,7 @@
                 </a>
                 <a href="#" class="btn btn-danger" onclick="$('#m_servicios').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Cerrar Ventana
+                    Cerrar
                 </a>
             </div>
         </div>
@@ -94,7 +94,7 @@
 </div>
 <!-- FIN MODAL SERVICIOS -->
 <!-- INICIO MODAL GRID SERVICIOS -->
-<div class="modal fade" id="m_gservicio" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<div class="modal fade" id="m_gservicio" tabindex="1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-xp" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -125,7 +125,7 @@
             <div class="modal-footer">
                 <a href="#" class="btn btn-danger" onclick="$('#m_gservicio').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Cerrar Ventana
+                    Cerrar
                 </a>
             </div>
         </div>
@@ -133,7 +133,7 @@
 </div>
 <!-- FIN MODAL GRID SERVICIOS -->
 <!-- INICIO MODAL ARTICULOS -->
-<div class="modal fade" id="m_articulos" tabindex="-1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<div class="modal fade" id="m_articulos" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-pe" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -156,7 +156,7 @@
                                     <i class="fa fa-search"></i>
                                 </span>
                             </div>
-                            <input class="form-control" id="m_codigo" onblur="validar_id()" maxlength="20" />
+                            <input class="form-control" id="m_codigo" name="m_codigo" onblur="validar_id()" onkeypress="solo_alfanumericos(event)" onkeydown="pulsado(event)" maxlength="20" />
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -213,7 +213,7 @@
                 </a>
                 <a href="#" class="btn btn-danger" onclick="$('#m_articulos').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Cerrar Ventana
+                    Cerrar
                 </a>
             </div>
         </div>
@@ -221,7 +221,7 @@
 </div>
 <!-- FIN MODAL ARTICULOS -->
 <!-- INICIO MODAL GRID ARTICULOS -->
-<div class="modal fade" id="m_garticulo" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<div class="modal fade" id="m_garticulo" tabindex="1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-xp" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -255,7 +255,7 @@
             <div class="modal-footer">
                 <a href="#" class="btn btn-danger" onclick="$('#m_garticulo').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Cerrar Ventana
+                    Cerrar
                 </a>
             </div>
         </div>
@@ -263,7 +263,7 @@
 </div>
 <!-- FIN MODAL GRID ARTICULOS -->
 <!-- INICIO MODAL GRID ARTICULOS ALMACEN -->
-<div class="modal fade" id="m_garticuloalm" tabindex="0" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
+<div class="modal fade" id="m_garticuloalm" tabindex="1" role="dialog" aria-labelledby="Modal Central" aria-hidden="true">
     <div class="modal-dialog modal-xp" role="document">
         <div class="modal-content p-2">
             <div class="modal-header col-sm-12">
@@ -295,19 +295,19 @@
                                     <th class="d-none"></th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody id="gridArticulosAlm_tbody"></tbody>
                         </table>
                     </div>
                     <div class="col-sm-12 mt-1">
                         <label>Ubicación</label>
-                        <input class="form-control" id="almacen_ubicacion" />
+                        <input class="form-control" id="almacen_ubicacion" readonly />
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <a href="#" class="btn btn-danger" onclick="$('#m_garticuloalm').modal('hide')">
                     <i class='fa fa-times'></i>
-                    Cerrar Ventana
+                    Cerrar
                 </a>
             </div>
         </div>
@@ -335,7 +335,7 @@
 <div class="col-sm-3 col-lg-2">
     <div class="form-group">
         <label asp-for="FECREQUI" class="control-label"></label> *
-        <input asp-for="FECREQUI" class="form-control fecha" value="@ViewBag.FechaHoy" type="text" />
+        <input asp-for="FECREQUI" class="form-control fecha" value="@ViewBag.FechaHoy" type="text" onblur="if (this.value=='') this.value='@ViewBag.FechaHoy'" />
         <span asp-validation-for="FECREQUI" class="text-danger w-100"></span>
     </div>
 </div>
@@ -361,11 +361,11 @@
     </div>
 </div>
 <div class="col-sm-2">
-    <label class="btn btn-primary d-none" onclick="abrir_ventana_art()" id="t_aarticulos">
+    <label class="btn btn-primary d-none disabled" onclick="abrir_ventana_art()" id="t_aarticulos">
         <i class="fa fa-plus"></i>
         Agregar Art&iacute;culo
     </label>
-    <label class="btn btn-primary d-none" onclick="abrir_ventana_ser()" id="t_aservicios">
+    <label class="btn btn-primary d-none disabled" onclick="abrir_ventana_ser()" id="t_aservicios">
         <i class="fa fa-plus"></i>
         Agregar Servicio
     </label>
@@ -382,7 +382,7 @@
                 <th>Cantidad</th>
                 <th>Fecha Req.</th>
                 <th>Centro Costo</th>
-                <th>No. Maquina</th>
+                <th>Nro. Maquina</th>
                 <th>Ord. Fab.</th>
                 <th>Glosa</th>
                 <th style="width: 5px">Editar</th>
@@ -478,9 +478,11 @@
 
         if ($("#TIPOREQUI").val() == "RS") {
             $("#t_servicios").removeClass("d-none");
+            if (($("#AREA")[0].length>0) && ($("#CODSOLIC")[0].length>0)) $("#t_aservicios").removeClass("disabled");
             $("#t_aservicios").removeClass("d-none");
         } else {
             $("#t_aarticulos").removeClass("d-none");
+            if (($("#AREA")[0].length>0) && ($("#CODSOLIC")[0].length>0)) $("#t_aarticulos").removeClass("disabled");;
             $("#t_articulos").removeClass("d-none");
         }
 
@@ -533,6 +535,16 @@
                 },
             });
         }
+
+        $('#m_articulos').on('shown.bs.modal', function() {
+            $('#m_codigo').focus();
+        })
+
+        $('#m_servicios').on('shown.bs.modal', function() {
+            $('#m_codigo').focus();
+        })
+
+        $("#FECREQUI").focus();
     });
 
     function buscar_xalmacen() {
@@ -637,13 +649,17 @@
     }
 
     function abrir_ventana_art() {
-        limpiar_campos();
-        $('#m_articulos').modal('show')
+        if (!$("#t_aarticulos").hasClass('disabled')) {
+            limpiar_campos();
+            $('#m_articulos').modal('show');
+        }        
     }
 
     function abrir_ventana_ser() {
-        limpiar_campos();
-        $('#m_servicios').modal('show')
+        if (!$("#t_aservicios").hasClass('disabled')) {
+            limpiar_campos();
+            $('#m_servicios').modal('show');
+        }
     }
 
     function cargar_id(row) {
@@ -651,6 +667,7 @@
             $("#m_codigo_servicio").val(row.codigo);
             $("#m_descripcion_servicio").val(row.descripcion);
             $('#m_gservicio').modal('hide');
+            $("#m_cantidad_servicio").focus();
         } else {
             $("#m_codigo").val(row.codigo);
             $("#m_descripcion").val(row.descripcion);
@@ -661,6 +678,7 @@
             $("#descripcion_art_almacen").val(row.descripcion);
             buscar_xalmacen();
             $('#m_garticulo').modal('hide');
+            $("#m_cantidad").focus();
         }        
     }
 
@@ -683,6 +701,7 @@
                 } else {
                     $("#m_codigo_servicio").val(datos_articulo[i].codigo);
                     $("#m_descripcion_servicio").val(datos_articulo[i].descripcion);
+                    $("#m_cantidad_servicio").focus();
                 }
             }
         } else {
@@ -712,6 +731,7 @@
                     $("#m_descripcion").val(datos_articulo[i].descripcion);
                     $("#codigo_art_almacen").val(datos_articulo[i].codigo);
                     $("#descripcion_art_almacen").val(datos_articulo[i].descripcion);
+                    $("#m_cantidad").focus();
                     $("#m_btn_artalm").removeClass("disabled");
                     buscar_xalmacen();
                 }
@@ -912,6 +932,9 @@
                 });
             }
             limpiar_campos();
+            $("#m_codigo").focus();
+            $("#envio_principal")[0].disabled = false;
+            MostrarMensaje("Verde", "Artículo se agregó de forma correcta");
         } else {
             MostrarMensaje("Rojo", "Faltan datos obligatorios");
         }
@@ -929,7 +952,9 @@
             $("#nro_maquina").val("");
             $("#orden_fabricacion").val("");
             $("#counter_articulo").val(250);
-            $("#m_btn_artalm").removeClass("disabled");
+            $("#m_btn_artalm").addClass("disabled");
+            $("#gridArticulosAlm_tbody")[0].innerHTML = "";
+            $("#m_codigo").focus();
         } else {
             $("#m_linea_servicio").val("");
             $("#m_codigo_servicio").val("");
@@ -938,6 +963,14 @@
             $("#m_cantidad_servicio").val("");
             $("#counter_servicio").val(250);
             $("#orden_fabricacion").val("");
+            $("#m_codigo_servicio").focus();
+        }
+    }
+
+    function pulsado(e) {
+        var tecla = (document.all) ? event.keyCode : e.which;
+        if (tecla == 13) {
+            validar_id();
         }
     }
 
@@ -955,6 +988,7 @@
             $("#orden_fabricacion").val(td.eq(8).text().trim());
             $("#glosa_articulo").val(td.eq(9).text());
             $("#m_stock").val(td.eq(12).text());
+            $("#m_codigo").focus();
             $('#m_articulos').modal('show')
         });
     }
@@ -962,7 +996,7 @@
     function eliminar_articulo(linea) {
         $("#r_" + linea).addClass("text-danger");
         swal({
-            title: "¿Estás seguro?",
+            title: "Eliminar Fila",
             text: "Confirmar eliminado",
             type: "warning",
             showCancelButton: true,
@@ -974,6 +1008,8 @@
         function (isConfirm) {
             if (isConfirm) {
                 $("#r_" + linea).remove();
+                var filas = $("#tabla_articulo tr").length;
+                if (filas < 2) $("#envio_principal")[0].disabled = true;
             } else {
                 $("#r_" + linea).removeClass("text-danger");
             }
@@ -1013,6 +1049,9 @@
                 });
             }
             limpiar_campos();
+            $("#m_codigo_servicio").focus();
+            MostrarMensaje("Verde", "Servicio se agregó de forma correcta");
+            $("#envio_principal")[0].disabled = false;
         } else {
             MostrarMensaje("Rojo", "Faltan datos obligatorios");
         }
@@ -1028,6 +1067,7 @@
             $("#centro_costo_servicio").val(td.eq(4).text().trim());
             $("#orden_fabricacion_servicio").val(td.eq(5).text().trim());
             $("#glosa_servicio").val(td.eq(6).text());
+            $("#m_codigo_servicio").focus();
             $('#m_servicios').modal('show')
         });
     }
@@ -1035,7 +1075,7 @@
     function eliminar_servicio(linea) {
         $("#r_" + linea).addClass("text-danger");
         swal({
-            title: "¿Estás seguro?",
+            title: "Eliminar Fila",
             text: "Confirmar eliminado",
             type: "warning",
             showCancelButton: true,
@@ -1047,6 +1087,8 @@
         function (isConfirm) {
             if (isConfirm) {
                 $("#r_" + linea).remove();
+                var filas = $("#tabla_servicio tr").length;
+                if (filas < 2) $("#envio_principal")[0].disabled = true;
             } else {
                 $("#r_" + linea).removeClass("text-danger");
             }

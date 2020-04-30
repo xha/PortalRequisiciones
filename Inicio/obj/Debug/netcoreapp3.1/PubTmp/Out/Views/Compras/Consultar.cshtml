@@ -33,8 +33,7 @@
     </div>
     <div class="card-body p-2">
         <form asp-action="Edit">
-            <div class="row table-responsive">
-
+            <div class="row">
                 <div class="col-sm-3 col-lg-2">
                     <div asp-validation-summary="ModelOnly" class="text-danger w-100"></div>
                     <input asp-for="COD_USUARIO" class="form-control" type="hidden" value="@HttpContextAccessor.HttpContext.Session.GetString("USU_CODIGO")" />
