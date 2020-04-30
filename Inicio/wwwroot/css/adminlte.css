@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*!
  *   AdminLTE v3.0.2-pre
  *   Author: Colorlib
@@ -4854,12 +4854,11 @@ input[type="button"].btn-block {
 }
 
 .breadcrumb {
-  display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   list-style: none;
   background-color: #e9ecef;
   border-radius: 0.25rem;

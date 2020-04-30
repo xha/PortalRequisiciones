@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-sm-8">
                         <label>* Descripci&oacute;n</label>
-                        <input class="form-control" id="m_descripcion_servicio" maxlength="200" />
+                        <input class="form-control" id="m_descripcion_servicio" maxlength="200" readonly />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>* Cantidad</label>
@@ -108,7 +108,7 @@
             </div>
             <div class="modal-body h500">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12  table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridServicios" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
@@ -161,7 +161,7 @@
                     </div>
                     <div class="col-sm-6">
                         <label>* Descripci&oacute;n</label>
-                        <input class="form-control" id="m_descripcion" maxlength="200" />
+                        <input class="form-control" id="m_descripcion" maxlength="200" readonly />
                     </div>
                     <div class="col-sm-3">
                         <label>* Unidad</label>
@@ -191,7 +191,7 @@
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Nro. Maquina</label>
-                        <input id="nro_maquina" class="form-control" maxlength="30" />
+                        <input id="nro_maquina" class="form-control" maxlength="30"  onkeypress="solo_alfanumericos(event)" />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Ord. Fab.</label>
@@ -235,7 +235,7 @@
             </div>
             <div class="modal-body h500">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulos" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
@@ -285,7 +285,7 @@
                         <label>Descripci&oacute;n:</label><br />
                         <input class="form-control" readonly id="descripcion_art_almacen" />
                     </div>
-                    <div class="col-sm-12 mt-3">
+                    <div class="col-sm-12 mt-3 table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulosAlm" style="width: 100%; cursor: pointer">
                             <thead class="bg-info">
                                 <tr>
