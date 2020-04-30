@@ -29,6 +29,7 @@
     <style>
         .modal {
             padding: 0 !important;
+            overflow-y: auto !important;
         }
 
         .modal-dialog {
@@ -85,10 +86,10 @@
                     <img src="~/LogoMenu.png" alt="StartSoft" class="brand-image img-circle elevation-3" style="opacity: .8">
                     <span class="brand-text font-weight-bold">Portal de Compras</span>
                 </label>
-                <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="true" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse order-3 order-lg-2" id="navbarCollapse">
+                <div class="collapse navbar-collapse order-3 order-lg-2 show" id="navbarCollapse">
                     <ul class="nav nav-pills nav-sidebar ">
                         <li class="nav-item  ">
                             <a href="@Url.Action("Index", "Compras", new { tipo = "RQ" })" class="nav-link @ViewBag.ACompras ml-2" style="color:white;">
