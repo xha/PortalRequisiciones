@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Http;
 using Inicio.Services;
 using System.Net;
 using Wkhtmltopdf.NetCore;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace Inicio
 {
@@ -108,6 +110,16 @@ namespace Inicio
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Fixar Cultura para en-US
+            RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo> { new CultureInfo("es-ES") },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo("es-ES") },
+                DefaultRequestCulture = new RequestCulture("es-ES")
+            };
+
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -4,15 +4,24 @@
 
 @{
     ViewData["Title"] = "Crear Requisición de "+ViewBag.Titulo;
+    ViewData["Title2"] = ViewBag.Titulo;
 
     var error = ViewBag.Error;
 
     var listadoError = ViewBag.ListadoError;
 }
 
+<div class="row mt-1">
+    <div class="col-sm-12" style="background-color: #e9ecef">
+        <ul class="breadcrumb float-right">
+            <li class="breadcrumb-item">@Html.ActionLink("Inicio de " + ViewData["Title2"].ToString(), "Index", "Compras")</li>
+            <li class="breadcrumb-item active">@Html.ActionLink(ViewData["Title"].ToString(), "Create", "Compras")</li>
+        </ul>
+    </div>
+</div>
 <hr />
 <div class="card card-danger">
-    <div class="card-header">
+    <div class="card-header pb-0">
         <h5 class="float-left">
             <img src="~/LogoMenu.png" alt="StartSoft" class="img-circle image-responsive mb-2" style="opacity: .8" width="25">
             @ViewData["Title"]

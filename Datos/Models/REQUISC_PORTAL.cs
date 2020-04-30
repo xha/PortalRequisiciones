@@ -17,7 +17,9 @@ namespace Datos.Models
         public string CODSOLIC { get; set; }
         [Required]
         [Display(Name = "Fecha")]
-        public DateTime FECREQUI { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [DataType(DataType.Date)]
+        public DateTime? FECREQUI { get; set; }
         [Display(Name = "Glosa")]
         public string GLOSA { get; set; }
         [Required]

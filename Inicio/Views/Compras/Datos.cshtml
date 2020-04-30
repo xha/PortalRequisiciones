@@ -60,7 +60,7 @@
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad_servicio" onkeypress="solo_decimal(event,this)" />
+                        <input class="form-control" id="m_cantidad_servicio" onkeypress="solo_decimal(event,this)" maxlength="8" />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Ord. Fab.</label>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" />
+                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" maxlength="8" />
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label class="btn btn-primary w-100 disabled" href="javascript:(void)" onclick="if (!document.querySelector('#m_btn_artalm.disabled')) $('#m_garticuloalm').modal('show');" id="m_btn_artalm">

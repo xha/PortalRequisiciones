@@ -56,11 +56,11 @@
                     </div>
                     <div class="col-sm-8">
                         <label>* Descripci&oacute;n</label>
-                        <input class="form-control" id="m_descripcion_servicio" maxlength="200" />
+                        <input class="form-control" id="m_descripcion_servicio" maxlength="200" readonly />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad_servicio" onkeypress="solo_decimal(event,this)" />
+                        <input class="form-control" id="m_cantidad_servicio" onkeypress="solo_decimal(event,this)" maxlength="8" />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Ord. Fab.</label>
@@ -74,7 +74,7 @@
                         <label>Glosa</label>
                         <textarea id="glosa_servicio" class="form-control" rows="3" onkeyup="textCounter(this.id,'counter_servicio',250)"></textarea>
                         <label class="w-25">
-                            <input id="counter_servicio" class="form-control w-50" value="250" />
+                            <input id="counter_servicio" class="form-control w-50" value="250" readonly />
                         </label>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
             </div>
             <div class="modal-body h500">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12  table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridServicios" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
@@ -161,7 +161,7 @@
                     </div>
                     <div class="col-sm-6">
                         <label>* Descripci&oacute;n</label>
-                        <input class="form-control" id="m_descripcion" maxlength="200" />
+                        <input class="form-control" id="m_descripcion" maxlength="200" readonly />
                     </div>
                     <div class="col-sm-3">
                         <label>* Unidad</label>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" />
+                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" maxlength="8" />
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label class="btn btn-primary w-100 disabled" href="javascript:(void)" onclick="if (!document.querySelector('#m_btn_artalm.disabled')) $('#m_garticuloalm').modal('show');" id="m_btn_artalm">
@@ -191,7 +191,7 @@
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Nro. Maquina</label>
-                        <input id="nro_maquina" class="form-control" maxlength="30" />
+                        <input id="nro_maquina" class="form-control" maxlength="30"  onkeypress="solo_alfanumericos(event)" />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Ord. Fab.</label>
@@ -201,7 +201,7 @@
                         <label>Glosa Art&iacute;culo</label>
                         <textarea id="glosa_articulo" class="form-control" rows="3" onkeyup="textCounter(this.id,'counter_articulo',250)"></textarea>
                         <label class="w-25">
-                            <input id="counter_articulo" class="form-control w-50" value="250" />
+                            <input id="counter_articulo" class="form-control w-50" value="250" readonly />
                         </label>                        
                     </div>
                 </div>
@@ -235,7 +235,7 @@
             </div>
             <div class="modal-body h500">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulos" style="width: 100%">
                             <thead class="bg-info">
                                 <tr>
@@ -285,7 +285,7 @@
                         <label>Descripci&oacute;n:</label><br />
                         <input class="form-control" readonly id="descripcion_art_almacen" />
                     </div>
-                    <div class="col-sm-12 mt-3">
+                    <div class="col-sm-12 mt-3 table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulosAlm" style="width: 100%; cursor: pointer">
                             <thead class="bg-info">
                                 <tr>

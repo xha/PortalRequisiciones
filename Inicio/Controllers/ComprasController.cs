@@ -382,6 +382,10 @@ namespace Inicio.Controllers
         public async Task<IActionResult> Create(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
             RehacerConexion();
+            //modelo.FECREQUI = DateTime.ParseExact(modelo.FECREQUI.ToString(), @"d/M/yyyy", CultureInfo.InvariantCulture);
+            //modelo.FECREQUI = DateTime.ParseExact("04/30/2020", "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //string dateValue = string.Format("{0:dd/MM/yyyy}", modelo.FECREQUI);
+            //modelo.FECREQUI = Convert.ToDateTime(dateValue+" "+ hora);
             if (ModelState.IsValid)
             {
                 try
