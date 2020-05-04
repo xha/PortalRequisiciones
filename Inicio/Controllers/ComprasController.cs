@@ -516,33 +516,25 @@ namespace Inicio.Controllers
             {
                 return NotFound();
             }
-            //RehacerConexion();
-            bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
-            if (opt)
+            RehacerConexion();
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
+            if (modelo == null)
             {
-                var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
-                if (modelo == null)
-                {
-                    return NotFound();
-                }
-
-                JsonResult areas = Areas();
-                JsonResult articulos = Articulos();
-                JsonResult solicitantes = Solicitantes();
-                JsonResult centro = CentroCosto();
-                JsonResult orden = OrdenFabricacion();
-                ViewBag.Solicitantes = solicitantes;
-                ViewBag.Areas = areas;
-                ViewBag.Articulos = articulos;
-                ViewBag.CentroCosto = centro;
-                ViewBag.OrdenFabricacion = orden;
-
-                return View(modelo);
+                return NotFound();
             }
-            else
-            {
-                return RedirectToAction(nameof(Index), new { error = "1" });
-            }
+
+            JsonResult areas = Areas();
+            JsonResult articulos = Articulos();
+            JsonResult solicitantes = Solicitantes();
+            JsonResult centro = CentroCosto();
+            JsonResult orden = OrdenFabricacion();
+            ViewBag.Solicitantes = solicitantes;
+            ViewBag.Areas = areas;
+            ViewBag.Articulos = articulos;
+            ViewBag.CentroCosto = centro;
+            ViewBag.OrdenFabricacion = orden;
+
+            return View(modelo);
         }
 
         [HttpPost]

@@ -40,7 +40,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body h500">
+            <div class="modal-body h400">
                 <div class="row">
                     <input type="hidden" id="m_linea_servicio" />
                     <div class="col-sm-4">
@@ -106,7 +106,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body h500">
+            <div class="modal-body h400">
                 <div class="row">
                     <div class="col-sm-12  table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridServicios" style="width: 100%">
@@ -145,7 +145,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body h500">
+            <div class="modal-body h400">
                 <div class="row">
                     <input type="hidden" id="m_linea" />
                     <div class="col-sm-3">
@@ -233,7 +233,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body h500">
+            <div class="modal-body h400">
                 <div class="row">
                     <div class="col-sm-12 table-responsive">
                         <table class="table table-striped pre-scrollable2 dataTables" id="gridArticulos" style="width: 100%">
@@ -275,7 +275,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body h500">
+            <div class="modal-body h400">
                 <div class="row">
                     <div class="col-sm-4">
                         <label>C&Oacute;digo:</label><br />
@@ -592,6 +592,12 @@
                 destroy: true,
                 bInfo: false,
                 data: datos,
+                columnDefs:
+                [{
+                    targets: [2],
+                    orderable: false,
+                    searchable: false
+                }],
                 columns: [
                     { data: "codigo" },
                     { data: "descripcion" },
@@ -602,11 +608,22 @@
                     },
                 ]
             });
+
+            $('#gridServicios tbody').on('mouseover', 'tr', function () {
+                $('#gridServicios').DataTable().$('tr').removeClass('bg-secondary text-white');
+                $(this).addClass('bg-secondary text-white');
+            });
         } else {
             $("#gridArticulos").DataTable({
                 destroy: true,
                 bInfo: false,
                 data: datos,
+                columnDefs:
+                [{
+                    targets: [5],
+                    orderable: false,
+                    searchable: false
+                }],
                 columns: [
                     { data: "codigo" },
                     { data: "descripcion" },
@@ -619,6 +636,11 @@
                         }
                     },
                 ]
+            });
+
+            $('#gridArticulos tbody').on('mouseover', 'tr', function () {
+                $('#gridArticulos').DataTable().$('tr').removeClass('bg-secondary text-white');
+                $(this).addClass('bg-secondary text-white');
             });
         }
     }
@@ -703,6 +725,8 @@
                     $("#m_descripcion_servicio").val(datos_articulo[i].descripcion);
                     $("#m_cantidad_servicio").focus();
                 }
+            } else {
+                limpiar_campos();
             }
         } else {
             var articulo = $("#m_codigo").val().trim();
@@ -735,6 +759,8 @@
                     $("#m_btn_artalm").removeClass("disabled");
                     buscar_xalmacen();
                 }
+            } else {
+                limpiar_campos();
             }
         }     
     }
@@ -888,7 +914,7 @@
 
     function agregar_articulo() {
         var linea = $("#m_linea").val();
-        var codigo = $("#m_codigo").val();
+        var codigo = $("#m_codigo").val().trim();
         var glosa = $("#glosa_articulo").val();
         var unidad = $("#m_unidad").val();
         var stock = $("#m_stock").val();
@@ -1018,7 +1044,7 @@
 
     function agregar_servicio() {
         var linea = $("#m_linea_servicio").val();
-        var codigo = $("#m_codigo_servicio").val();
+        var codigo = $("#m_codigo_servicio").val().trim();
         var glosa = $("#glosa_servicio").val();
         var descripcion = $("#m_descripcion_servicio").val();
         var cantidad = $("#m_cantidad_servicio").val();

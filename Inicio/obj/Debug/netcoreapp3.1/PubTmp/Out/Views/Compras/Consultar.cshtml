@@ -29,6 +29,7 @@
         <h5 class="float-left">
             <img src="~/LogoMenu.png" alt="StartSoft" class="img-circle image-responsive mb-2" style="opacity: .8" width="25">
             @ViewData["Title"] <b>@Model.NROREQUI</b>
+            @Model.FECREQUI
         </h5>
     </div>
     <div class="card-body p-2">
@@ -53,7 +54,7 @@
                 <div class="col-sm-3 col-lg-2">
                     <div class="form-group">
                         <label asp-for="FECREQUI" class="control-label"></label> *
-                        <input asp-for="FECREQUI" class="form-control" value="@ViewBag.Fecha" readonly />
+                        <input asp-for="FECREQUI" class="form-control" readonly type="text" />
                         <span asp-validation-for="FECREQUI" class="text-danger w-100"></span>
                     </div>
                 </div>
