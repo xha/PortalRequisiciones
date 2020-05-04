@@ -10726,23 +10726,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Xha\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\vico_\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "X:\\web\\PortalRequisiciones\\Inicio\\Inicio.csproj",
+      "projectUniqueName": "Z:\\web\\PortalRequisiciones\\Inicio\\Inicio.csproj",
       "projectName": "Inicio",
-      "projectPath": "X:\\web\\PortalRequisiciones\\Inicio\\Inicio.csproj",
-      "packagesPath": "C:\\Users\\Xha\\.nuget\\packages\\",
-      "outputPath": "X:\\web\\PortalRequisiciones\\Inicio\\obj\\",
+      "projectPath": "Z:\\web\\PortalRequisiciones\\Inicio\\Inicio.csproj",
+      "packagesPath": "C:\\Users\\vico_\\.nuget\\packages\\",
+      "outputPath": "Z:\\web\\PortalRequisiciones\\Inicio\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Xha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\vico_\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -10755,8 +10751,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "X:\\web\\PortalRequisiciones\\Datos\\Datos.csproj": {
-              "projectPath": "X:\\web\\PortalRequisiciones\\Datos\\Datos.csproj"
+            "Z:\\web\\PortalRequisiciones\\Datos\\Datos.csproj": {
+              "projectPath": "Z:\\web\\PortalRequisiciones\\Datos\\Datos.csproj"
             }
           }
         }

@@ -221,7 +221,7 @@ namespace Inicio.Controllers
             try
             {
                 List<SP_PORTAL_ESTADO_REQUISICION> opt = Wenco.SP_ESTADO.FromSqlRaw("SP_PORTAL_ESTADO_REQUISICION '" + empresa + "', '" + tipo + "','" + numero + "'").ToList();
-                if (opt[0].ESTADO == "P")
+                if ((opt[0].ESTADO == "P") || (opt[0].ESTADO == "Pendiente"))
                 {
                     return true;
                 }
@@ -326,6 +326,8 @@ namespace Inicio.Controllers
             fecha_desde = "01/" + fecha_desde;
             ViewBag.error = "";
             if (tipo != null) HttpContext.Session.SetString("TipoDocumento", tipo);
+            HttpContext.Session.SetString("fecha_desde", fecha_desde);
+            HttpContext.Session.SetString("fecha_hasta", fecha_hasta);
             JsonResult compras = ListadoCompras(fecha_desde, fecha_hasta);
             /*JsonResult areas = Areas();
             JsonResult articulos = Articulos();
@@ -347,10 +349,10 @@ namespace Inicio.Controllers
                     ViewBag.error = "No se pueden grabar los cambios";
                     break;
                 case "1":
-                    ViewBag.error = "La requisición no se puede editar";
+                    ViewBag.error = "El Estado de la Requisición no es correcto, no se puede editar.";
                 break;
                 case "2":
-                    ViewBag.error = "La requisición no se puede eliminar";
+                    ViewBag.error = "El Estado de la Requisición no es correcto, no se puede eliminar.";
                     break;
             }
 
@@ -460,7 +462,7 @@ namespace Inicio.Controllers
         }        
 
         // GET: Test/Edit/5
-        public async Task<IActionResult> Edit(string codigo)
+        public async Task<IActionResult> Edit(string codigo, string original)
         {
             Titulo();            
             if (codigo == null)
@@ -477,6 +479,16 @@ namespace Inicio.Controllers
                     return NotFound();
                 }
 
+                string empresa = HttpContext.Session.GetString("empresa").ToString();
+                string tipo = HttpContext.Session.GetString("TipoDocumento").ToString();
+                string fecha_desde = HttpContext.Session.GetString("fecha_desde").ToString();
+                string fecha_hasta = HttpContext.Session.GetString("fecha_hasta").ToString();
+                List<REQUISC> compras = Wenco?.REQUISC.FromSqlRaw("SP_PORTAL_LISTADO_REQUISICION '" + empresa + "','" + fecha_desde + "','" + fecha_hasta + "','" + tipo + "'").ToList();
+                var Resultado = (from N in compras
+                                 where N.NUMERO.Equals(codigo)
+                                 select N.NRO_REQUISICION).ToList();
+
+                ViewBag.Original = Resultado[0].ToString(); 
                 JsonResult areas = Areas();
                 JsonResult articulos = Articulos();
                 JsonResult solicitantes = Solicitantes();

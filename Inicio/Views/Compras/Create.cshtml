@@ -15,7 +15,7 @@
     <div class="col-sm-12" style="background-color: #e9ecef">
         <ul class="breadcrumb float-right">
             <li class="breadcrumb-item">@Html.ActionLink("Inicio de " + ViewData["Title2"].ToString(), "Index", "Compras")</li>
-            <li class="breadcrumb-item active">@Html.ActionLink(ViewData["Title"].ToString(), "Create", "Compras")</li>
+            <li class="breadcrumb-item active">@Html.ActionLink("Crear", "Create", "Compras")</li>
         </ul>
     </div>
 </div>
@@ -46,7 +46,7 @@
                     </a>
                     <button class="btn btn-success" onclick="validar_envio()" id="envio_principal" disabled>
                         <i class="fa fa-save"></i>
-                        Grabar Requerimiento
+                        Guardar
                     </button>
                 </div>
             </div>
