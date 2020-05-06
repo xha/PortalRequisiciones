@@ -40,7 +40,7 @@
         <div class="row my-1">
             <div class="col-sm-12 text-right">
                 <div class="form-group">
-                    <a href="@Url.Action("Create", "Compras")" class="btn btn-danger" onclick="loading_show()">
+                    <a href="javascript:void(0)" class="btn btn-danger" onclick="cancelar_rcompra()">
                         <i class="fa fa-times"></i>
                         Cancelar
                     </a>
@@ -72,7 +72,7 @@
         }
 
         if ($("#error").val() != "") {
-            swal({
+            Swal.fire({
                 title: "Alerta",
                 text: $("#error").val(),
                 type: "danger",
@@ -141,6 +141,26 @@
         } else {
             MostrarMensaje("Rojo", "No se ha agregado ningún artículo");
         }
+    }
+
+    function cancelar_rcompra() {
+        var nrorequi = $("#NROREQUI").val();
+        Swal.fire({
+            title: "Cancelar",
+            text: "¿Desea Cancelar?",
+            type: "question",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary",
+            confirmButtonText: "SI",
+            cancelButtonText: "NO",
+        }).then((result) => {
+            if (result.value) {
+                loading_show();
+                var url = '@Url.Action("Create", "Compras")';
+                window.location.href = url;
+            }
+        });
     }
 </script>
 @section Scripts {

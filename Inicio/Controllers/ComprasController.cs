@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Wkhtmltopdf.NetCore;
 
@@ -41,7 +42,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in area
                              orderby N.AREA
-                             select N);
+                             select new { N.CODIGO, DESCRIPCION = Regex.Replace(N.AREA, @"[\\`´""\s]", " ") });
 
             return Json(Resultado);
         }
@@ -54,7 +55,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in articulo
                              orderby N.ARTICULO
-                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.UNIDAD, N.FAMILIA });
+                             select new { N.CODIGO, DESCRIPCION = Regex.Replace(N.ARTICULO, @"[\\`´""\s]", " "), N.STOCK, N.COD_FAMILIA, N.UNIDAD, N.FAMILIA });
 
             return Json(Resultado);
         }
@@ -68,7 +69,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in articulo
                              orderby N.ALMACEN
-                             select new { N.CODIGO, DESCRIPCION = N.ARTICULO.Replace('"', ' '), N.STOCK, N.COD_FAMILIA, N.COD_ALMACEN, N.UNIDAD, N.ALMACEN, N.UBICACION });
+                             select new { N.CODIGO, DESCRIPCION = Regex.Replace(N.ARTICULO, @"[\\`´""\s]", " "), N.STOCK, N.COD_FAMILIA, N.COD_ALMACEN, N.UNIDAD, N.ALMACEN, N.UBICACION });
 
             return Json(Resultado);
         }
@@ -80,7 +81,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in solicitante
                              orderby N.SOLICITANTE
-                             select N);
+                             select new { N.CODIGO, DESCRIPCION = Regex.Replace(N.SOLICITANTE, @"[\\`´""\s]", " ") });
 
             return Json(Resultado);
         }
@@ -92,7 +93,7 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in centro_costo
                              orderby N.CENTRO_COSTO
-                             select N);
+                             select new { N.CODIGO, DESCRIPCION = Regex.Replace(N.CENTRO_COSTO, @"[\\`´""\s]", " ") });
 
             return Json(Resultado);
             /* string empresa = HttpContext.Session.GetString("empresa");
@@ -114,7 +115,8 @@ namespace Inicio.Controllers
 
             var Resultado = (from N in orden
                              orderby N.ORDEN_FABRICACION
-                             select new { N.CODIGO, DESCRIPCION = N.ORDEN_FABRICACION.Replace('"', ' ') });
+                             //select new { N.CODIGO, DESCRIPCION = N.ORDEN_FABRICACION.Replace('"', ' ').Replace('`´', ' ') });
+                             select new { N.CODIGO, DESCRIPCION = Regex.Replace(N.ORDEN_FABRICACION, @"[\\`´""\s]", " ") });
 
             return Json(Resultado);
         }
@@ -523,6 +525,16 @@ namespace Inicio.Controllers
                 return NotFound();
             }
 
+            string empresa = HttpContext.Session.GetString("empresa").ToString();
+            string tipo = HttpContext.Session.GetString("TipoDocumento").ToString();
+            string fecha_desde = HttpContext.Session.GetString("fecha_desde").ToString();
+            string fecha_hasta = HttpContext.Session.GetString("fecha_hasta").ToString();
+            List<REQUISC> compras = Wenco?.REQUISC.FromSqlRaw("SP_PORTAL_LISTADO_REQUISICION '" + empresa + "','" + fecha_desde + "','" + fecha_hasta + "','" + tipo + "'").ToList();
+            var Resultado = (from N in compras
+                             where N.NUMERO.Equals(codigo)
+                             select N.NRO_REQUISICION).ToList();
+
+            ViewBag.Original = Resultado[0].ToString();
             JsonResult areas = Areas();
             JsonResult articulos = Articulos();
             JsonResult solicitantes = Solicitantes();

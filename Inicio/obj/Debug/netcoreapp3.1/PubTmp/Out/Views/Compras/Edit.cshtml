@@ -45,7 +45,7 @@
         <div class="row my-1 editable">
             <div class="col-sm-12 text-right">
                 <div class="form-group">
-                    <a href="@Url.Content("~/Compras/Edit?codigo="+@Model.NROREQUI)" class="btn btn-danger" onclick="loading_show()">
+                    <a href="javascript:void(0)" class="btn btn-danger" onclick="cancelar_rcompra()">
                         <i class="fa fa-times"></i>
                         Cancelar
                     </a>
@@ -132,6 +132,27 @@
         } else {
             MostrarMensaje("Rojo", "Los campos con * son obligatorios");
         }
+    }
+
+    function cancelar_rcompra() {
+        var nrorequi = $("#NROREQUI").val();
+        Swal.fire({
+            title: "Cancelar",
+            text: "¿Desea Cancelar?",
+            type: "question",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary",
+            confirmButtonText: "SI",
+            cancelButtonText: "NO",
+        }).then((result) => {
+            if (result.value) {
+                loading_show();
+                var url = '@Url.Action("Edit", "Compras", new { codigo = "Id" })';
+                url = url.replace('Id', encodeURIComponent(nrorequi));
+                window.location.href = url;
+            }
+        });
     }
 </script>
 @section Scripts {

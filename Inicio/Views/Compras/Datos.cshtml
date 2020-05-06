@@ -46,12 +46,12 @@
                     <div class="col-sm-4">
                         <label>* C&oacute;digo</label>
                         <div class="input-group">
-                            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_gservicio').modal('show')">
+                            <div class="input-group-prepend" id="prepend_servicio" style="cursor: pointer" onclick="$('#m_gservicio').modal('show')">
                                 <span class="input-group-text">
                                     <i class="fa fa-search"></i>
                                 </span>
                             </div>
-                            <input class="form-control" id="m_codigo_servicio" onblur="validar_id()" onkeypress="solo_alfanumericos(event)" onkeydown="pulsado(event)" maxlength="20" />
+                            <input class="form-control" id="m_codigo_servicio" onblur="validar_id()" onkeypress="solo_alfanumericos(event)" onkeydown="pulsado(event)" onkeyup="verificar_btn()" maxlength="20" />
                         </div>
                     </div>
                     <div class="col-sm-8">
@@ -60,7 +60,7 @@
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad_servicio" onkeypress="solo_decimal(event,this)" maxlength="8" />
+                        <input class="form-control" id="m_cantidad_servicio" onkeypress="solo_decimal(event,this)" onkeyup="verificar_btn()" maxlength="8" />
                     </div>
                     <div class="col-sm-4 mt-1">
                         <label>Ord. Fab.</label>
@@ -80,7 +80,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-success" onclick="agregar_servicio()">
+                <a href="#" class="btn btn-success disabled" onclick="agregar_servicio()" id="btn_add_servicio">
                     <i class='fa fa-check'></i>
                     Aceptar
                 </a>
@@ -151,12 +151,12 @@
                     <div class="col-sm-3">
                         <label>* C&oacute;digo</label>
                         <div class="input-group">
-                            <div class="input-group-prepend" style="cursor: pointer" onclick="$('#m_garticulo').modal('show')">
+                            <div class="input-group-prepend" id="prepend_articulo" style="cursor: pointer" onclick="$('#m_garticulo').modal('show')">
                                 <span class="input-group-text">
                                     <i class="fa fa-search"></i>
                                 </span>
                             </div>
-                            <input class="form-control" id="m_codigo" name="m_codigo" onblur="validar_id()" onkeypress="solo_alfanumericos(event)" onkeydown="pulsado(event)" maxlength="20" />
+                            <input class="form-control" id="m_codigo" name="m_codigo" onblur="validar_id()" onkeypress="solo_alfanumericos(event)" onkeydown="pulsado(event)" onkeyup="verificar_btn()" maxlength="20" />
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -169,7 +169,7 @@
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label>* Cantidad</label>
-                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" maxlength="8" />
+                        <input class="form-control" id="m_cantidad" onkeypress="solo_decimal(event,this)" onkeyup="verificar_btn()" maxlength="8" />
                     </div>
                     <div class="col-sm-3 mt-1">
                         <label class="btn btn-primary w-100 disabled" href="javascript:(void)" onclick="if (!document.querySelector('#m_btn_artalm.disabled')) $('#m_garticuloalm').modal('show');" id="m_btn_artalm">
@@ -207,7 +207,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-success" onclick="agregar_articulo()">
+                <a href="#" class="btn btn-success disabled" onclick="agregar_articulo()" id="btn_add_articulo">
                     <i class='fa fa-check'></i>
                     Aceptar
                 </a>
@@ -278,7 +278,7 @@
             <div class="modal-body h400">
                 <div class="row">
                     <div class="col-sm-4">
-                        <label>C&Oacute;digo:</label><br />
+                        <label>C&oacute;digo:</label><br />
                         <input class="form-control" readonly id="codigo_art_almacen" />
                     </div>
                     <div class="col-sm-8">
@@ -416,9 +416,9 @@
     var datos_areas         = JSON.parse('@Html.Raw(areas)').value;
     var datos_articulo      = JSON.parse('@Html.Raw(articulos)').value;
     var datos_centro        = JSON.parse('@Html.Raw(centro)').value;
-    var datos_orden = JSON.parse('@Html.Raw(orden)').value;
-    var codarea = '@codarea'.trim();
-    var codsoli = '@codsoli'.trim();
+    var datos_orden         = JSON.parse('@Html.Raw(orden)').value;
+    var codarea             = '@codarea'.trim();
+    var codsoli             = '@codsoli'.trim();
 
     $(function () {
         $(".fecha").datepicker({
@@ -435,7 +435,7 @@
         CODSOLIC = $("#CODSOLIC")[0];
         CODSOLIC.length = 0;
         for (var i = 0; i < datos_solicitantes.length; i++) {
-            CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante, datos_solicitantes[i].codigo, "", "");
+            CODSOLIC[i] = new Option(datos_solicitantes[i].descripcion, datos_solicitantes[i].codigo, "", "");
 
             if (datos_solicitantes[i].codigo == codsoli) {
                 $("#CODSOLIC")[0].options.selectedIndex = i;
@@ -445,7 +445,7 @@
         AREA = $("#AREA")[0];
         AREA.length = 0;
         for (i = 0; i < datos_areas.length; i++) {
-            AREA[i] = new Option(datos_areas[i].area, datos_areas[i].codigo, "", "");
+            AREA[i] = new Option(datos_areas[i].descripcion, datos_areas[i].codigo, "", "");
             
             if (datos_areas[i].codigo == codarea) {
                 $("#AREA")[0].options.selectedIndex = i;
@@ -459,8 +459,8 @@
         CENTRO[0] = new Option("Seleccione", "", "", "");
         CENTRO1[0] = new Option("Seleccione", "", "", "");
         for (i = 0; i < datos_centro.length; i++) {
-            CENTRO[i] = new Option(datos_centro[i].centrO_COSTO, datos_centro[i].codigo.trim(), "", "");
-            CENTRO1[i] = new Option(datos_centro[i].centrO_COSTO, datos_centro[i].codigo.trim(), "", "");
+            CENTRO[i] = new Option(datos_centro[i].descripcion, datos_centro[i].codigo.trim(), "", "");
+            CENTRO1[i] = new Option(datos_centro[i].descripcion, datos_centro[i].codigo.trim(), "", "");
         }
 
         ORDEN = $("#orden_fabricacion")[0];
@@ -536,15 +536,29 @@
             });
         }
 
-        $('#m_articulos').on('shown.bs.modal', function() {
-            $('#m_codigo').focus();
+        $('#m_articulos').on('shown.bs.modal', function () {
+            if ($('#m_codigo')[0].readOnly) {
+                $("#m_cantidad").focus();
+            } else {
+                $('#m_codigo').focus();
+            }            
         })
 
-        $('#m_servicios').on('shown.bs.modal', function() {
-            $('#m_codigo').focus();
+        $('#m_servicios').on('shown.bs.modal', function () {
+            if ($('#m_codigo_servicio')[0].readOnly) {
+                $("#m_cantidad_servicio").focus();
+            } else {
+                $('#m_codigo_servicio').focus();
+            }            
         })
 
         $("#FECREQUI").focus();
+
+        $("tbody tr").hover(function() {
+            $(this).addClass("bg-secondary text-white");
+        }, function() {
+            $(this).removeClass("bg-secondary text-white");
+        });
     });
 
     function buscar_xalmacen() {
@@ -609,10 +623,10 @@
                 ]
             });
 
-            $('#gridServicios tbody').on('mouseover', 'tr', function () {
+            /*$('#gridServicios tbody').on('mouseover', 'tr', function () {
                 $('#gridServicios').DataTable().$('tr').removeClass('bg-secondary text-white');
                 $(this).addClass('bg-secondary text-white');
-            });
+            });*/
         } else {
             $("#gridArticulos").DataTable({
                 destroy: true,
@@ -638,10 +652,10 @@
                 ]
             });
 
-            $('#gridArticulos tbody').on('mouseover', 'tr', function () {
+            /*$('#gridArticulos tbody').on('mouseover', 'tr', function () {
                 $('#gridArticulos').DataTable().$('tr').removeClass('bg-secondary text-white');
                 $(this).addClass('bg-secondary text-white');
-            });
+            });*/
         }
     }
 
@@ -673,6 +687,8 @@
     function abrir_ventana_art() {
         if (!$("#t_aarticulos").hasClass('disabled')) {
             limpiar_campos();
+            $("#m_codigo")[0].readOnly = false;
+            $("#prepend_articulo")[0].style.display = "flex";
             $('#m_articulos').modal('show');
         }        
     }
@@ -680,6 +696,8 @@
     function abrir_ventana_ser() {
         if (!$("#t_aservicios").hasClass('disabled')) {
             limpiar_campos();
+            $("#m_codigo_servicio")[0].readOnly = false;
+            $("#prepend_servicio")[0].style.display = "flex";
             $('#m_servicios').modal('show');
         }
     }
@@ -805,6 +823,7 @@
                 i0.className = "fa fa-edit";
                 a0.className = "btn btn-info";
                 a0.href = "#";
+                a0.title = "Editar";
                 eval("a0.onclick = function(){editar_servicio(" + row[0] + ");}");
                 td10.className = "editable";
                 a0.appendChild(i0);
@@ -816,6 +835,7 @@
                 i1.className = "fa fa-times";
                 a1.className = "btn btn-danger";
                 a1.href = "#";
+                a1.title = "Eliminar";
                 eval("a1.onclick = function(){eliminar_servicio(" + row[0] + ");}");
                 td11.className = "editable";
                 a1.appendChild(i1);
@@ -883,6 +903,7 @@
                 i0.className = "fa fa-edit";
                 a0.className = "btn btn-info";
                 a0.href = "#";
+                a0.title = "Editar";
                 eval("a0.onclick = function(){editar_articulo(" + row[0] + ");}");
                 td10.className = "editable";
                 a0.appendChild(i0);
@@ -895,6 +916,7 @@
                 i1.className = "fa fa-times";
                 a1.className = "btn btn-danger";
                 a1.href = "#";
+                a1.title = "Eliminar";
                 eval("a1.onclick = function(){eliminar_articulo(" + row[0] + ");}");
                 td11.className = "editable";
                 a1.appendChild(i1);
@@ -908,6 +930,9 @@
                 tr.appendChild(td12);
             }
         }
+
+        eval("tr.onmouseover = function(){$(this).addClass('bg-secondary text-white');}");
+        eval("tr.onmouseout = function(){$(this).removeClass('bg-secondary text-white');}");
 
         return tr;
     }
@@ -924,45 +949,67 @@
         var nro_maquina = $("#nro_maquina").val();
         var orden_fabricacion = $("#orden_fabricacion").val();
         var fecha_req = $("#fecha_req").val();
+        var fec = $("#FECREQUI").val();
         var tabla = $("#tabla_articulo")[0];
         var arreglo = new Array();
 
-        if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
-            if (linea == "") {
-                arreglo[0] = global;
-                arreglo[1] = codigo;
-                arreglo[2] = descripcion;
-                arreglo[3] = unidad;
-                arreglo[4] = cantidad;
-                arreglo[5] = fecha_req;
-                arreglo[6] = centro_costo;
-                arreglo[7] = nro_maquina;
-                arreglo[8] = orden_fabricacion;
-                arreglo[9] = glosa;
-                arreglo[10] = stock;
-                tabla.appendChild(llenar_tabla(arreglo));
-                global++;
+        if (!$("#btn_add_articulo").hasClass('disabled')) {
+            if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
+                var fecha1 = fecha_req.split("/");
+                var fecha2 = fec.split("/");
+
+                fecha1 = fecha1[2] + fecha1[1] + fecha1[0];
+                fecha2 = fecha2[2] + fecha2[1] + fecha2[0];
+
+                if (fecha2 > fecha1) {
+                    MostrarMensaje("Rojo", "Fecha menor a la fecha del documento");
+                    $("#fecha_req").focus();
+                    return false;
+                }
+
+                if (linea == "") {
+                    arreglo[0] = global;
+                    arreglo[1] = codigo;
+                    arreglo[2] = descripcion;
+                    arreglo[3] = unidad;
+                    arreglo[4] = cantidad;
+                    arreglo[5] = fecha_req;
+                    arreglo[6] = centro_costo;
+                    arreglo[7] = nro_maquina;
+                    arreglo[8] = orden_fabricacion;
+                    arreglo[9] = glosa;
+                    arreglo[10] = stock;
+                    tabla.appendChild(llenar_tabla(arreglo));
+                    global++;
+                } else {
+                    $("#r_" + linea).each(function (index) {
+                        var td = $(this).children("td");
+                        td.eq(1).text($("#m_codigo").val().trim());
+                        td.eq(2).text($("#m_descripcion").val());
+                        td.eq(3).text($("#m_unidad").val());
+                        td.eq(4).text($("#m_cantidad").val());
+                        td.eq(5).text($("#fecha_req").val());
+                        td.eq(6).text($("#centro_costo").val());
+                        td.eq(7).text($("#nro_maquina").val());
+                        td.eq(8).text($("#orden_fabricacion").val().trim());
+                        td.eq(9).text($("#glosa_articulo").val());
+                        td.eq(12).text(stock);
+                    });
+                }
+                if ($("#m_codigo")[0].readOnly) {
+                    MostrarMensaje("Verde", "Artículo se actualizó de forma correcta");
+                } else {
+                    MostrarMensaje("Verde", "Artículo se agregó de forma correcta");
+                }
+                limpiar_campos();
+                $("#m_codigo")[0].readOnly = false;
+                $("#prepend_articulo")[0].style.display = "flex";
+                $("#m_codigo").focus();
+                $("#envio_principal")[0].disabled = false;
+                
             } else {
-                $("#r_" + linea).each(function (index) {
-                    var td = $(this).children("td");
-                    td.eq(1).text($("#m_codigo").val().trim());
-                    td.eq(2).text($("#m_descripcion").val());
-                    td.eq(3).text($("#m_unidad").val());
-                    td.eq(4).text($("#m_cantidad").val());
-                    td.eq(5).text($("#fecha_req").val());
-                    td.eq(6).text($("#centro_costo").val());
-                    td.eq(7).text($("#nro_maquina").val());
-                    td.eq(8).text($("#orden_fabricacion").val().trim());
-                    td.eq(9).text($("#glosa_articulo").val());
-                    td.eq(12).text(stock);
-                });
+                MostrarMensaje("Rojo", "Faltan datos obligatorios");
             }
-            limpiar_campos();
-            $("#m_codigo").focus();
-            $("#envio_principal")[0].disabled = false;
-            MostrarMensaje("Verde", "Artículo se agregó de forma correcta");
-        } else {
-            MostrarMensaje("Rojo", "Faltan datos obligatorios");
         }
     }
 
@@ -979,6 +1026,7 @@
             $("#orden_fabricacion").val("");
             $("#counter_articulo").val(250);
             $("#m_btn_artalm").addClass("disabled");
+            $("#btn_add_articulo").addClass("disabled");
             $("#gridArticulosAlm_tbody")[0].innerHTML = "";
             $("#m_codigo").focus();
         } else {
@@ -990,6 +1038,7 @@
             $("#counter_servicio").val(250);
             $("#orden_fabricacion").val("");
             $("#m_codigo_servicio").focus();
+            $("#btn_add_servicio").addClass("disabled");
         }
     }
 
@@ -1014,25 +1063,26 @@
             $("#orden_fabricacion").val(td.eq(8).text().trim());
             $("#glosa_articulo").val(td.eq(9).text());
             $("#m_stock").val(td.eq(12).text());
-            $("#m_codigo").focus();
+            $("#m_codigo")[0].readOnly = true;
+            $("#prepend_articulo")[0].style.display = "none";
+            verificar_btn();
             $('#m_articulos').modal('show')
         });
     }
 
     function eliminar_articulo(linea) {
         $("#r_" + linea).addClass("text-danger");
-        swal({
-            title: "Eliminar Fila",
-            text: "Confirmar eliminado",
-            type: "warning",
+        Swal.fire({
+            title: "Eliminar",
+            text: "Desea eliminar el artículo",
+            type: "question",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
             cancelButtonClass: "btn-secondary",
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar",
-        },
-        function (isConfirm) {
-            if (isConfirm) {
+            confirmButtonText: "SI",
+            cancelButtonText: "NO",
+        }).then((result) => {
+            if (result.value) {
                 $("#r_" + linea).remove();
                 var filas = $("#tabla_articulo tr").length;
                 if (filas < 2) $("#envio_principal")[0].disabled = true;
@@ -1052,34 +1102,44 @@
         var orden_fabricacion = $("#orden_fabricacion_servicio").val();
         var tabla = $("#tabla_servicio")[0];
         var arreglo = new Array();
-        if ((codigo != "") && (descripcion != "") && (cantidad != "") && (centro_costo != "")) {
-            if (linea == "") {
-                arreglo[0] = global;
-                arreglo[1] = codigo;
-                arreglo[2] = descripcion;
-                arreglo[3] = cantidad;
-                arreglo[4] = centro_costo;
-                arreglo[5] = orden_fabricacion;
-                arreglo[6] = glosa;
-                tabla.appendChild(llenar_tabla(arreglo));
-                global++;
+        $("#btn_add_servicio").removeClass("disabled");
+
+        if (!$("#btn_add_servicio").hasClass('disabled')) {
+            if ((codigo != "") && (descripcion != "") && (cantidad != "") && (centro_costo != "")) {
+                if (linea == "") {
+                    arreglo[0] = global;
+                    arreglo[1] = codigo;
+                    arreglo[2] = descripcion;
+                    arreglo[3] = cantidad;
+                    arreglo[4] = centro_costo;
+                    arreglo[5] = orden_fabricacion;
+                    arreglo[6] = glosa;
+                    tabla.appendChild(llenar_tabla(arreglo));
+                    global++;
+                } else {
+                    $("#r_" + linea).each(function (index) {
+                        var td = $(this).children("td");
+                        td.eq(1).text($("#m_codigo_servicio").val().trim());
+                        td.eq(2).text($("#m_descripcion_servicio").val());
+                        td.eq(3).text($("#m_cantidad_servicio").val());
+                        td.eq(4).text($("#centro_costo_servicio").val().trim());
+                        td.eq(5).text($("#orden_fabricacion_servicio").val().trim());
+                        td.eq(6).text($("#glosa_servicio").val());
+                    });
+                }
+                if ($("#m_codigo_servicio")[0].readOnly) {
+                    MostrarMensaje("Verde", "Servicio se actualizó de forma correcta");
+                } else {
+                    MostrarMensaje("Verde", "Servicio se agregó de forma correcta");
+                }
+                limpiar_campos();
+                $("#m_codigo_servicio")[0].readOnly = false;
+                $("#prepend_servicio")[0].style.display = "flex";
+                $("#m_codigo_servicio").focus();
+                $("#envio_principal")[0].disabled = false;
             } else {
-                $("#r_" + linea).each(function (index) {
-                    var td = $(this).children("td");
-                    td.eq(1).text($("#m_codigo_servicio").val().trim());
-                    td.eq(2).text($("#m_descripcion_servicio").val());
-                    td.eq(3).text($("#m_cantidad_servicio").val());
-                    td.eq(4).text($("#centro_costo_servicio").val().trim());
-                    td.eq(5).text($("#orden_fabricacion_servicio").val().trim());
-                    td.eq(6).text($("#glosa_servicio").val());
-                });
+                MostrarMensaje("Rojo", "Faltan datos obligatorios");
             }
-            limpiar_campos();
-            $("#m_codigo_servicio").focus();
-            MostrarMensaje("Verde", "Servicio se agregó de forma correcta");
-            $("#envio_principal")[0].disabled = false;
-        } else {
-            MostrarMensaje("Rojo", "Faltan datos obligatorios");
         }
     }
 
@@ -1093,25 +1153,27 @@
             $("#centro_costo_servicio").val(td.eq(4).text().trim());
             $("#orden_fabricacion_servicio").val(td.eq(5).text().trim());
             $("#glosa_servicio").val(td.eq(6).text());
-            $("#m_codigo_servicio").focus();
+            $("#m_codigo_servicio")[0].readOnly = true;
+            $("#prepend_servicio")[0].style.display = "none";
+            //$("#m_codigo_servicio").focus();
+            verificar_btn();
             $('#m_servicios').modal('show')
         });
     }
 
     function eliminar_servicio(linea) {
         $("#r_" + linea).addClass("text-danger");
-        swal({
-            title: "Eliminar Fila",
-            text: "Confirmar eliminado",
-            type: "warning",
+        Swal.fire({
+            title: "Eliminar",
+            text: "Desea eliminar el servicio",
+            type: "question",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
             cancelButtonClass: "btn-secondary",
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar",
-        },
-        function (isConfirm) {
-            if (isConfirm) {
+            confirmButtonText: "SI",
+            cancelButtonText: "NO",
+        }).then((result) => {
+            if (result.value) {
                 $("#r_" + linea).remove();
                 var filas = $("#tabla_servicio tr").length;
                 if (filas < 2) $("#envio_principal")[0].disabled = true;
@@ -1119,5 +1181,28 @@
                 $("#r_" + linea).removeClass("text-danger");
             }
         });
+    }
+
+    function verificar_btn() {
+        if ($("#TIPOREQUI").val() == "RQ") {
+            var codigo = $("#m_codigo").val();
+            var descripcion = $("#m_descripcion").val();
+            var cantidad = $("#m_cantidad").val();
+            if ((codigo != "") && (descripcion != "") && (cantidad != "")) {
+                $("#btn_add_articulo").removeClass("disabled");
+            } else {
+                $("#btn_add_articulo").addClass("disabled");
+            }
+        } else {
+            var codigo = $("#m_codigo_servicio").val();
+            var descripcion = $("#m_descripcion_servicio").val();
+            var cantidad = $("#m_cantidad_servicio").val();
+
+            if ((codigo != "") && (descripcion != "") && (cantidad != "")) {
+                $("#btn_add_servicio").removeClass("disabled");
+            } else {
+                $("#btn_add_servicio").addClass("disabled");
+            }
+        }
     }
 </script>

@@ -15,7 +15,7 @@
     <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="~/css/site.css" rel="stylesheet" type="text/css" />
     <link href="~/css/adminlte.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/plugins/sweetalert2/sweetalert.css" rel="stylesheet" type="text/css" />
+    <link href="~/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
     <link href="~/plugins/loading/jquery.loadingModal.css" rel="stylesheet" type="text/css" />
     <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -144,7 +144,7 @@
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="~/plugins/loading/jquery.loadingModal.js"></script>
-    <script src="~/plugins/sweetalert2/sweetalert.js"></script>
+    <script src="~/plugins/sweetalert2/sweetalert2.js"></script>
     <script src="~/plugins/toastr/toastr.min.js"></script>
     <script src="~/js/adminlte.js"></script>
     <script src="~/js/jquery.inputmask.js"></script>
@@ -170,6 +170,7 @@
 
         $('#empresa_actual').unbind('change').bind('change', function (e){
             optionSeleccionado = $(this).val();
+            var texto = $("#empresa_actual option:selected").text();
 
             $.ajax(
             {
@@ -179,14 +180,13 @@
                 data: "empresa="+optionSeleccionado,
                 cache: false,
                 success: function (datos) {
-                    swal({
+                    Swal.fire({
                         title: "Hecho",
-                        text: "Empresa actual: " + optionSeleccionado,
+                        text: "Empresa actual: " + texto,
                         type: "success",
                         confirmButtonText: "Aceptar",
-                    },
-                    function (isConfirm) {
-                        if (isConfirm) {
+                    }).then((result) => {
+                        if (result.value) {
                             window.location = '@Url.Content("~/Compras/Index")';
                         }
                     });
@@ -237,7 +237,7 @@
         };
 
         function salir_sistema() {
-            swal({
+            Swal.fire({
                 title: "¿Estás seguro?",
                 text: "Confirmar salir del sistema",
                 type: "warning",
@@ -246,9 +246,8 @@
                 cancelButtonClass: "btn-secondary",
                 confirmButtonText: "Aceptar",
                 cancelButtonText: "Cancelar",
-            },
-            function (isConfirm) {
-                if (isConfirm) {
+            }).then((result) => {
+                if (result.value) {
                     window.location.href = '@Url.Content("~/Account/Logout")';
                 }
             });

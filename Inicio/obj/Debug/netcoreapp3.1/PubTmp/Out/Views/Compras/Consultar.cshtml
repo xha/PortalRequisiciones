@@ -3,18 +3,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    ViewData["Title"] = "Consulta Requisición de "+ViewBag.Titulo+" Nro.";
-    if (Model?.FECREQUI != null)
-    {
-        ViewBag.Fecha = Convert.ToDateTime(Model.FECREQUI).ToString("dd/MM/yyyy");
-    }
-    else
-    {
-        DateTime hoy = DateTime.Now;
-
-        string miVariable = hoy.ToString("dd/MM/yyyy");
-        ViewBag.Fecha = miVariable;
-    }
+    ViewData["Title"] = "Consulta Requisición de "+ViewBag.Titulo;
 
     var solicitantes = Json.Serialize(ViewBag.Solicitantes);
     var areas = Json.Serialize(ViewBag.Areas);
@@ -25,12 +14,21 @@
 
 <hr />
 <div class="card card-danger">
-    <div class="card-header">
-        <h5 class="float-left">
-            <img src="~/LogoMenu.png" alt="StartSoft" class="img-circle image-responsive mb-2" style="opacity: .8" width="25">
-            @ViewData["Title"] <b>@Model.NROREQUI</b>
-            @Model.FECREQUI
-        </h5>
+    <div class="card-header pb-0">
+        <div class="row">
+            <div class="col-sm-4">
+                <h5 class="float-left">
+                    <img src="~/LogoMenu.png" alt="StartSoft" class="img-circle image-responsive mb-2" style="opacity: .8" width="25">
+                    @ViewData["Title"]
+                </h5>
+            </div>
+            <div class="col-sm-4 text-center">
+                <h5>Nro. Interno <b>@Model.NROREQUI</b></h5>
+            </div>
+            <div class="col-sm-4 text-right">
+                <h5>Nro. Requisici&oacute;n <b>@ViewBag.Original</b></h5>
+            </div>
+        </div>
     </div>
     <div class="card-body p-2">
         <form asp-action="Edit">
@@ -146,13 +144,13 @@
         CODSOLIC = $("#CODSOLIC")[0];
         CODSOLIC.length = 0;
         for (var i = 0; i < datos_solicitantes.length; i++) {
-            CODSOLIC[i] = new Option(datos_solicitantes[i].solicitante,datos_solicitantes[i].codigo,"","");
+            CODSOLIC[i] = new Option(datos_solicitantes[i].descripcion,datos_solicitantes[i].codigo,"","");
         }
 
         AREA = $("#AREA")[0];
         AREA.length = 0;
         for (i = 0; i < datos_areas.length; i++) {
-            AREA[i] = new Option(datos_areas[i].area,datos_areas[i].codigo,"","");
+            AREA[i] = new Option(datos_areas[i].descripcion,datos_areas[i].codigo,"","");
         }
 
         if ($("#TIPOREQUI").val() == "RS") {

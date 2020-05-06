@@ -98,11 +98,17 @@
         
         var datos = JSON.parse('@Html.Raw(datos_json)');
         activar_datos(datos.value);
-        if (datos.value.error!= undefined) session_finalizada();
+        if (datos.value.error != undefined) session_finalizada();
+
+        $(".table tbody tr").hover(function() {
+            $(this).addClass("bg-secondary text-white");
+        }, function() {
+            $(this).removeClass("bg-secondary text-white");
+        });
     });
 
     function session_finalizada() {
-        swal({
+        Swal.fire({
             title: "Alerta",
             text: "La sesión ha caducado",
             type: "info",
@@ -114,7 +120,7 @@
 
     function revisar_error() {
         if ($("#error").val() != "") {
-            swal({
+            Swal.fire({
                 title: "Alerta",
                 text: $("#error").val(),
                 type: "info",
@@ -183,82 +189,36 @@
                         if ((row.estado == "P") || (row.estado == "Pendiente")) {
                             var cadena = '<a class="btn btn-primary" title = "Consultar" href="@Url.Content("~/Compras/Consultar?codigo=")' + row.numero + '" > <i class="fa fa-search"></i></a > ';
                             cadena+= '<a class="btn btn-info" title="Editar" href="@Url.Content("~/Compras/Edit?codigo=")' + row.numero + '"><i class="fa fa-edit"></i></a> ';
-                            cadena+= '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a> ';
-                            cadena+= '<a class="btn btn-secondary" target="_blank" title="Imprimir" href="@Url.Content("~/Compras/Imprimir?codigo=")' + row.numero + '"><i class="fa fa-print"></i></a>';
+                            cadena+= '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\',\'' + row.nrO_REQUISICION + '\')"><i class="fa fa-trash"></i></a> ';
+                            cadena+= '<a class="btn btn-warning" target="_blank" title="Imprimir" href="@Url.Content("~/Compras/Imprimir?codigo=")' + row.numero + '"><i class="fa fa-print"></i></a>';
                         } else {
                             var cadena = '<a class="btn btn-primary" title = "Consultar" href="@Url.Content("~/Compras/Consultar?codigo=")' + row.numero + '" > <i class="fa fa-search"></i></a > ';
-                            cadena+= '<a class="btn btn-secondary" target="_blank" title="Imprimir" href="@Url.Content("~/Compras/Imprimir?codigo=")' + row.numero + '"><i class="fa fa-print"></i></a>';
+                            cadena+= '<a class="btn btn-warning" target="_blank" title="Imprimir" href="@Url.Content("~/Compras/Imprimir?codigo=")' + row.numero + '"><i class="fa fa-print"></i></a>';
                         }
                         return cadena;
                     }
                 },
-                /*{
-                    render: function (data, type, row)
-                    {
-                        if (row.estado == "P") {
-                            return '<a class="btn btn-info grid_opt" title="Editar" href="Url.Content("~/Compras/Edit?codigo=")'+row.numero+'"><i class="fa fa-edit"></i></a>';
-                        } else {
-                            return '';
-                        }
-                        
-                    }
-                },
-                {
-                    data: null, render: function (data, type, row) {
-                        if (row.estado == "P") {
-                            return '<a class="btn btn-danger" title="Eliminar" href="#" onclick="anular_rcompra(\'' + row.numero + '\')"><i class="fa fa-trash"></i></a>';
-                            //return '<a class="btn btn-danger" title="Eliminar"  href="Url.Content("~/Compras/Delete?codigo=")'+row.numero+'"><i class="fa fa-trash"></i></a>';
-                        } else {
-                            return '';
-                        }                        
-                    }
-                },*/
             ]
         });
     }
     
-    function anular_rcompra(nrorequi) {
-        swal({
+    function anular_rcompra(nrointerno,nrorequi) {
+        Swal.fire({
             title: "Eliminar",
-            text: "Desea eliminar el documento " + nrorequi,
-            type: "info",
+            text: "Desea eliminar la Requisición Nro. " + nrorequi,
+            type: "question",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
             cancelButtonClass: "btn-secondary",
             confirmButtonText: "SI",
             cancelButtonText: "NO",
-        },
-        function (isConfirm) {
-            if (isConfirm) {
-                var parametros = "id=" + nrorequi;
-                /*$.ajax(
-                {
-                    type: "POST",
-                    dataType: "json",
-                    url: "Url.Content("~/Compras/Delete")",
-                    data: parametros,
-                    cache: false,
-                    success: function (datos) {
-                        if (datos.error != "") {
-                            //MostrarMensaje("Rojo", datos.error);
-                            $("#error").val(datos.error);
-                            revisar_error();
-                        } else {
-                            window.location = 'Url.Content("~/Compras/Index")';
-                        };
-                    },
-                    error: function (xhr) {
-                        swal({
-                            title: "Alerta",
-                            text: xhr.responseText,
-                            confirmButtonClass: "btn-danger",
-                        });
-                    },
-                });*/
+        }).then((result) => {
+            if (result.value) {
+                var parametros = "id=" + nrointerno;
+
                 var url = '@Url.Action("Delete", "Compras", new { codigo = "Id" })';
-                url = url.replace('Id', encodeURIComponent(nrorequi));
+                url = url.replace('Id', encodeURIComponent(nrointerno));
                 window.location.href = url;
-                //console.log(url);
             }
         });
     }
