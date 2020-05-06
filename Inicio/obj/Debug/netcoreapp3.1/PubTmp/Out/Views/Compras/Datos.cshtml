@@ -554,7 +554,13 @@
 
         $("#FECREQUI").focus();
 
-        $("tbody tr").hover(function() {
+        $("#tabla_servicio tr").hover(function() {
+            $(this).addClass("bg-secondary text-white");
+        }, function() {
+            $(this).removeClass("bg-secondary text-white");
+        });
+
+        $("#tabla_articulo tr").hover(function() {
             $(this).addClass("bg-secondary text-white");
         }, function() {
             $(this).removeClass("bg-secondary text-white");
@@ -623,10 +629,14 @@
                 ]
             });
 
-            /*$('#gridServicios tbody').on('mouseover', 'tr', function () {
+            $('#gridServicios tbody').on('mouseover', 'tr', function () {
                 $('#gridServicios').DataTable().$('tr').removeClass('bg-secondary text-white');
                 $(this).addClass('bg-secondary text-white');
-            });*/
+            });
+
+            $('#gridServicios tbody').on('mouseout', 'tr', function () {
+                $('#gridServicios').DataTable().$('tr').removeClass('bg-secondary text-white');
+            });
         } else {
             $("#gridArticulos").DataTable({
                 destroy: true,
@@ -652,10 +662,14 @@
                 ]
             });
 
-            /*$('#gridArticulos tbody').on('mouseover', 'tr', function () {
+            $('#gridArticulos tbody').on('mouseover', 'tr', function () {
                 $('#gridArticulos').DataTable().$('tr').removeClass('bg-secondary text-white');
                 $(this).addClass('bg-secondary text-white');
-            });*/
+            });
+
+            $('#gridArticulos tbody').on('mouseout', 'tr', function () {
+                $('#gridArticulos').DataTable().$('tr').removeClass('bg-secondary text-white');
+            });
         }
     }
 
@@ -677,9 +691,17 @@
             ]
         });
 
-        $('#gridArticulosAlm tbody').on('click', 'tr', function () {
+        $('#gridArticulosAlm tbody').on('mouseover', 'tr', function () {
             $('#gridArticulosAlm').DataTable().$('tr').removeClass('bg-secondary text-white');
             $(this).addClass('bg-secondary text-white');
+            $('#gridArticulosAlm').DataTable().$('tr').title('Click para seleccionar');
+        });
+
+        $('#gridArticulosAlm tbody').on('mouseout', 'tr', function () {
+            $('#gridArticulosAlm').DataTable().$('tr').removeClass('bg-secondary text-white');
+        });
+
+        $('#gridArticulosAlm tbody').on('click', 'tr', function () {
             $("#almacen_ubicacion").val($(this).children("td").eq(3).text());
         });
     }
@@ -955,6 +977,11 @@
 
         if (!$("#btn_add_articulo").hasClass('disabled')) {
             if ((codigo != "") && (unidad != "") && (descripcion != "") && (cantidad != "") && (fecha_req != "") && (centro_costo != "")) {
+                if (cantidad <= 0) {
+                    MostrarMensaje("Rojo", "Cantidad debe ser mayor a 0");
+                    $("#m_cantidad").focus();
+                    return false;
+                }
                 var fecha1 = fecha_req.split("/");
                 var fecha2 = fec.split("/");
 
@@ -1074,7 +1101,7 @@
         $("#r_" + linea).addClass("text-danger");
         Swal.fire({
             title: "Eliminar",
-            text: "Desea eliminar el artículo",
+            text: "Desea eliminar el ítem del detalle",
             type: "question",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
@@ -1106,6 +1133,11 @@
 
         if (!$("#btn_add_servicio").hasClass('disabled')) {
             if ((codigo != "") && (descripcion != "") && (cantidad != "") && (centro_costo != "")) {
+                if (cantidad <= 0) {
+                    MostrarMensaje("Rojo", "Cantidad debe ser mayor a 0");
+                    $("#m_cantidad_servicio").focus();
+                    return false;
+                }
                 if (linea == "") {
                     arreglo[0] = global;
                     arreglo[1] = codigo;
@@ -1165,7 +1197,7 @@
         $("#r_" + linea).addClass("text-danger");
         Swal.fire({
             title: "Eliminar",
-            text: "Desea eliminar el servicio",
+            text: "Desea eliminar el ítem del detalle",
             type: "question",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",

@@ -46,7 +46,7 @@
                     </a>
                     <button class="btn btn-success" onclick="validar_envio()" id="envio_principal" disabled>
                         <i class="fa fa-save"></i>
-                        Guardar
+                        Grabar
                     </button>
                 </div>
             </div>
@@ -95,6 +95,7 @@
 
     function enviar_datos() {
         var details = [];
+        var titulo;
 
         if ($("#TIPOREQUI").val() == "RQ") {
             $("#tabla_articulo tr").each(function (index) {
@@ -114,6 +115,7 @@
                 }
                 $("#detalle").val(JSON.stringify(details));
             });
+            titulo = "Compra";
         } else {
             $("#tabla_servicio tr").each(function (index) {
                 var td = $(this).children("td");
@@ -132,19 +134,33 @@
                 }
                 $("#detalle").val(JSON.stringify(details));
             });
+            titulo = "Servicio";
         }        
 
         if (($("#detalle").val() != "") && ($("#NROREQUI").val() == "")) {
-            $("#NROREQUI").val(0);
-            $("#TipoDocumento").val($("#TIPOREQUI").val());
-            document.forms[0].submit();
+            Swal.fire({
+                title: "Grabar",
+                text: "¿Desea grabar la Requisición de "+titulo+"?",
+                type: "question",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                cancelButtonClass: "btn-secondary",
+                confirmButtonText: "SI",
+                cancelButtonText: "NO",
+            }).then((result) => {
+                if (result.value) {
+                    loading_show();
+                    $("#NROREQUI").val("Nro. Interno");
+                    $("#TipoDocumento").val($("#TIPOREQUI").val());
+                    document.forms[0].submit();
+                }
+            });            
         } else {
             MostrarMensaje("Rojo", "No se ha agregado ningún artículo");
         }
     }
 
     function cancelar_rcompra() {
-        var nrorequi = $("#NROREQUI").val();
         Swal.fire({
             title: "Cancelar",
             text: "¿Desea Cancelar?",

@@ -100,10 +100,13 @@
         activar_datos(datos.value);
         if (datos.value.error != undefined) session_finalizada();
 
-        $(".table tbody tr").hover(function() {
-            $(this).addClass("bg-secondary text-white");
-        }, function() {
-            $(this).removeClass("bg-secondary text-white");
+        $('#GridComprasIndex tbody').on('mouseover', 'tr', function () {
+            $('#GridComprasIndex').DataTable().$('tr').removeClass('bg-secondary text-white');
+            $(this).addClass('bg-secondary text-white');
+        });
+
+        $('#GridComprasIndex tbody').on('mouseout', 'tr', function () {
+            $('#GridComprasIndex').DataTable().$('tr').removeClass('bg-secondary text-white');
         });
     });
 
@@ -165,9 +168,10 @@
                 targets: [6],
                 orderable: false,
                 searchable: false
-            }],
+                }],
+            order: [[ 0, "desc" ]],
             columns: [
-                { data: "numero" },
+                { data: "numero"},
                 { data: "solicitante" },
                 { data: "area" },
                 {

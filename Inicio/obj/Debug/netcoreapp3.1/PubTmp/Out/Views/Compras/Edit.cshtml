@@ -51,7 +51,7 @@
                     </a>
                     <button class="btn btn-success" onclick="validar_envio()" id="envio_principal">
                         <i class="fa fa-save"></i>
-                        Guardar
+                        Grabar
                     </button>
                 </div>
             </div>
@@ -87,6 +87,7 @@
 
     function enviar_datos() {
         var details = [];
+        var titulo;
 
         if ($("#TIPOREQUI").val() == "RQ") {
             $("#tabla_articulo tr").each(function (index) {
@@ -106,6 +107,7 @@
                 }
                 $("#detalle").val(JSON.stringify(details));
             });
+            titulo = "Compra";
         } else {
             $("#tabla_servicio tr").each(function (index) {
                 var td = $(this).children("td");
@@ -124,11 +126,27 @@
                 }
                 $("#detalle").val(JSON.stringify(details));
             });
+            titulo = "Servicio";
         }
 
         if (($("#detalle").val() != "") && ($("#NROREQUI").val() != "")) {
-            $("#TipoDocumento").val($("#TIPOREQUI").val());
-            document.forms[0].submit();
+            Swal.fire({
+                title: "Grabar",
+                text: "¿Desea guardar los cambios realizados?",
+                type: "question",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                cancelButtonClass: "btn-secondary",
+                confirmButtonText: "SI",
+                cancelButtonText: "NO",
+            }).then((result) => {
+                if (result.value) {
+                    loading_show();
+                    $("#TipoDocumento").val($("#TIPOREQUI").val());
+                    document.forms[0].submit();
+                    document.forms[0].submit();
+                }
+            });              
         } else {
             MostrarMensaje("Rojo", "Los campos con * son obligatorios");
         }

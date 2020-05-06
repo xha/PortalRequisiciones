@@ -145,7 +145,7 @@ namespace Inicio.Controllers
                 List<REQUISC> compras = Comun?.REQUISC.FromSqlRaw(cadena).ToList();*/
                 List<REQUISC> compras = Wenco?.REQUISC.FromSqlRaw("SP_PORTAL_LISTADO_REQUISICION '" + empresa + "','" + fecha_desde + "','" + fecha_hasta + "','" + tipo + "'").ToList();
                 var Resultado = (from N in compras
-                                 orderby N.FECHA
+                                 orderby N.NUMERO descending
                                  select N);
 
                 return Json(Resultado);
