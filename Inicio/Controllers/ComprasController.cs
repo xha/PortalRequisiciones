@@ -356,6 +356,12 @@ namespace Inicio.Controllers
                 case "2":
                     ViewBag.error = "El Estado de la Requisición no es correcto, no se puede eliminar.";
                     break;
+                case "3":
+                    ViewBag.error = "Requisición no existente";
+                    break;
+                case "4":
+                    ViewBag.error = "Error en los parámetros";
+                    break;
             }
 
             return View();
@@ -469,7 +475,7 @@ namespace Inicio.Controllers
             Titulo();            
             if (codigo == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index), new { error = "4" });
             }
             //RehacerConexion();
             bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
@@ -516,17 +522,18 @@ namespace Inicio.Controllers
             Titulo();
             if (codigo == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index), new { error = "4" }); 
             }
             RehacerConexion();
-            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
-            if (modelo == null)
-            {
-                return NotFound();
-            }
 
             string empresa = HttpContext.Session.GetString("empresa").ToString();
             string tipo = HttpContext.Session.GetString("TipoDocumento").ToString();
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, tipo);
+            if (modelo == null)
+            {
+                return RedirectToAction(nameof(Index), new { error = "3" });
+            }
+
             string fecha_desde = HttpContext.Session.GetString("fecha_desde").ToString();
             string fecha_hasta = HttpContext.Session.GetString("fecha_hasta").ToString();
             List<REQUISC> compras = Wenco?.REQUISC.FromSqlRaw("SP_PORTAL_LISTADO_REQUISICION '" + empresa + "','" + fecha_desde + "','" + fecha_hasta + "','" + tipo + "'").ToList();
@@ -711,9 +718,19 @@ namespace Inicio.Controllers
         //public IActionResult Imprimir()
         public async Task<IActionResult> Imprimir(string codigo)
         {
+            if (codigo == null)
+            {
+                return RedirectToAction(nameof(Index), new { error = "4" });
+            }
             RehacerConexion();
-            string empresa = HttpContext.Session.GetString("empresa");
-            string tipo = HttpContext.Session.GetString("TipoDocumento");
+            string empresa = HttpContext.Session.GetString("empresa").ToString();
+            string tipo = HttpContext.Session.GetString("TipoDocumento").ToString();
+            var model = await Comun.REQUISC_PORTAL.FindAsync(codigo, tipo);
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Index), new { error = "3" }); //return NotFound();
+            }
+
             HttpContext.Session.SetString("EmpresaNombre", EmpresaNombre());
             List<SP_PORTAL_REQUERIMIENTO> modelo = Wenco.LISTADO_REQUERIMIENTO.FromSqlRaw("SP_PORTAL_REQUERIMIENTO '" + empresa + "','" + tipo + "', '" + codigo + "'").ToList();
             ViewBag.Codigo = codigo;
