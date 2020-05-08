@@ -218,7 +218,6 @@ namespace Inicio.Controllers
         [HttpPost]
         public bool EstadoRequisicion(string tipo, string numero)
         {
-            RehacerConexion();
             string empresa = HttpContext.Session.GetString("empresa");
             try
             {
@@ -477,16 +476,17 @@ namespace Inicio.Controllers
             {
                 return RedirectToAction(nameof(Index), new { error = "4" });
             }
-            //RehacerConexion();
+
+            RehacerConexion();
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
+            if (modelo == null)
+            {
+                return RedirectToAction(nameof(Index), new { error = "3" });
+            }
+
             bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
             if (opt)
             {
-                var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
-                if (modelo == null)
-                {
-                    return NotFound();
-                }
-
                 string empresa = HttpContext.Session.GetString("empresa").ToString();
                 string tipo = HttpContext.Session.GetString("TipoDocumento").ToString();
                 string fecha_desde = HttpContext.Session.GetString("fecha_desde").ToString();
@@ -560,11 +560,11 @@ namespace Inicio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string detalle, [Bind("NROREQUI,CODSOLIC,FECREQUI,GLOSA,AREA,TIPOREQUI,TipoDocumento,COD_USUARIO")] REQUISC_PORTAL modelo)
         {
-            //RehacerConexion();
             if (ModelState.IsValid)
             {
                 try
                 {
+                    RehacerConexion();
                     bool opt = EstadoRequisicion(modelo.TIPOREQUI, modelo.NROREQUI);
                     if (opt)
                     {
@@ -681,6 +681,13 @@ namespace Inicio.Controllers
 
         public async Task<IActionResult> Delete(string codigo)
         {
+            RehacerConexion();
+            var modelo = await Comun.REQUISC_PORTAL.FindAsync(codigo, HttpContext.Session.GetString("TipoDocumento"));
+            if (modelo == null)
+            {
+                return RedirectToAction(nameof(Index), new { error = "3" });
+            }
+
             bool opt = EstadoRequisicion(HttpContext.Session.GetString("TipoDocumento"), codigo);
             if (opt)
             {
